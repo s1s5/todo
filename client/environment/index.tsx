@@ -42,10 +42,11 @@ Component: React.ComponentType<P>,
     </ReactRelayContext.Consumer>
 );
 
-import {QueryRenderer, GraphQLTaggedNode} from 'react-relay';
+import {QueryRenderer, GraphQLTaggedNode, RelayProp, Container as FragmentContainer} from 'react-relay';
 
 type Config = {
     query: GraphQLTaggedNode,
+    get_variables?: (props: Object) => object,
     variables?: Variables,
 }
 
@@ -77,15 +78,20 @@ type Config = {
 
 import hoistStatics from 'hoist-non-react-statics';
 
-function createQueryRenderer(
-    FragmentComponent:any,
-    Component:any,
+type WithQueryProps = {
+    query: any,
+};
+
+
+function createQueryRenderer<Props>(
+    FragmentComponent: any,  // TODO: ここどう設定していいんだかわからん
+    Component: React.ComponentType<Props & { relay?: RelayProp }>,
     config: Config,
 ) {
-    const { query, variables} = config;
-    
-    class QueryRendererWrapper extends React.Component<{}> {
+    const {query, get_variables} = config;
+    class QueryRendererWrapper extends React.Component<Omit<Props, keyof WithQueryProps>> {
         render() {
+            const variables = get_variables ? get_variables(this.props) : config.variables;  // TODO: マージすべき？
             return (
                 <ReactRelayContext.Consumer>
                   {({ environment }) => (
@@ -99,7 +105,7 @@ function createQueryRenderer(
                                   }
                                   console.log(props);
                                   if (props) {
-                                      return <FragmentComponent {...this.props} query={props} />;
+                                      return <FragmentComponent {...this.props} query={ props } />;
                                   }
                                   
                                   return <span>loading</span>;
@@ -110,8 +116,10 @@ function createQueryRenderer(
             )
         }
     }
-    
-    return hoistStatics(QueryRendererWrapper, Component);
+
+    // TODO: どうやって型をつければ・・・
+    // return hoistStatics(QueryRendererWrapper, Component);
+    return QueryRendererWrapper;
 }
 
 

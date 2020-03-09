@@ -16,11 +16,12 @@ const App = () => (
     <ReactRelayContext.Provider value={ {environment} }>
       <h1>Hello, world.</h1>
       <Router>
+        <Route path='/:id([A-Za-z0-9_=]+)/' exact component={ ({match}:any) => {
+                return <TodoList todolist_id={ match.params.id }/>
+        }} />
         <Route path='/' exact component={ () => <TodoListList/> }/>
       </Router>
     </ReactRelayContext.Provider>
   </div>
 )
-/* <Route path='/:id([A-Za-z0-9_=]+)/' exact component={ ({matches}:any) => <TodoList todolist={{id: matches.id, title: ""}}/> }/>
- */
 export default hot(App)

@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --config webpack.config.babel.js",
     "relay": "relay-compiler --src ./client --schema ./data/schema.json --language typescript --extensions tsx",
-    "start": "webpack-dev-server --hot",
+    "start": "webpack-dev-server --hot --history-api-fallback=true",
     "test": "jest --coverage"
   },
   "author": "",

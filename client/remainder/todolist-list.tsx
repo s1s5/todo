@@ -1,60 +1,8 @@
 import * as React from 'react'
 
-import {Environment} from 'relay-runtime';
-import {graphql, QueryRenderer, createFragmentContainer} from 'react-relay';
+import {graphql, createFragmentContainer} from 'react-relay';
 
 import {Link} from "react-router-dom";
-
-// import {withEnvironment} from '../environment'
-// import TodoList from './todolist'
-// 
-// type Props = {
-//     environment: Environment,
-// }
-// 
-// 
-// const List = (props: Props) => (
-//     <QueryRenderer
-//         environment={props.environment}
-//         query={graphql`
-//             query todolistList_TodoLists_Query {
-//                 todolists {
-//                     edges {
-//                         node {
-//                             id
-//                             ...todolist_todolist
-//                         }
-//                     }
-//                 }  
-//             }
-//             `}
-//         variables={{}}
-//         render={({error, props} : any) => {
-//                 if (error) {
-//                     console.log(error)
-//                     return <div>Error!</div>
-//                 }
-//                 if (!props) {
-//                     return <div>Loading...</div>
-//                 }
-//                 return (
-//                     <ul>
-//                       {
-//                           props.todolists.edges.map((edge:any) => (
-//                               <li key={ edge.node.id }>
-//                                 <Link to={ '/' + edge.node.id + '/' }>
-//                                   <TodoList todolist={ edge.node } collapase={ true} />
-//                                 </Link>
-//                               </li>
-//                           ))
-//                       }
-//                     </ul>)
-//         }}
-//     />
-// )
-// 
-// export default withEnvironment(List)
-
 
 import {createQueryRenderer} from '../environment'
 import {todolistList_query} from './__generated__/todolistList_query.graphql'
