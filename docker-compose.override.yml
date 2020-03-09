@@ -1,5 +1,22 @@
 version: '3.5'
 
+x-app-base:
+  &app-base
+  build:
+    context: .
+    dockerfile: Dockerfile
+  environment:
+    - DEBUG=True
+    - DATABASE_URL=psql://psqluser:psqlpass@db/todo
+    - PYTHONUNBUFFERED=1
+    - MEDIA_ROOT=/data/media
+  volumes:
+    - .:/usr/src/app
+    - media_root:/data/media
+  depends_on:
+    - db
+  user: ${USER_ID}:${GROUP_ID}
+
 volumes:
   pg_data:
   media_root:
@@ -17,16 +34,68 @@ services:
     command: postgres -c max_connections=1000
 
   app:
-    environment:
-      - DEBUG=True
-      - DATABASE_URL=psql://psqluser:psqlpass@db/todo
-      - PYTHONUNBUFFERED=1
-      - MEDIA_ROOT=/data/media
+    << : *app-base
     ports:
       - "42100:8000"
-    command:  bash -c "sleep 1; if [ ! -f /data/media/.first ]; then sleep 10; touch /data/media/.first; fi; python manage.py migrate --noinput; while [ true ]; do python manage.py runserver 0.0.0.0:8000 ; sleep 10; done"
-    volumes:
-      - .:/usr/src/app
-      - media_root:/data/media
-    depends_on:
-      - db
+    command: |
+      bash -c "
+      sleep 1; if [ ! -f /data/media/.first ]; then sleep 10; touch /data/media/.first; fi;
+      python manage.py migrate --noinput;
+      while [ true ]; do python manage.py runserver 0.0.0.0:8000 ; sleep 10; done"
+
+  schema-builder:
+    << : *app-base
+    # command: |
+    #   bash -c "
+    #   watchmedo auto-restart -d /usr/src/app --recursive -p '*.py' -- python manage.py graphql_schema
+    #   "
+    command: |
+      bash -c "
+      python manage.py graphql_schema --watch
+      "
+
+  # schema-to-js:
+  #   build:
+  #     context: tools
+  #     dockerfile: node+watchdog.Dockerfile
+  #   command: |
+  #     bash -c "
+  #     cd app/jsapp; watchmedo auto-restart -d /app -p '*schema.json' -- npm run generate
+  #     "
+  #   volumes:
+  #     - .:/app
+  #   user: ${USER_ID}:${GROUP_ID}
+
+# following services must be off in macbook. This consumes much energy
+#   relay-builder:
+#     build:
+#       context: tools
+#       dockerfile: node+watchdog.Dockerfile
+#     command: |
+#       bash -c "
+#       cd app/jsapp; npm run relay:watch
+#       "
+#     # command: |
+#     #   bash -c "
+#     #   cd app/jsapp; watchmedo auto-restart -d /app --recursive -p '*.tsx' -- npm run build
+#     #   "
+#     volumes:
+#       - .:/app
+#     user: ${USER_ID}:${GROUP_ID}
+# 
+#   js-builder:
+#     build:
+#       context: tools
+#       dockerfile: node+watchdog.Dockerfile
+#     command: |
+#       bash -c "
+#       cd app/jsapp; npm run build:watch
+#       "
+#     # command: |
+#     #   bash -c "
+#     #   cd app/jsapp; watchmedo auto-restart -d /app --recursive -p '*.tsx' -- npm run build
+#     #   "
+#     volumes:
+#       - .:/app
+#     user: ${USER_ID}:${GROUP_ID}
+  

@@ -4,6 +4,7 @@ django-admin startproject todo
 pip install django-environ django-debug-toolbar django-debug-toolbar-template-timings gunicorn psycopg2-binary pytz requests
 pip freeze | sort > requirements.txt 
 
+pip install graphene graphene-django graphene-subscriptions django-filter
 
 npm init
 

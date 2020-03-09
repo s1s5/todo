@@ -140,10 +140,10 @@ STATICFILES_DIRS = (
 
 ############################################
 # use whitenoise
-MIDDLEWARE.insert(
-    MIDDLEWARE.index('django.middleware.security.SecurityMiddleware'),
-    'whitenoise.middleware.WhiteNoiseMiddleware')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# MIDDLEWARE.insert(
+#     MIDDLEWARE.index('django.middleware.security.SecurityMiddleware'),
+#     'whitenoise.middleware.WhiteNoiseMiddleware')
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 ############################################
@@ -183,11 +183,54 @@ DEBUG_TOOLBAR_PANELS = [
 ]
 
 ############################################
+# graphql
+############################################
+
+GRAPHENE = {
+    # # firstかlastが有効なときにしか聞かない・・・バグだろこれ
+    # 'RELAY_CONNECTION_MAX_LIMIT': 100,
+
+    # # DjangoFilterConnectionField用、大量のデータを一気にフェッチするのを防ぐ
+    # # 下のような感じでfirstのデフォルト値を指定しておく
+    # # books = DjangoFilterConnectionField(BookNode, first=graphene.Int(100))
+    # 'RELAY_CONNECTION_ENFORCE_FIRST_OR_LAST': True,
+
+    'SCHEMA': 'todo.schema.schema',
+    'MIDDLEWARE': [
+    ] + ['graphene_django.debug.DjangoDebugMiddleware'] if DEBUG else [],
+    # manage.py graphql_schema  でdumpできるみたい
+    'SCHEMA_OUTPUT': 'data/schema.json',  # defaults to schema.json,
+    'SCHEMA_INDENT': 2,
+}
+
+ASGI_APPLICATION = "todo.routing.application"
+CHANNELS_WS_PROTOCOLS = ["graphql-ws", ]
+CHANNEL_LAYERS = {
+    "default": {
+        # "BACKEND": "channels.layers.InMemoryChannelLayer"
+        # "ROUTING": "django_subscriptions.urls.channel_routing",
+        # multi processならこっち使わないとだめ
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    }
+}
+
+INSTALLED_APPS += [
+    'graphene_django',
+    'channels',
+    'graphene_subscriptions',
+]
+
+############################################
 # current project
 ############################################
 MIDDLEWARE += [
 ]
 
 INSTALLED_APPS = [
+
 ] + INSTALLED_APPS
+
 
