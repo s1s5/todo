@@ -19,7 +19,7 @@ export default createFragmentContainer(
     TodoList,
     {
         todolist: graphql`
-            fragment TodoList_todolist on TodoListNode {
+            fragment todolist_todolist on TodoListNode {
                 id
                 title
             }
