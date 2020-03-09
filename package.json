@@ -1,0 +1,37 @@
+{
+  "name": "todo",
+  "version": "1.0.0",
+  "description": "mkvirtualenv --no-site-packages -p /usr/bin/python3 todo pip install django django-admin startproject todo",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --hot",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.8.7",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-decorators": "^7.8.3",
+    "@babel/preset-env": "^7.8.7",
+    "@babel/preset-react": "^7.8.3",
+    "@babel/preset-typescript": "^7.8.3",
+    "@types/react": "^16.9.23",
+    "@types/react-dom": "^16.9.5",
+    "babel-loader": "^8.0.6",
+    "fork-ts-checker-webpack-plugin": "^4.0.5",
+    "html-webpack-plugin": "^3.2.0",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
+    "@hot-loader/react-dom": "^16.12.0",
+    "core-js": "^3.6.4",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "react-hot-loader": "^4.12.19",
+    "regenerator-runtime": "^0.13.3"
+  }
+}
