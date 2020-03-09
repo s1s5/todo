@@ -17,6 +17,7 @@ chardet==3.0.4
 constantly==15.1.0
 cryptography==2.8
 daphne==2.4.1
+django-cors-headers==3.2.1
 django-debug-toolbar-template-timings==0.9
 django-debug-toolbar==2.2
 django-environ==0.4.5

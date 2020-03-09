@@ -224,6 +224,28 @@ INSTALLED_APPS += [
 ]
 
 ############################################
+# cors
+############################################
+INSTALLED_APPS += [
+    'corsheaders',
+]
+MIDDLEWARE.insert(
+    MIDDLEWARE.index('django.middleware.common.CommonMiddleware'),
+    'corsheaders.middleware.CorsMiddleware',
+)
+
+CORS_ORIGIN_REGEX_WHITELIST = [
+    r"^http://localhost:.*$",
+]
+# CORS_ORIGIN_WHITELIST = [
+#     "https://example.com",
+#     "https://sub.example.com",
+#     "http://localhost:8080",
+#     "http://127.0.0.1:9000"
+# ]
+
+
+############################################
 # current project
 ############################################
 MIDDLEWARE += [
