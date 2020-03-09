@@ -1,12 +1,15 @@
 import graphene
 from graphene_django.debug import DjangoDebug
 
+from todo.apps.accounts import schema as accounts_schema
+from todo.apps.remainder import schema as remainder_schema
 
-class Query(graphene.ObjectType):
+
+class Query(remainder_schema.Query, accounts_schema.Query, graphene.ObjectType):
     debug = graphene.Field(DjangoDebug, name='_debug')
 
 
-class Mutation(graphene.ObjectType):
+class Mutation(remainder_schema.Mutation, graphene.ObjectType):
     pass
 
 
