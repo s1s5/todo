@@ -47,37 +47,27 @@ class Query(object):
     todolists = DjangoFilterConnectionField(TodoListNode)
 
 
-# class BookSubscription(object):
-#     book_subsc = graphene.Field(BookNode)
-#     book_created = graphene.Field(BookNode)
-#     book_updated = graphene.Field(BookNode)
-
-#     def resolve_book_subsc(root, info):
-#         from rx import Observable
-#         return Observable.interval(3000).map(lambda i: models.Book.objects.get(pk=1))
-
-#     def resolve_book_created(root, info):
-#         from graphene_subscriptions.events import CREATED
-#         print("return resolve book created")
-#         return root.filter(
-#             lambda event:
-#                 event.operation == CREATED and
-#                 isinstance(event.instance, models.Book)
-#         ).map(lambda event: event.instance)
-
-#     def resolve_book_updated(root, info):
-#         from graphene_subscriptions.events import UPDATED
-#         print("return resolve book created")
-#         return root.filter(
-#             lambda event:
-#                 event.operation == UPDATED and
-#                 isinstance(event.instance, models.Book)
-#         ).map(lambda event: event.instance)
-
-
-# graphene.Field == graphene.relay.node.Fieldですけど、、、
-
-
 class Mutation(object):
     todolist_create = TodoListCreateMutation.Field()
     todolist_update = TodoListUpdateMutation.Field()
+
+
+class Subscription(object):
+    todolist_created = graphene.Field(TodoListNode)
+    todolist_updated = graphene.Field(TodoListNode)
+
+    def resolve_todolist_created(root, info):
+        from graphene_subscriptions.events import CREATED
+        return root.filter(
+            lambda event:
+                event.operation == CREATED and
+                isinstance(event.instance, models.TodoList)
+        ).map(lambda event: event.instance)
+
+    def resolve_todolist_updated(root, info):
+        from graphene_subscriptions.events import UPDATED
+        return root.filter(
+            lambda event:
+                event.operation == UPDATED and
+                isinstance(event.instance, models.TodoList)
+        ).map(lambda event: event.instance)

@@ -9,19 +9,18 @@ class Query(remainder_schema.Query, accounts_schema.Query, graphene.ObjectType):
     debug = graphene.Field(DjangoDebug, name='_debug')
 
 
-class Mutation(remainder_schema.Mutation, graphene.ObjectType):
+class Mutation(remainder_schema.Mutation, accounts_schema.Mutation, graphene.ObjectType):
     pass
 
 
-class Subscription(graphene.ObjectType):
+class Subscription(remainder_schema.Subscription, accounts_schema.Subscription, graphene.ObjectType):
     pass
 
 
 schema = graphene.Schema(
     query=Query,
-    # なにもないとエラー
-    # mutation=Mutation,
-    # subscription=Subscription
+    mutation=Mutation,
+    subscription=Subscription
 )
 
 
