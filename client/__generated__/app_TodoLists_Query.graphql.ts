@@ -1,11 +1,11 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 9b3bc3b1422e5ee4ff9e41a468479505 */
+/* @relayHash 999c76ffa42955d7773cf97e2611b387 */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
-export type App_TodoLists_QueryVariables = {};
-export type App_TodoLists_QueryResponse = {
+export type app_TodoLists_QueryVariables = {};
+export type app_TodoLists_QueryResponse = {
     readonly todolists: {
         readonly edges: ReadonlyArray<{
             readonly node: {
@@ -15,15 +15,15 @@ export type App_TodoLists_QueryResponse = {
         } | null>;
     } | null;
 };
-export type App_TodoLists_Query = {
-    readonly response: App_TodoLists_QueryResponse;
-    readonly variables: App_TodoLists_QueryVariables;
+export type app_TodoLists_Query = {
+    readonly response: app_TodoLists_QueryResponse;
+    readonly variables: app_TodoLists_QueryVariables;
 };
 
 
 
 /*
-query App_TodoLists_Query {
+query app_TodoLists_Query {
   todolists {
     edges {
       node {
@@ -52,7 +52,7 @@ const node: ConcreteRequest = (function () {
         "kind": "Request",
         "fragment": {
             "kind": "Fragment",
-            "name": "App_TodoLists_Query",
+            "name": "app_TodoLists_Query",
             "type": "Query",
             "metadata": null,
             "argumentDefinitions": [],
@@ -100,7 +100,7 @@ const node: ConcreteRequest = (function () {
         },
         "operation": {
             "kind": "Operation",
-            "name": "App_TodoLists_Query",
+            "name": "app_TodoLists_Query",
             "argumentDefinitions": [],
             "selections": [
                 {
@@ -148,12 +148,12 @@ const node: ConcreteRequest = (function () {
         },
         "params": {
             "operationKind": "query",
-            "name": "App_TodoLists_Query",
+            "name": "app_TodoLists_Query",
             "id": null,
-            "text": "query App_TodoLists_Query {\n  todolists {\n    edges {\n      node {\n        id\n        ...TodoList_todolist\n      }\n    }\n  }\n}\n\nfragment TodoList_todolist on TodoListNode {\n  id\n  title\n}\n",
+            "text": "query app_TodoLists_Query {\n  todolists {\n    edges {\n      node {\n        id\n        ...TodoList_todolist\n      }\n    }\n  }\n}\n\nfragment TodoList_todolist on TodoListNode {\n  id\n  title\n}\n",
             "metadata": {}
         }
     } as any;
 })();
-(node as any).hash = '1cf4a659720ffc079a8e76336b3fbb72';
+(node as any).hash = 'dc8e4c8140efb62d4b3f048083529f2e';
 export default node;

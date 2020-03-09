@@ -1,3 +1,5 @@
+import * as React from 'react'
+
 import {
     Environment,
     Network,
@@ -6,8 +8,11 @@ import {
     RequestParameters,
     Variables,
     UploadableMap,
-    CacheConfig
+    CacheConfig,
+//    RelayContext
 } from 'relay-runtime';
+
+import {ReactRelayContext} from 'react-relay';
 
 import fetchQuery from './fetchQuery'
 import SubscriptionSetupper from './SubscriptionSetupper'
@@ -24,4 +29,17 @@ const createEnvironment = (post_url:string, ws_url?:string) => {
     });
 }
 
-export default createEnvironment
+type WithEnvironmentProps = {
+    environment: Environment,
+};
+
+// HOC
+const withEnvironment = <P extends object>(
+Component: React.ComponentType<P>,
+): React.FC<Omit<P, keyof WithEnvironmentProps>> => props => (
+    <ReactRelayContext.Consumer>
+      {({ environment }) => <Component {...props as P} environment={ environment } />}
+    </ReactRelayContext.Consumer>
+);
+
+export {createEnvironment, withEnvironment}

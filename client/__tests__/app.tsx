@@ -1,4 +1,4 @@
-import App from '../App'
+import App from '../app'
 
 import React from 'react';
 import renderer from 'react-test-renderer';
