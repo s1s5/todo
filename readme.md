@@ -15,3 +15,7 @@ npm install --save-dev html-webpack-plugin
 npm install --save @hot-loader/react-dom react-hot-loader
 
 add tsconfig.json  webpack.config.babel.js
+
+npm install --save-dev @types/jest jest ts-jest
+npm install --save-dev react-test-renderer @types/react-test-renderer
+
