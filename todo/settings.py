@@ -11,21 +11,33 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import datetime
+import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_DIR = os.path.dirname(__file__)
+PROJECT_NAME = os.path.basename(PROJECT_DIR)
 
+env = environ.Env(
+    STATIC_ROOT=(str, os.path.join(BASE_DIR, "static")),
+    MEDIA_ROOT=(str, os.path.join(BASE_DIR, 'media')),
+    # tr -dc 'a-z0-9!@#$%^&*(-_=+)' < /dev/urandom | head -c50
+    SECRET_KEY=(str, 'gu^urnk#7zj2%o13c7)mi!uxi0n^ai#8j07r3+pbbv%nd1za(9'),
+)
+if 'ENV_PATH' in os.environ:
+    environ.Env.read_env(os.environ['ENV_PATH'])
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'gu^urnk#7zj2%o13c7)mi!uxi0n^ai#8j07r3+pbbv%nd1za(9'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
 
 # Application definition
@@ -48,13 +60,15 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+if DEBUG:
+    MIDDLEWARE.insert(1, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 
 ROOT_URLCONF = 'todo.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(PROJECT_DIR, 'templates'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,10 +88,7 @@ WSGI_APPLICATION = 'todo.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': env.db(default="sqlite://:memory:")
 }
 
 
@@ -103,9 +114,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'ja'
+TIME_ZONE = 'Asia/Tokyo'
+TZ_INFO = datetime.timezone(datetime.timedelta(hours=9))
 
 USE_I18N = True
 
@@ -114,7 +125,69 @@ USE_L10N = True
 USE_TZ = True
 
 
+############################################
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
+############################################
 
 STATIC_URL = '/static/'
+STATIC_ROOT = env('STATIC_ROOT')
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, PROJECT_DIR, "static"),
+)
+
+############################################
+# use whitenoise
+MIDDLEWARE.insert(
+    MIDDLEWARE.index('django.middleware.security.SecurityMiddleware'),
+    'whitenoise.middleware.WhiteNoiseMiddleware')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+############################################
+# media files
+############################################
+MEDIA_ROOT = env('MEDIA_ROOT')
+MEDIA_URL = '/media/'
+
+############################################
+# debug-toolbar
+############################################
+if DEBUG:
+    INSTALLED_APPS += [
+        'debug_toolbar',
+        'template_timings_panel'
+    ]
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TEMPLATE_CONTEXT': True,
+    "SHOW_TOOLBAR_CALLBACK": lambda request: True,
+}
+
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+    'template_timings_panel.panels.TemplateTimings.TemplateTimings',
+]
+
+############################################
+# current project
+############################################
+MIDDLEWARE += [
+]
+
+INSTALLED_APPS = [
+] + INSTALLED_APPS
+

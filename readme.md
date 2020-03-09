@@ -1,6 +1,8 @@
 mkvirtualenv --no-site-packages -p /usr/bin/python3 todo
 pip install django
 django-admin startproject todo
+pip install django-environ django-debug-toolbar django-debug-toolbar-template-timings gunicorn psycopg2-binary pytz requests
+pip freeze | sort > requirements.txt 
 
 
 npm init
