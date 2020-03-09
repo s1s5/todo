@@ -117,9 +117,7 @@ function createQueryRenderer<Props>(
         }
     }
 
-    // TODO: どうやって型をつければ・・・
-    // return hoistStatics(QueryRendererWrapper, Component);
-    return QueryRendererWrapper;
+    return hoistStatics(QueryRendererWrapper, Component);
 }
 
 
