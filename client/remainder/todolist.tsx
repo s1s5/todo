@@ -1,12 +1,11 @@
 import * as React from 'react';
 
 import {graphql, createFragmentContainer} from 'react-relay';
+import {todolist_todolist} from './__generated__/todolist_todolist.graphql';
 
 type Props = {
-    todolist: {
-        id: string,
-        title: string,
-    }
+    collapase: boolean,
+    todolist: todolist_todolist,
 }
 
 const TodoList = (props: Props) => {
