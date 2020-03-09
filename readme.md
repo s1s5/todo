@@ -14,3 +14,4 @@ npm install --save react react-dom
 npm install --save-dev html-webpack-plugin
 npm install --save @hot-loader/react-dom react-hot-loader
 
+add tsconfig.json  webpack.config.babel.js
