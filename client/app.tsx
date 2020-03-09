@@ -11,12 +11,6 @@ const App = () => (
   <div>
     <ReactRelayContext.Provider value={ {environment} }>
       <h1>Hello, world.</h1>
-      <ReactRelayContext.Consumer>
-        {({ environment }) => {
-             console.log(environment)
-             return <div>environment = { environment === undefined ? "undefined" : "some value" }</div>
-        }}
-      </ReactRelayContext.Consumer>
       <TodoListList/>
     </ReactRelayContext.Provider>
   </div>

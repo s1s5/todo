@@ -34,7 +34,6 @@ const List = (props: Props) => (
                 if (!props) {
                     return <div>Loading...</div>
                 }
-                console.log(props)
                 return (
                     <div>
                       {
