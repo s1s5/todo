@@ -73,11 +73,12 @@ class SubscriptionSetupper {
 
 const subsc_set_upper = new SubscriptionSetupper('ws://localhost:42100/graphql/')
 
-const environment = new Environment({
-  network: Network.create(fetchQuery, subsc_set_upper.setup),
-  store: new Store(new RecordSource()),  
-});
-
+/* const environment = new Environment({
+ *   network: Network.create(fetchQuery, subsc_set_upper.setup),
+ *   store: new Store(new RecordSource()),  
+ * });
+ *  */
+import environment from './environment'
 
 const App = () => (
   <div>
