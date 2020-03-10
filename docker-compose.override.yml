@@ -51,7 +51,7 @@ services:
     #   "
     command: |
       bash -c "
-      python manage.py graphql_schema --watch
+      while [ true ]; do python manage.py graphql_schema --watch ; sleep 10; done
       "
 
   # schema-to-js:
@@ -70,7 +70,7 @@ services:
     image: s1s5/watchnode
     command: |
       bash -c "
-      cd /app; watchman; npm run relay -- --watch
+      cd /app; watchman; while [ true ]; do npm run relay -- --watch ; sleep 10; done
       "
     volumes:
       - .:/app
