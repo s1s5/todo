@@ -16,20 +16,27 @@ class TodoListNode(DjangoObjectType):
         interfaces = (graphene.relay.Node, )
 
 
-class TodoListCreateMutation(graphene.Mutation):
-    class Arguments:
+class TodoNode(DjangoObjectType):
+    class Meta:
+        model = models.Todo
+        interfaces = (graphene.relay.Node, )
+
+
+class TodoListCreateMutation(graphene.relay.mutation.ClientIDMutation):
+    class Input:
         title = graphene.String(required=True)
 
     todolist = graphene.Field(TodoListNode)
 
-    def mutate(self, info, title):
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, title):
         todolist = models.TodoList.objects.create(title=title, author=info.context.user)
         return TodoListCreateMutation(todolist=todolist)
 
 
 class TodoListUpdateMutation(graphene.relay.mutation.ClientIDMutation):
     class Input:
-        id = graphene.ID()
+        id = graphene.ID(required=True)
         title = graphene.String()
 
     todolist = graphene.Field(TodoListNode)
@@ -42,7 +49,42 @@ class TodoListUpdateMutation(graphene.relay.mutation.ClientIDMutation):
         return TodoListUpdateMutation(todolist=todolist)
 
 
+class TodoCreateMutation(graphene.relay.mutation.ClientIDMutation):
+    class Input:
+        todolist = graphene.ID(required=True)
+        text = graphene.String()
+
+    todo = graphene.Field(TodoNode)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, todolist, text=""):
+        todolist = models.TodoList.objects.get(pk=from_global_id(todolist)[1])
+        print(info, todolist, text)
+        todo = models.Todo.objects.create(parent=todolist, completed=False, text=text)
+        return TodoCreateMutation(todo=todo)
+
+
+class TodoUpdateMutation(graphene.relay.mutation.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+        completed = graphene.Boolean()
+        text = graphene.String()
+
+    todo = graphene.Field(TodoNode)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, id, completed=None, text=None):
+        todo = models.Todo.objects.get(pk=from_global_id(id)[1])
+        if completed is not None:
+            todo.completed = completed
+        if text is not None:
+            todo.text = text
+        todo.save()
+        return TodoUpdateMutation(todo)
+
+
 class Query(object):
+    todo = graphene.Field(TodoNode)
     todolist = graphene.relay.Node.Field(TodoListNode)
     todolists = DjangoFilterConnectionField(TodoListNode)
 
@@ -50,11 +92,16 @@ class Query(object):
 class Mutation(object):
     todolist_create = TodoListCreateMutation.Field()
     todolist_update = TodoListUpdateMutation.Field()
+    todo_create = TodoCreateMutation.Field()
+    todo_update = TodoUpdateMutation.Field()
 
 
 class Subscription(object):
     todolist_created = graphene.Field(TodoListNode)
     todolist_updated = graphene.Field(TodoListNode)
+
+    todo_created = graphene.Field(TodoNode, parent__id=graphene.ID())
+    todo_updated = graphene.Field(TodoNode, parent__id=graphene.ID())
 
     def resolve_todolist_created(root, info):
         from graphene_subscriptions.events import CREATED
@@ -70,4 +117,24 @@ class Subscription(object):
             lambda event:
                 event.operation == UPDATED and
                 isinstance(event.instance, models.TodoList)
+        ).map(lambda event: event.instance)
+
+    def resolve_todo_created(root, info, parent__id):
+        from graphene_subscriptions.events import CREATED
+        parent__id = from_global_id(parent__id)[1]
+        return root.filter(
+            lambda event: (
+                event.operation == CREATED and
+                isinstance(event.instance, models.Todo) and
+                event.instance.parent__id == parent__id)
+        ).map(lambda event: event.instance)
+
+    def resolve_todo_updated(root, info, parent__id):
+        from graphene_subscriptions.events import UPDATED
+        parent__id = from_global_id(parent__id)[1]
+        return root.filter(
+            lambda event: (
+                event.operation == UPDATED and
+                isinstance(event.instance, models.Todo) and
+                event.instance.parent__id == parent__id)
         ).map(lambda event: event.instance)
