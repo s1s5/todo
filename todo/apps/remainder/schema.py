@@ -3,6 +3,7 @@ from graphql_relay import from_global_id
 from graphene_django import DjangoObjectType
 # from graphene_django.forms.mutation import DjangoModelFormMutation
 from graphene_django.filter import DjangoFilterConnectionField
+from django_filters import FilterSet, OrderingFilter
 
 from . import models
 
@@ -16,10 +17,45 @@ class TodoListNode(DjangoObjectType):
         interfaces = (graphene.relay.Node, )
 
 
+class TodoFilterSet(FilterSet):
+    # see https://django-filter.readthedocs.io/en/master/guide/usage.html
+    class Meta:
+        model = models.Todo
+        # excludeは使えない？
+        # exclude = ['parent']
+        fields = {
+            'text': ['exact', 'icontains', 'istartswith'],
+            'completed': ['exact'],
+        }
+
+    order_by = OrderingFilter(
+        fields=(
+            ('created_at', 'created_at'),
+            ('modified_at', 'modified_at'),
+        )
+    )
+
+    # TODO
+    # def filter_queryset(self, queryset):
+    #     """
+    #     Filter the queryset with the underlying form's `cleaned_data`. You must
+    #     call `is_valid()` or `errors` before calling this method.
+    #     This method should be overridden if additional filtering needs to be
+    #     applied to the queryset before it is cached.
+    #     """
+    #     for name, value in self.form.cleaned_data.items():
+    #         queryset = self.filters[name].filter(queryset, value)
+    #         assert isinstance(queryset, models.QuerySet), \
+    #             "Expected '%s.%s' to return a QuerySet, but got a %s instead." \
+    #             % (type(self).__name__, name, type(queryset).__name__)
+    #     return queryset
+
+
 class TodoNode(DjangoObjectType):
     class Meta:
         model = models.Todo
         interfaces = (graphene.relay.Node, )
+        filterset_class = TodoFilterSet
 
 
 class TodoListCreateMutation(graphene.relay.mutation.ClientIDMutation):
