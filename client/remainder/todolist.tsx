@@ -8,15 +8,15 @@ import Todo from './todo'
 import {todolist_data} from './__generated__/todolist_data.graphql'
 
 const addTodoMutation = graphql`
-mutation todolist_addTodo_Mutation($input: TodoCreateMutationInput!) {
-  todoCreate(input: $input) {
-    todo {
-      id
-      completed
-      text
+    mutation todolist_addTodo_Mutation($input: TodoCreateMutationInput!) {
+        todoCreate(input: $input) {
+            todo {
+                id
+                completed
+                text
+            }
+        }
     }
-  }
-}
 `
 
 const AddTodoButton = (props:{todolist__id:string}) => (
@@ -40,23 +40,23 @@ const AddTodoButton = (props:{todolist__id:string}) => (
 )
 
 type Props = {
-//    query: todolist_query,
+    //    query: todolist_query,
     data: todolist_data,
     todolist_id: string,
-// } & {
+    // } & {
     relay: RelayPaginationProp,
 }
 
 const TodoList = (props: Props) => {
     console.log(props)
     return (<div>
-        <h3>todo list : id={ props.data.id }, { props.data.title }</h3>
-        { props.data.todoSet.edges.map((edge) => (
-            <div key={ edge.node.id }><Todo todo={ edge.node }/></div>
-        ))}
-        <AddTodoButton todolist__id={ props.data.id } />
-        <button onClick={ () => {
-                console.log("read more")
+      <h3>todo list : id={ props.data.id }, { props.data.title }</h3>
+      { props.data.todoSet.edges.map((edge) => (
+          <div key={ edge.node.id }><Todo todo={ edge.node }/></div>
+      ))}
+      <AddTodoButton todolist__id={ props.data.id } />
+      <button onClick={ () => {
+              console.log("read more")
               console.log("props.relay.hasMore()", props.relay.hasMore())
               console.log("props.relay.isLoading()", props.relay.isLoading())
               if ((!props.relay.hasMore()) || props.relay.isLoading()) {
@@ -99,27 +99,27 @@ const TodoListPaginated = createPaginationContainer(
             }`,
     },
     {
-// ここから下はなくても大丈夫
-//        direction: 'forward',
-//        getConnectionFromProps(props) {
-//            console.log("getConnectionFromProps")
-//            return props.data && props.data.todoSet;
-//        },
-//        // This is also the default implementation of `getFragmentVariables` if it isn't provided.
-//        getFragmentVariables(prevVars, totalCount) {
-//            console.log("getFragmentVariables")
-//            return {
-//                ...prevVars,
-//                count: totalCount,
-//            };
-//        },
+        // ここから下はなくても大丈夫
+        //        direction: 'forward',
+        //        getConnectionFromProps(props) {
+        //            console.log("getConnectionFromProps")
+        //            return props.data && props.data.todoSet;
+        //        },
+        //        // This is also the default implementation of `getFragmentVariables` if it isn't provided.
+        //        getFragmentVariables(prevVars, totalCount) {
+        //            console.log("getFragmentVariables")
+        //            return {
+        //                ...prevVars,
+        //                count: totalCount,
+        //            };
+        //        },
 
         getVariables(props, {count, cursor}, fragmentVariables) {
-//            console.log("getVariables")
-//            console.log(props)
-//            console.log(count)
-//            console.log(cursor)
-//            console.log(fragmentVariables)
+            //            console.log("getVariables")
+            //            console.log(props)
+            //            console.log(count)
+            //            console.log(cursor)
+            //            console.log(fragmentVariables)
             return {
                 count,
                 cursor,
@@ -148,25 +148,25 @@ const TodoListQuery = (props: {todolist_id: string, environment: Environment}) =
     const props_ = props
     return <QueryRenderer
                environment={ props_.environment }
-        query={graphql`
-            query todolist_first_Query($todolist_id: ID!) {
-                todolist(id: $todolist_id) {
-                    ...todolist_data
-                }
-            }
-            `}
-        variables={ {todolist_id: props_.todolist_id} }
-        render={ ({error, props, retry}: {error: Error | null, props:todolist_first_QueryResponse, retry: (() => void)} ) => {
-      if (error) {
-      console.log(error)
-                                      return <span>{error.toString()}</span>;
-      }
-            console.log(props);
-            if (props) {
-                return <TodoListPaginated todolist_id={ props_.todolist_id } data={ props.todolist } />
-            }
-            return <span>loading</span>
-        } }
+               query={graphql`
+                   query todolist_first_Query($todolist_id: ID!) {
+                       todolist(id: $todolist_id) {
+                           ...todolist_data
+                       }
+                   }
+                   `}
+               variables={ {todolist_id: props_.todolist_id} }
+               render={ ({error, props, retry}: {error: Error | null, props:todolist_first_QueryResponse, retry: (() => void)} ) => {
+                       if (error) {
+                           console.log(error)
+                           return <span>{error.toString()}</span>;
+                       }
+                       console.log(props);
+                       if (props) {
+                           return <TodoListPaginated todolist_id={ props_.todolist_id } data={ props.todolist } />
+                       }
+                       return <span>loading</span>
+               } }
     />
 }
 export default withEnvironment(TodoListQuery)
