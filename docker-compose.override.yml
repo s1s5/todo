@@ -54,11 +54,14 @@ services:
     image: s1s5/watchnode
     command: |
       bash -c "
+      groupadd -g ${GROUP_ID} app;
+      useradd -u ${USER_ID} app;
+      su app
       cd /app; watchman; while [ true ]; do npm run relay -- --watch ; sleep 10; done
       "
     volumes:
       - .:/app
-    user: ${USER_ID}:${GROUP_ID}
+#    user: ${USER_ID}:${GROUP_ID}
 
 # following services must be off in macbook. This consumes much energy
   # js-builder:
