@@ -1,11 +1,12 @@
 import * as React from 'react'
 
 import {Environment} from 'relay-runtime'
-import {graphql, QueryRenderer, createRefetchContainer, RelayRefetchProp} from 'react-relay'
+import {graphql, QueryRenderer, createRefetchContainer, RelayRefetchProp, ReactRelayContext} from 'react-relay'
 
 import {withEnvironment} from '../environment'
 import Todo from './todo'
 import AddTodoButton from './todolist-add-todo-button'
+import TodoSubsc from './todo-subsc'
 
 import {todolistRefetch_data} from './__generated__/todolistRefetch_data.graphql'
 
@@ -27,6 +28,15 @@ class TodoList extends React.Component<Props, State> {
         console.log(this.props.data)
 
         return (<div>
+          <ReactRelayContext.Consumer>
+            {
+                ({ environment }) => (
+                    <TodoSubsc source={ {environment, id: this.props.id } }>
+                      { loadingStatus => <div>{loadingStatus}</div> }
+                    </TodoSubsc>
+                )
+            }
+          </ReactRelayContext.Consumer>
           <h3>todo list refetch : id={ this.props.data.id }, { this.props.data.title }</h3>
           { this.props.data.todoSet.edges.map((edge) => (
               <div key={ edge.node.id }><Todo data={ edge.node }/></div>

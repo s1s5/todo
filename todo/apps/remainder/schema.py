@@ -136,8 +136,9 @@ class Subscription(object):
     todolist_created = graphene.Field(TodoListNode)
     todolist_updated = graphene.Field(TodoListNode)
 
-    todo_created = graphene.Field(TodoNode, parent__id=graphene.ID())
-    todo_updated = graphene.Field(TodoNode, parent__id=graphene.ID())
+    todo_created = graphene.Field(TodoNode, parent_id=graphene.ID())
+    todo_updated = graphene.Field(TodoNode, parent_id=graphene.ID())
+    # todo_updated = graphene.relay.Node.Field(TodoNode, parent_id=graphene.ID())
 
     def resolve_todolist_created(root, info):
         from graphene_subscriptions.events import CREATED
@@ -155,22 +156,54 @@ class Subscription(object):
                 isinstance(event.instance, models.TodoList)
         ).map(lambda event: event.instance)
 
-    def resolve_todo_created(root, info, parent__id):
+    def resolve_todo_created(root, info, parent_id):
         from graphene_subscriptions.events import CREATED
-        parent__id = from_global_id(parent__id)[1]
+        parent_id = int(from_global_id(parent_id)[1])
+        print("resolve_todo_created CREATED", parent_id)
         return root.filter(
             lambda event: (
                 event.operation == CREATED and
                 isinstance(event.instance, models.Todo) and
-                event.instance.parent__id == parent__id)
+                event.instance.parent_id == parent_id)
         ).map(lambda event: event.instance)
 
-    def resolve_todo_updated(root, info, parent__id):
+    def resolve_todo_updated(root, info, parent_id):
         from graphene_subscriptions.events import UPDATED
-        parent__id = from_global_id(parent__id)[1]
+        parent_id = int(from_global_id(parent_id)[1])
+        print("resolve_todo_updated UPDATED", parent_id)
+        # import datetime
+        # from rx import Observable
+        # return Observable.interval(3000).map(lambda i: models.Todo.objects.filter(parent_id=parent_id)[0])
+        # import sys
+        # _s = sys.stdout
+        # def f(event):
+        #     print("return event : ", event, file=_s)
+        #     print("return event : ", event.operation, UPDATED, file=_s)
+        #     print("return event : ", event.instance, file=_s)
+        #     print("return event : ", event.instance.parent_id, parent_id, file=_s)
+        #     print("return event : ", type(event.instance.parent_id), type(parent_id), file=_s)
+        #     print(event.operation == UPDATED, isinstance(event.instance, models.Todo),
+        #           event.instance.parent_id == parent_id)
+        #     return event.instance
+        # print("return start!!! ", file=_s)
+        # return root.map(f)
         return root.filter(
             lambda event: (
                 event.operation == UPDATED and
                 isinstance(event.instance, models.Todo) and
-                event.instance.parent__id == parent__id)
+                event.instance.parent_id == parent_id)
         ).map(lambda event: event.instance)
+        # ).map(f)
+
+
+    hello = graphene.String()
+    def resolve_hello(root, info):
+        import datetime
+        from rx import Observable
+        print("resolve_hello")
+        print(info.context.data)
+        ret_val = Observable.interval(3000).map(lambda i: datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
+        print(ret_val)
+        print(type(ret_val))
+        print("isinstance : ", isinstance(ret_val, Observable))
+        return ret_val

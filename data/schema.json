@@ -1642,7 +1642,7 @@
                 {
                   "defaultValue": null,
                   "description": null,
-                  "name": "parent_Id",
+                  "name": "parentId",
                   "type": {
                     "kind": "SCALAR",
                     "name": "ID",
@@ -1665,7 +1665,7 @@
                 {
                   "defaultValue": null,
                   "description": null,
-                  "name": "parent_Id",
+                  "name": "parentId",
                   "type": {
                     "kind": "SCALAR",
                     "name": "ID",
@@ -1680,6 +1680,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "TodoNode",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "hello",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               }
             }

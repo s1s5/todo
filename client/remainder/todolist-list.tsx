@@ -22,6 +22,9 @@ const List = (props: Props) => (
                 <Link to={ '/' + edge.node.id + '/paginated/' }>
                   (paginated){ edge.node.title }({ edge.node.id })
                 </Link>
+                <Link to={ '/' + edge.node.id + '/refetch/' }>
+                  (refetch){ edge.node.title }({ edge.node.id })
+                </Link>
               </li>
           ))
       }
