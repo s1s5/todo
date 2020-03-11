@@ -45,26 +45,10 @@ services:
 
   schema-builder:
     << : *app-base
-    # command: |
-    #   bash -c "
-    #   watchmedo auto-restart -d /usr/src/app --recursive -p '*.py' -- python manage.py graphql_schema
-    #   "
     command: |
       bash -c "
       while [ true ]; do python manage.py graphql_schema --watch ; sleep 10; done
       "
-
-  # schema-to-js:
-  #   build:
-  #     context: tools
-  #     dockerfile: node+watchdog.Dockerfile
-  #   command: |
-  #     bash -c "
-  #     cd app/jsapp; watchmedo auto-restart -d /app -p '*schema.json' -- npm run generate
-  #     "
-  #   volumes:
-  #     - .:/app
-  #   user: ${USER_ID}:${GROUP_ID}
 
   relay-builder:
     image: s1s5/watchnode
@@ -77,19 +61,13 @@ services:
     user: ${USER_ID}:${GROUP_ID}
 
 # following services must be off in macbook. This consumes much energy
-#   js-builder:
-#     build:
-#       context: tools
-#       dockerfile: node+watchdog.Dockerfile
-#     command: |
-#       bash -c "
-#       cd app/jsapp; npm run build:watch
-#       "
-#     # command: |
-#     #   bash -c "
-#     #   cd app/jsapp; watchmedo auto-restart -d /app --recursive -p '*.tsx' -- npm run build
-#     #   "
-#     volumes:
-#       - .:/app
-#     user: ${USER_ID}:${GROUP_ID}
+  # js-builder:
+  #   image: node
+  #   command: |
+  #     bash -c "
+  #     cd /app; npm run start
+  #     "
+  #   volumes:
+  #     - .:/app
+  #   user: ${USER_ID}:${GROUP_ID}
   
