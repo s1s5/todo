@@ -10,7 +10,7 @@ export type todolist_data = {
         readonly edges: ReadonlyArray<{
             readonly node: {
                 readonly id: string;
-                readonly " $fragmentRefs": FragmentRefs<"todo_todo">;
+                readonly " $fragmentRefs": FragmentRefs<"todo_data">;
             } | null;
         } | null>;
     };
@@ -108,7 +108,7 @@ const node: ReaderFragment = (function () {
                                     },
                                     {
                                         "kind": "FragmentSpread",
-                                        "name": "todo_todo",
+                                        "name": "todo_data",
                                         "args": null
                                     }
                                 ]
@@ -152,5 +152,5 @@ const node: ReaderFragment = (function () {
         ]
     } as any;
 })();
-(node as any).hash = '28360f42d730ae253038e57d9b979a2e';
+(node as any).hash = 'bd6ef0d1a14f7323e5159e6661da66a1';
 export default node;

@@ -3,23 +3,23 @@
 
 import { ReaderFragment } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
-export type todo_todo = {
+export type todo_data = {
     readonly id: string;
     readonly completed: boolean;
     readonly text: string;
-    readonly " $refType": "todo_todo";
+    readonly " $refType": "todo_data";
 };
-export type todo_todo$data = todo_todo;
-export type todo_todo$key = {
-    readonly " $data"?: todo_todo$data;
-    readonly " $fragmentRefs": FragmentRefs<"todo_todo">;
+export type todo_data$data = todo_data;
+export type todo_data$key = {
+    readonly " $data"?: todo_data$data;
+    readonly " $fragmentRefs": FragmentRefs<"todo_data">;
 };
 
 
 
 const node: ReaderFragment = ({
     "kind": "Fragment",
-    "name": "todo_todo",
+    "name": "todo_data",
     "type": "TodoNode",
     "metadata": null,
     "argumentDefinitions": [],
@@ -47,5 +47,5 @@ const node: ReaderFragment = ({
         }
     ]
 } as any);
-(node as any).hash = 'cb277407086a68fa5dd24b6e8bde74f4';
+(node as any).hash = '6e3836d742de5b965cf7b9ef2d5de3d8';
 export default node;

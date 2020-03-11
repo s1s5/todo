@@ -1,21 +1,21 @@
 import * as React from 'react'
 import {graphql, createFragmentContainer} from 'react-relay'
 
-import {todo_todo} from './__generated__/todo_todo.graphql'
+import {todo_data} from './__generated__/todo_data.graphql'
 
 type Props = {
-    todo: todo_todo,
+    data: todo_data,
 }
 
 const Todo = (props: Props) => (
-    <>{ props.todo.id} : { props.todo.completed } : { props.todo.text }</>
+    <>{ props.data.id} : { props.data.completed } : { props.data.text }</>
 )
 
 export default createFragmentContainer(
     Todo,
     {
-        todo: graphql`
-            fragment todo_todo on TodoNode {
+        data: graphql`
+            fragment todo_data on TodoNode {
                 id
                 completed
                 text

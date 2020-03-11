@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash b2b68aa1839481c92b393693248ba369 */
+/* @relayHash 5a244f9d7eaaa6237bc7cd0b25948216 */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
@@ -29,7 +29,7 @@ query todolist_first_Query(
   }
 }
 
-fragment todo_todo on TodoNode {
+fragment todo_data on TodoNode {
   id
   completed
   text
@@ -42,7 +42,7 @@ fragment todolist_data on TodoListNode {
     edges {
       node {
         id
-        ...todo_todo
+        ...todo_data
         __typename
       }
       cursor
@@ -235,7 +235,7 @@ const node: ConcreteRequest = (function () {
             "operationKind": "query",
             "name": "todolist_first_Query",
             "id": null,
-            "text": "query todolist_first_Query(\n  $todolist_id: ID!\n) {\n  todolist(id: $todolist_id) {\n    ...todolist_data\n    id\n  }\n}\n\nfragment todo_todo on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolist_data on TodoListNode {\n  id\n  title\n  todoSet(first: 1) {\n    edges {\n      node {\n        id\n        ...todo_todo\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n",
+            "text": "query todolist_first_Query(\n  $todolist_id: ID!\n) {\n  todolist(id: $todolist_id) {\n    ...todolist_data\n    id\n  }\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolist_data on TodoListNode {\n  id\n  title\n  todoSet(first: 1) {\n    edges {\n      node {\n        id\n        ...todo_data\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n",
             "metadata": {}
         }
     } as any;
