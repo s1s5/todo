@@ -574,26 +574,6 @@
                 {
                   "defaultValue": null,
                   "description": null,
-                  "name": "parent",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "completed",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
                   "name": "text",
                   "type": {
                     "kind": "SCALAR",
@@ -604,20 +584,30 @@
                 {
                   "defaultValue": null,
                   "description": null,
-                  "name": "createdAt",
+                  "name": "text_Icontains",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "DateTime",
+                    "name": "String",
                     "ofType": null
                   }
                 },
                 {
                   "defaultValue": null,
                   "description": null,
-                  "name": "modifiedAt",
+                  "name": "text_Istartswith",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "DateTime",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "completed",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
                     "ofType": null
                   }
                 },
