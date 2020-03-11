@@ -1,3 +1,4 @@
+import collections
 import graphene
 from graphql_relay import from_global_id
 from graphene_django import DjangoObjectType
@@ -119,6 +120,15 @@ class TodoUpdateMutation(graphene.relay.mutation.ClientIDMutation):
         return TodoUpdateMutation(todo)
 
 
+TodoListMutationValueObject = collections.namedtuple("TodoListMutation", ["operation", "todolist", "todo"])
+
+
+class TodoListMutation(graphene.ObjectType):
+    operation = graphene.String()
+    todolist = graphene.Field(TodoListNode)
+    todo = graphene.Field(TodoNode)
+
+
 class Query(object):
     todo = graphene.Field(TodoNode)
     todolist = graphene.relay.Node.Field(TodoListNode)
@@ -139,6 +149,8 @@ class Subscription(object):
     todo_created = graphene.Field(TodoNode, parent_id=graphene.ID())
     todo_updated = graphene.Field(TodoNode, parent_id=graphene.ID())
     # todo_updated = graphene.relay.Node.Field(TodoNode, parent_id=graphene.ID())
+
+    todolist_mutation = graphene.Field(TodoListMutation, id=graphene.ID())
 
     def resolve_todolist_created(root, info):
         from graphene_subscriptions.events import CREATED
@@ -195,15 +207,16 @@ class Subscription(object):
         ).map(lambda event: event.instance)
         # ).map(f)
 
+    def resolve_todolist_mutation(root, info, id):
+        _id = int(from_global_id(id)[1])
 
-    hello = graphene.String()
-    def resolve_hello(root, info):
-        import datetime
-        from rx import Observable
-        print("resolve_hello")
-        print(info.context.data)
-        ret_val = Observable.interval(3000).map(lambda i: datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
-        print(ret_val)
-        print(type(ret_val))
-        print("isinstance : ", isinstance(ret_val, Observable))
-        return ret_val
+        def f(event):
+            if isinstance(event.instance, models.TodoList):
+                return TodoListMutationValueObject(operation=event.operation, todolist=event.instance, todo=None)
+            return TodoListMutationValueObject(operation=event.operation, todolist=None, todo=event.instance)
+
+        return root.filter(
+            lambda event: (
+                (isinstance(event.instance, models.TodoList) and event.instance.id == _id) or
+                (isinstance(event.instance, models.Todo) and event.instance.parent_id == _id))
+        ).map(f)

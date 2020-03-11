@@ -13,10 +13,22 @@ const request_subscription = (id:string, environment:IEnvironment) => {
                 #     completed
                 #     text
                 # }
-                todoUpdated(parentId: $id) {
-                    id
-                    completed
-                    text
+                # todoUpdated(parentId: $id) {
+                #     id
+                #     completed
+                #     text
+                # }
+                todolistMutation(id: $id) {
+                    operation
+                    todolist {
+                        id
+                        title
+                    }
+                    todo {
+                        id
+                        completed
+                        text
+                    }
                 }
             }
         `,
