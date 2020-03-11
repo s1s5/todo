@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`show data 1`] = `
+Array [
+  "id-2",
+  " : ",
+  "yet",
+  " : ",
+  "hoge",
+]
+`;
