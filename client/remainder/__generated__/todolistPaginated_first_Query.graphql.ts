@@ -1,30 +1,30 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 5a244f9d7eaaa6237bc7cd0b25948216 */
+/* @relayHash 223f3ba9ed349e50d02373ee4b482126 */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
-export type todolist_first_QueryVariables = {
+export type todolistPaginated_first_QueryVariables = {
     todolist_id: string;
 };
-export type todolist_first_QueryResponse = {
+export type todolistPaginated_first_QueryResponse = {
     readonly todolist: {
-        readonly " $fragmentRefs": FragmentRefs<"todolist_data">;
+        readonly " $fragmentRefs": FragmentRefs<"todolistPaginated_data">;
     } | null;
 };
-export type todolist_first_Query = {
-    readonly response: todolist_first_QueryResponse;
-    readonly variables: todolist_first_QueryVariables;
+export type todolistPaginated_first_Query = {
+    readonly response: todolistPaginated_first_QueryResponse;
+    readonly variables: todolistPaginated_first_QueryVariables;
 };
 
 
 
 /*
-query todolist_first_Query(
+query todolistPaginated_first_Query(
   $todolist_id: ID!
 ) {
   todolist(id: $todolist_id) {
-    ...todolist_data
+    ...todolistPaginated_data
     id
   }
 }
@@ -35,7 +35,7 @@ fragment todo_data on TodoNode {
   text
 }
 
-fragment todolist_data on TodoListNode {
+fragment todolistPaginated_data on TodoListNode {
   id
   title
   todoSet(first: 1) {
@@ -86,7 +86,7 @@ const node: ConcreteRequest = (function () {
         "kind": "Request",
         "fragment": {
             "kind": "Fragment",
-            "name": "todolist_first_Query",
+            "name": "todolistPaginated_first_Query",
             "type": "Query",
             "metadata": null,
             "argumentDefinitions": (v0 /*: any*/),
@@ -102,7 +102,7 @@ const node: ConcreteRequest = (function () {
                     "selections": [
                         {
                             "kind": "FragmentSpread",
-                            "name": "todolist_data",
+                            "name": "todolistPaginated_data",
                             "args": null
                         }
                     ]
@@ -111,7 +111,7 @@ const node: ConcreteRequest = (function () {
         },
         "operation": {
             "kind": "Operation",
-            "name": "todolist_first_Query",
+            "name": "todolistPaginated_first_Query",
             "argumentDefinitions": (v0 /*: any*/),
             "selections": [
                 {
@@ -224,7 +224,7 @@ const node: ConcreteRequest = (function () {
                             "name": "todoSet",
                             "args": (v3 /*: any*/),
                             "handle": "connection",
-                            "key": "todolist_todoSet",
+                            "key": "todolistPaginated_todoSet",
                             "filters": null
                         }
                     ]
@@ -233,12 +233,12 @@ const node: ConcreteRequest = (function () {
         },
         "params": {
             "operationKind": "query",
-            "name": "todolist_first_Query",
+            "name": "todolistPaginated_first_Query",
             "id": null,
-            "text": "query todolist_first_Query(\n  $todolist_id: ID!\n) {\n  todolist(id: $todolist_id) {\n    ...todolist_data\n    id\n  }\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolist_data on TodoListNode {\n  id\n  title\n  todoSet(first: 1) {\n    edges {\n      node {\n        id\n        ...todo_data\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n",
+            "text": "query todolistPaginated_first_Query(\n  $todolist_id: ID!\n) {\n  todolist(id: $todolist_id) {\n    ...todolistPaginated_data\n    id\n  }\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolistPaginated_data on TodoListNode {\n  id\n  title\n  todoSet(first: 1) {\n    edges {\n      node {\n        id\n        ...todo_data\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n",
             "metadata": {}
         }
     } as any;
 })();
-(node as any).hash = 'fd7dad11a4b52c2a24953babc9e0333b';
+(node as any).hash = '78d0504deb83e06eb2fa0c43bbffc565';
 export default node;

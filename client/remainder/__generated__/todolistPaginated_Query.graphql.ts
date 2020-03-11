@@ -1,34 +1,34 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 80e3f46d553ba2947bd5ffe9d2494fa4 */
+/* @relayHash 05eb4963e6da32c43a96a7d7f5f707d0 */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
-export type todolist_QueryVariables = {
+export type todolistPaginated_QueryVariables = {
     count: number;
     cursor?: string | null;
     todolist_id: string;
 };
-export type todolist_QueryResponse = {
+export type todolistPaginated_QueryResponse = {
     readonly todolist: {
-        readonly " $fragmentRefs": FragmentRefs<"todolist_data">;
+        readonly " $fragmentRefs": FragmentRefs<"todolistPaginated_data">;
     } | null;
 };
-export type todolist_Query = {
-    readonly response: todolist_QueryResponse;
-    readonly variables: todolist_QueryVariables;
+export type todolistPaginated_Query = {
+    readonly response: todolistPaginated_QueryResponse;
+    readonly variables: todolistPaginated_QueryVariables;
 };
 
 
 
 /*
-query todolist_Query(
+query todolistPaginated_Query(
   $count: Int!
   $cursor: String
   $todolist_id: ID!
 ) {
   todolist(id: $todolist_id) {
-    ...todolist_data_1G22uz
+    ...todolistPaginated_data_1G22uz
     id
   }
 }
@@ -39,7 +39,7 @@ fragment todo_data on TodoNode {
   text
 }
 
-fragment todolist_data_1G22uz on TodoListNode {
+fragment todolistPaginated_data_1G22uz on TodoListNode {
   id
   title
   todoSet(first: $count, after: $cursor) {
@@ -107,7 +107,7 @@ const node: ConcreteRequest = (function () {
         "kind": "Request",
         "fragment": {
             "kind": "Fragment",
-            "name": "todolist_Query",
+            "name": "todolistPaginated_Query",
             "type": "Query",
             "metadata": null,
             "argumentDefinitions": (v0 /*: any*/),
@@ -123,7 +123,7 @@ const node: ConcreteRequest = (function () {
                     "selections": [
                         {
                             "kind": "FragmentSpread",
-                            "name": "todolist_data",
+                            "name": "todolistPaginated_data",
                             "args": [
                                 {
                                     "kind": "Variable",
@@ -143,7 +143,7 @@ const node: ConcreteRequest = (function () {
         },
         "operation": {
             "kind": "Operation",
-            "name": "todolist_Query",
+            "name": "todolistPaginated_Query",
             "argumentDefinitions": (v0 /*: any*/),
             "selections": [
                 {
@@ -256,7 +256,7 @@ const node: ConcreteRequest = (function () {
                             "name": "todoSet",
                             "args": (v3 /*: any*/),
                             "handle": "connection",
-                            "key": "todolist_todoSet",
+                            "key": "todolistPaginated_todoSet",
                             "filters": null
                         }
                     ]
@@ -265,12 +265,12 @@ const node: ConcreteRequest = (function () {
         },
         "params": {
             "operationKind": "query",
-            "name": "todolist_Query",
+            "name": "todolistPaginated_Query",
             "id": null,
-            "text": "query todolist_Query(\n  $count: Int!\n  $cursor: String\n  $todolist_id: ID!\n) {\n  todolist(id: $todolist_id) {\n    ...todolist_data_1G22uz\n    id\n  }\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolist_data_1G22uz on TodoListNode {\n  id\n  title\n  todoSet(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        ...todo_data\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n",
+            "text": "query todolistPaginated_Query(\n  $count: Int!\n  $cursor: String\n  $todolist_id: ID!\n) {\n  todolist(id: $todolist_id) {\n    ...todolistPaginated_data_1G22uz\n    id\n  }\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolistPaginated_data_1G22uz on TodoListNode {\n  id\n  title\n  todoSet(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        ...todo_data\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n",
             "metadata": {}
         }
     } as any;
 })();
-(node as any).hash = 'eed80299ef2450037c34333fafb1ea9a';
+(node as any).hash = '54b70468d3696fbf5ab8d2d2ab8b3f5e';
 export default node;

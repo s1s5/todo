@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash b05c9f7fb5a8ee4acb77597c9c79a6a5 */
+/* @relayHash 9d9f4d71f1d7c8bca22d9954a9be03ea */
 
 import { ConcreteRequest } from "relay-runtime";
 export type TodoCreateMutationInput = {
@@ -8,10 +8,10 @@ export type TodoCreateMutationInput = {
     text?: string | null;
     clientMutationId?: string | null;
 };
-export type todolist_addTodo_MutationVariables = {
+export type todolistAddTodoButton_MutationVariables = {
     input: TodoCreateMutationInput;
 };
-export type todolist_addTodo_MutationResponse = {
+export type todolistAddTodoButton_MutationResponse = {
     readonly todoCreate: {
         readonly todo: {
             readonly id: string;
@@ -20,15 +20,15 @@ export type todolist_addTodo_MutationResponse = {
         } | null;
     } | null;
 };
-export type todolist_addTodo_Mutation = {
-    readonly response: todolist_addTodo_MutationResponse;
-    readonly variables: todolist_addTodo_MutationVariables;
+export type todolistAddTodoButton_Mutation = {
+    readonly response: todolistAddTodoButton_MutationResponse;
+    readonly variables: todolistAddTodoButton_MutationVariables;
 };
 
 
 
 /*
-mutation todolist_addTodo_Mutation(
+mutation todolistAddTodoButton_Mutation(
   $input: TodoCreateMutationInput!
 ) {
   todoCreate(input: $input) {
@@ -104,7 +104,7 @@ const node: ConcreteRequest = (function () {
         "kind": "Request",
         "fragment": {
             "kind": "Fragment",
-            "name": "todolist_addTodo_Mutation",
+            "name": "todolistAddTodoButton_Mutation",
             "type": "Mutation",
             "metadata": null,
             "argumentDefinitions": (v0 /*: any*/),
@@ -112,18 +112,18 @@ const node: ConcreteRequest = (function () {
         },
         "operation": {
             "kind": "Operation",
-            "name": "todolist_addTodo_Mutation",
+            "name": "todolistAddTodoButton_Mutation",
             "argumentDefinitions": (v0 /*: any*/),
             "selections": (v1 /*: any*/)
         },
         "params": {
             "operationKind": "mutation",
-            "name": "todolist_addTodo_Mutation",
+            "name": "todolistAddTodoButton_Mutation",
             "id": null,
-            "text": "mutation todolist_addTodo_Mutation(\n  $input: TodoCreateMutationInput!\n) {\n  todoCreate(input: $input) {\n    todo {\n      id\n      completed\n      text\n    }\n  }\n}\n",
+            "text": "mutation todolistAddTodoButton_Mutation(\n  $input: TodoCreateMutationInput!\n) {\n  todoCreate(input: $input) {\n    todo {\n      id\n      completed\n      text\n    }\n  }\n}\n",
             "metadata": {}
         }
     } as any;
 })();
-(node as any).hash = '4d48143be5f550974d4acb21af7e0e69';
+(node as any).hash = '46d63b5a58460b99eb8eb958e177a5c6';
 export default node;

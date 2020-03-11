@@ -3,7 +3,7 @@
 
 import { ReaderFragment } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
-export type todolist_data = {
+export type todolistPaginated_data = {
     readonly id: string;
     readonly title: string;
     readonly todoSet: {
@@ -14,12 +14,12 @@ export type todolist_data = {
             } | null;
         } | null>;
     };
-    readonly " $refType": "todolist_data";
+    readonly " $refType": "todolistPaginated_data";
 };
-export type todolist_data$data = todolist_data;
-export type todolist_data$key = {
-    readonly " $data"?: todolist_data$data;
-    readonly " $fragmentRefs": FragmentRefs<"todolist_data">;
+export type todolistPaginated_data$data = todolistPaginated_data;
+export type todolistPaginated_data$key = {
+    readonly " $data"?: todolistPaginated_data$data;
+    readonly " $fragmentRefs": FragmentRefs<"todolistPaginated_data">;
 };
 
 
@@ -34,7 +34,7 @@ const node: ReaderFragment = (function () {
     } as any);
     return {
         "kind": "Fragment",
-        "name": "todolist_data",
+        "name": "todolistPaginated_data",
         "type": "TodoListNode",
         "metadata": {
             "connection": [
@@ -74,7 +74,7 @@ const node: ReaderFragment = (function () {
             {
                 "kind": "LinkedField",
                 "alias": "todoSet",
-                "name": "__todolist_todoSet_connection",
+                "name": "__todolistPaginated_todoSet_connection",
                 "storageKey": null,
                 "args": null,
                 "concreteType": "TodoNodeConnection",
@@ -152,5 +152,5 @@ const node: ReaderFragment = (function () {
         ]
     } as any;
 })();
-(node as any).hash = 'bd6ef0d1a14f7323e5159e6661da66a1';
+(node as any).hash = 'e219c1e158bf7d063158d912a1732560';
 export default node;

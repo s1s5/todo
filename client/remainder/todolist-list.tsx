@@ -16,8 +16,11 @@ const List = (props: Props) => (
       {
           props.query.todolists.edges.map((edge:any) => (
               <li key={ edge.node.id }>
-                <Link to={ '/' + edge.node.id + '/' }>
-                  { edge.node.title }({ edge.node.id })
+                <Link to={ '/' + edge.node.id + '/all/' }>
+                  (all){ edge.node.title }({ edge.node.id })
+                </Link>
+                <Link to={ '/' + edge.node.id + '/paginated/' }>
+                  (paginated){ edge.node.title }({ edge.node.id })
                 </Link>
               </li>
           ))

@@ -105,7 +105,7 @@ function createQueryRenderer<Props>(
                                   }
                                   console.log(props);
                                   if (props) {
-                                      return <FragmentComponent {...this.props} query={ props } />;
+                                      return <FragmentComponent {...this.props } query={ props } />;
                                   }
                                   
                                   return <span>loading</span>;
@@ -117,7 +117,7 @@ function createQueryRenderer<Props>(
         }
     }
 
-    return hoistStatics(QueryRendererWrapper, Component);
+    return hoistStatics(QueryRendererWrapper, Component)
 }
 
 

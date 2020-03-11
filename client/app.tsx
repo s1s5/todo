@@ -11,13 +11,16 @@ import TodoListList from './remainder/todolist-list'
 
 import {BrowserRouter as Router, Route} from "react-router-dom";
 
+// [^-A-Za-z0-9+/=]|=[^=]|={3,}$
+//        <Route path='/:id([^-A-Za-z0-9+/=]|=[^=]|={3,}/' exact component={ ({match}:any) => {
+
 const App = () => (
   <div>
     <ReactRelayContext.Provider value={ {environment} }>
       <h1>Hello, world.</h1>
       <Router>
-        <Route path='/:id([A-Za-z0-9_=]+)/' exact component={ ({match}:any) => {
-                return <TodoList todolist_id={ match.params.id }/>
+        <Route path='/:id([A-Za-z0-9_=]+)/' component={ ({match}:any) => {
+            return <TodoList todolist_id={ match.params.id }/>
         }} />
         <Route path='/' exact component={ () => <TodoListList/> }/>
       </Router>
