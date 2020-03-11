@@ -33,3 +33,6 @@ npm install --save hoist-non-react-statics
 npm install --save-dev @types/hoist-non-react-statics
 
 npm install --save-dev relay-test-utils @types/relay-test-utils
+
+
+npm uninstall ts-jest

@@ -3,11 +3,11 @@ module.exports = {
         "client",
     ],
     "testMatch": [
-        "**/__tests__/**/*.+(ts|tsx|js)",
+//        "**/__tests__/**/*.+(ts|tsx|js)",
         "**/?(*.)+(spec|test).+(ts|tsx|js)",
-//        '<rootDir>/**/__tests__/**/?(*.)+(spec|test).js?(x)', // @x-shipit-enable
+        "<rootDir>/**/__tests__/**/?(*.)+(spec|test).(ts|tsx|js|jsx)", // @x-shipit-enable
     ],
-    "transform": {
-        "^.+\\.(ts|tsx)$": "ts-jest",
-    },
+//    "transform": {
+//        "^.+\\.(ts|tsx)$": "ts-jest",
+//    },
 }
