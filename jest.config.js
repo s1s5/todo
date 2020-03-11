@@ -1,12 +1,13 @@
 module.exports = {
     "roots": [
-        "client"
+        "client",
     ],
     "testMatch": [
         "**/__tests__/**/*.+(ts|tsx|js)",
-        "**/?(*.)+(spec|test).+(ts|tsx|js)"
+        "**/?(*.)+(spec|test).+(ts|tsx|js)",
+//        '<rootDir>/**/__tests__/**/?(*.)+(spec|test).js?(x)', // @x-shipit-enable
     ],
     "transform": {
-        "^.+\\.(ts|tsx)$": "ts-jest"
+        "^.+\\.(ts|tsx)$": "ts-jest",
     },
 }
