@@ -20,7 +20,7 @@ const App = () => (
       <h1>Hello, world.</h1>
       <Router>
         <Route path='/:id([A-Za-z0-9_=]+)/' component={ ({match}:any) => {
-            return <TodoList todolist_id={ match.params.id }/>
+            return <TodoList id={ match.params.id }/>
         }} />
         <Route path='/' exact component={ () => <TodoListList/> }/>
       </Router>

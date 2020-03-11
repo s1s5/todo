@@ -10,12 +10,10 @@ import {todolistAll_query} from './__generated__/todolistAll_query.graphql'
 
 type Props = {
     query: todolistAll_query,  // queryっていうプロパティ名じゃないとcreateQueryRendererは使えない
-    todolist_id: string,
+    id: string,
 }
 
 const TodoList = (props: Props) => {
-    console.log("todolist-all")
-    console.log(props)
     return (<div>
       <h3>todo list : id={ props.query.todolist.id }, { props.query.todolist.title }</h3>
       { props.query.todolist.todoSet.edges.map((edge) => (
@@ -55,5 +53,5 @@ export default createQueryRenderer(TodoListFragment, TodoList, {
             ...todolistAll_query @arguments(id: $id)
         }
     `,
-    get_variables: (props:any) => ({id: props.todolist_id})  // TODO: どうやってタイプセーフにする？
+    get_variables: (props:any) => ({id: props.id})  // TODO: どうやってタイプセーフにする？
 })

@@ -6,19 +6,17 @@ import TodoListAll from './todolist-all'
 
 //          <Link to={`${match.url}/recommend`}>some text</Link>
 //          
-const TodoList = (props: { todolist_id: string }) => {
+const TodoList = (props: { id: string }) => {
     let match = useRouteMatch();
-    console.log(match)
-    console.log(props)
     return (
         <div>
           <h1>TodoList</h1>
           <Switch>
             <Route path={`${match.path}paginated/`}>
-              <TodoListPaginated todolist_id={ props.todolist_id }/>
+              <TodoListPaginated id={ props.id }/>
             </Route>
             <Route path={`${match.path}all/`}>
-              <TodoListAll todolist_id={ props.todolist_id }/>
+              <TodoListAll id={ props.id }/>
             </Route>
             <Route path={`${match.path}hoge/`}>
               <h2>hello hoge</h2>

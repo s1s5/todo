@@ -10,8 +10,8 @@ import {todolistPaginated_data} from './__generated__/todolistPaginated_data.gra
 
 type Props = {
     data: todolistPaginated_data,
-    todolist_id: string,
-    // } & {
+    id: string,
+} & {  // 軽症もどき
     relay: RelayPaginationProp,
 }
 
@@ -102,7 +102,7 @@ const TodoListPaginated = createPaginationContainer(
 import {Environment} from 'relay-runtime'
 import {todolistPaginated_first_QueryResponse} from './__generated__/todolistPaginated_first_Query.graphql'
 
-const TodoListQuery = (props: {todolist_id: string, environment: Environment}) => {
+const TodoListQuery = (props: {id: string, environment: Environment}) => {
     const props_ = props
     return <QueryRenderer
                environment={ props_.environment }
@@ -113,7 +113,7 @@ const TodoListQuery = (props: {todolist_id: string, environment: Environment}) =
                        }
                    }
                    `}
-               variables={ {todolist_id: props_.todolist_id} }
+               variables={ {todolist_id: props_.id} }  // TODO: make type safe
                render={ ({error, props, retry}: {error: Error | null, props:todolistPaginated_first_QueryResponse, retry: (() => void)} ) => {
                        if (error) {
                            console.log(error)
@@ -121,7 +121,7 @@ const TodoListQuery = (props: {todolist_id: string, environment: Environment}) =
                        }
                        console.log(props);
                        if (props) {
-                           return <TodoListPaginated todolist_id={ props_.todolist_id } data={ props.todolist } />
+                           return <TodoListPaginated id={ props_.id } data={ props.todolist } />
                        }
                        return <span>loading</span>
                } }
