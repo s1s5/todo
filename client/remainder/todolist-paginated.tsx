@@ -11,7 +11,7 @@ import {todolistPaginated_data} from './__generated__/todolistPaginated_data.gra
 type Props = {
     data: todolistPaginated_data,
     id: string,
-} & {  // 軽症もどき
+} & {  // 継承もどき
     relay: RelayPaginationProp,
 }
 

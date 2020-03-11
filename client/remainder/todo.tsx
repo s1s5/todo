@@ -8,7 +8,7 @@ type Props = {
 }
 
 const Todo = (props: Props) => (
-    <>{ props.data.id} : { props.data.completed } : { props.data.text }</>
+    <>{ props.data.id} : { props.data.completed ? "completed" : "yet" } : { props.data.text }</>
 )
 
 export default createFragmentContainer(
