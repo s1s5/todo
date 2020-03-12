@@ -6,6 +6,7 @@ import {graphql, QueryRenderer, createRefetchContainer, RelayRefetchProp, ReactR
 import { withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import List from '@material-ui/core/List'
 
+
 import {withEnvironment} from '../environment'
 import Todo from './todo'
 import AddTodoButton from './todolist-add-todo-button'
@@ -50,7 +51,7 @@ class TodoList_ extends React.Component<Props, State> {
                 )
             }
           </ReactRelayContext.Consumer>
-          <h3>todo list refetch : id={ this.props.data.id }, { this.props.data.title }</h3>
+          <h3>{ this.props.data.title }</h3>
           <List className={this.props.classes.root}>
           { this.props.data.todoSet.edges.map((edge) => (
               <div key={ edge.node.id }><Todo data={ edge.node }/></div>

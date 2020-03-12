@@ -11,7 +11,6 @@ const TodoList = (props: { id: string }) => {
     let match = useRouteMatch();
     return (
         <div>
-          <h1>TodoList</h1>
           <Switch>
             <Route path={`${match.path}paginated/`}>
               <TodoListPaginated id={ props.id }/>
