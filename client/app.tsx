@@ -3,6 +3,8 @@ import * as React from 'react'
 
 import {ReactRelayContext} from 'react-relay';
 
+import Button from '@material-ui/core/Button';
+
 import {createEnvironment} from './environment/index'
 const environment = createEnvironment('http://127.0.0.1:42100/graphql/', 'ws://localhost:42100/graphql/')
 
@@ -25,6 +27,10 @@ const App = () => (
         <Route path='/' exact component={ () => <TodoListList/> }/>
       </Router>
     </ReactRelayContext.Provider>
+
+    <Button variant="contained" color="primary">
+      Hello World
+    </Button>
   </div>
 )
 export default hot(App)

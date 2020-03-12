@@ -3,6 +3,9 @@ import * as React from 'react'
 import {Environment} from 'relay-runtime'
 import {graphql, QueryRenderer, createRefetchContainer, RelayRefetchProp, ReactRelayContext} from 'react-relay'
 
+import { withStyles, WithStyles, Theme } from '@material-ui/core/styles';
+import List from '@material-ui/core/List'
+
 import {withEnvironment} from '../environment'
 import Todo from './todo'
 import AddTodoButton from './todolist-add-todo-button'
@@ -10,20 +13,30 @@ import TodoSubsc from './todo-subsc'
 
 import {todolistRefetch_data} from './__generated__/todolistRefetch_data.graphql'
 
+const styles = (theme: Theme) => ({
+    root: {
+        width: '100%',
+        maxWidth: 360,
+        backgroundColor: theme.palette.background.paper,
+    },
+})
+
 type Props = {
     id: string,
     data: todolistRefetch_data,
     relay: RelayRefetchProp,
-}
+} & WithStyles<typeof styles>
 
 type State = {
 }
 
-class TodoList extends React.Component<Props, State> {
+class TodoList_ extends React.Component<Props, State> {
+
     state: Readonly<State> = {
     }
     
     render() {
+
         console.log("@todolist refetch render")
         console.log(this.props.data)
 
@@ -38,9 +51,11 @@ class TodoList extends React.Component<Props, State> {
             }
           </ReactRelayContext.Consumer>
           <h3>todo list refetch : id={ this.props.data.id }, { this.props.data.title }</h3>
+          <List className={this.props.classes.root}>
           { this.props.data.todoSet.edges.map((edge) => (
               <div key={ edge.node.id }><Todo data={ edge.node }/></div>
           ))}
+          </List>
           <AddTodoButton todolist__id={ this.props.data.id } />
           <button onClick={ this._refetch }>refetch</button>
         </div>)
@@ -68,6 +83,7 @@ class TodoList extends React.Component<Props, State> {
         );
     }
 }
+const TodoList = withStyles(styles)(TodoList_)
 
 const TodoListRefetch = createRefetchContainer(
     TodoList,

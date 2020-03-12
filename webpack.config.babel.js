@@ -34,5 +34,8 @@ module.exports = {
     ],
   },
   devtool: 'eval-source-map',
-  plugins: [new ForkTsCheckerWebpackPlugin(), new webpack.NamedModulesPlugin(), new HtmlWebpackPlugin()],
+  plugins: [new ForkTsCheckerWebpackPlugin(), new webpack.NamedModulesPlugin(),
+            new HtmlWebpackPlugin({
+                template: path.join(__dirname, 'client/dev-index.html'),
+            })],
 };

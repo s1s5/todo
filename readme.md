@@ -36,3 +36,15 @@ npm install --save-dev relay-test-utils @types/relay-test-utils
 
 
 npm uninstall ts-jest
+
+
+
+npm install @material-ui/core @material-ui/icons
+
+dev-index.htmlの追加
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width"/>
+あたりを追記しておく
+
+HtmlWebpackPluginのtemplateに指定しておく
