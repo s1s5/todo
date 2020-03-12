@@ -13,6 +13,8 @@ import AddTodoButton from './todolist-add-todo-button'
 import TodoSubsc from './todo-subsc'
 
 import {todolistRefetch_data} from './__generated__/todolistRefetch_data.graphql'
+import {todoSubsc_data as TodoSubscData} from './__generated__/todoSubsc_data.graphql'
+
 
 const styles = (theme: Theme) => ({
     root: {
@@ -40,12 +42,15 @@ class TodoList_ extends React.Component<Props, State> {
 
         console.log("@todolist refetch render")
         console.log(this.props.data)
+        const observer = {
+            next: (data:TodoSubscData) => console.log('next', data)
+        }
 
         return (<div>
           <ReactRelayContext.Consumer>
             {
                 ({ environment }) => (
-                    <TodoSubsc source={ {environment, id: this.props.id } }>
+                    <TodoSubsc source={ {environment, id: this.props.id, observer: observer } }>
                       { loadingStatus => <div>{loadingStatus}</div> }
                     </TodoSubsc>
                 )
@@ -100,6 +105,7 @@ const TodoListRefetch = createRefetchContainer(
                 todoSet(
                     first: $count
                     after: $after
+                    orderBy: "-created_at"
                 ) @connection(key: "todolistRefetch_todoSet") {
                     pageInfo {
                         endCursor

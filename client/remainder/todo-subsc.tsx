@@ -1,9 +1,37 @@
 import * as React from 'react'
-import { IEnvironment } from 'relay-runtime'
+import { IEnvironment, Observer } from 'relay-runtime'
 import { graphql, requestSubscription } from 'react-relay'
 import { createSubscription } from "create-subscription";
 
-const request_subscription = (id:string, environment:IEnvironment) => {
+// export type Data = {
+//     operation: string,
+//     todolist?: {
+//         id: string,
+//         title: string,
+//     },
+//     todo?: {
+//         id: string,
+//         completed: boolean,
+//         text: string
+//     }
+// }
+import {todoSubsc_data as Data} from './__generated__/todoSubsc_data.graphql'
+const fragment = graphql`
+fragment todoSubsc_data on TodoListMutation {
+    operation
+    todolist {
+        id
+        title
+    }
+    todo {
+        id
+        completed
+        text
+    }
+}`
+
+
+const request_subscription = (id:string, environment:IEnvironment, observer: Observer<Data>) => {
     const subscriptionConfig = {
         subscription: graphql`
             subscription todoSubsc_Subscription($id: ID!) {
@@ -19,16 +47,7 @@ const request_subscription = (id:string, environment:IEnvironment) => {
                 #     text
                 # }
                 todolistMutation(id: $id) {
-                    operation
-                    todolist {
-                        id
-                        title
-                    }
-                    todo {
-                        id
-                        completed
-                        text
-                    }
+                    ... todoSubsc_data
                 }
             }
         `,
@@ -38,22 +57,27 @@ const request_subscription = (id:string, environment:IEnvironment) => {
          * },*/
         // updater?: SelectorStoreUpdater<TSubscriptionPayload>
         // updaterとonNextどっちも呼ばれる
-        updater: (data:any) => console.log("updater@request_hello_subscription", data),
-        onNext: (data:any) => console.log("onNext@request_hello_subscription", data),
-        onError: (error:any) => console.log(`An error occured:`, error),
-        onComplete: () => console.log("subscriptionc completed ! @request_hello_subscription"),
+        // updater: (data:any) => console.log("updater@request_hello_subscription", data),
+        onNext: (data:Data) => (observer.next && observer.next(data)),
+        onError: (error:Error) => (observer.error && observer.error(error)),
+        onComplete: () => (observer.complete && observer.complete()),
     }
     console.log(subscriptionConfig)
-    return requestSubscription(
+    const {dispose} = requestSubscription(
         environment,
         subscriptionConfig
     )
+    const subsc = {unsubscribe: dispose, closed: false}
+    observer.start && observer.start(subsc) 
+    return () => {
+        observer.unsubscribe && observer.unsubscribe(subsc)
+        dispose()
+    }
 }
 
-export default createSubscription<{environment: IEnvironment, id:string}, any>({
+export default createSubscription<{environment: IEnvironment, id:string, observer: Observer<Data>}, any>({
     getCurrentValue: (_: any) => undefined,
-    subscribe: (source: any, callback:any) => {
-        const {dispose} = request_subscription(source.id, source.environment)
-        return dispose
+    subscribe: (source: any, _:any) => {
+        return  request_subscription(source.id, source.environment, source.observer)
     }
 })

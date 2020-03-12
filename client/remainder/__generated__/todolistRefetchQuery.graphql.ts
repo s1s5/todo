@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash a47494fb35a67e170a14f70f9bc4883d */
+/* @relayHash 5437f83b1fe1c9eeff3fc8b51ee28db4 */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
@@ -42,7 +42,7 @@ fragment todo_data on TodoNode {
 fragment todolistRefetch_data_2QE1um on TodoListNode {
   id
   title
-  todoSet(first: $count, after: $after) {
+  todoSet(first: $count, after: $after, orderBy: "-created_at") {
     pageInfo {
       endCursor
       hasNextPage
@@ -101,6 +101,11 @@ const node: ConcreteRequest = (function () {
             "kind": "Variable",
             "name": "first",
             "variableName": "count"
+        } as any),
+        ({
+            "kind": "Literal",
+            "name": "orderBy",
+            "value": "-created_at"
         } as any)
     ];
     return {
@@ -253,7 +258,9 @@ const node: ConcreteRequest = (function () {
                             "args": (v4 /*: any*/),
                             "handle": "connection",
                             "key": "todolistRefetch_todoSet",
-                            "filters": null
+                            "filters": [
+                                "orderBy"
+                            ]
                         }
                     ]
                 }
@@ -263,7 +270,7 @@ const node: ConcreteRequest = (function () {
             "operationKind": "query",
             "name": "todolistRefetchQuery",
             "id": null,
-            "text": "query todolistRefetchQuery(\n  $count: Int\n  $after: String\n  $todolist_id: ID!\n) {\n  todolist(id: $todolist_id) {\n    ...todolistRefetch_data_2QE1um\n    id\n  }\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolistRefetch_data_2QE1um on TodoListNode {\n  id\n  title\n  todoSet(first: $count, after: $after) {\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    edges {\n      node {\n        id\n        ...todo_data\n        __typename\n      }\n      cursor\n    }\n  }\n}\n",
+            "text": "query todolistRefetchQuery(\n  $count: Int\n  $after: String\n  $todolist_id: ID!\n) {\n  todolist(id: $todolist_id) {\n    ...todolistRefetch_data_2QE1um\n    id\n  }\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolistRefetch_data_2QE1um on TodoListNode {\n  id\n  title\n  todoSet(first: $count, after: $after, orderBy: \"-created_at\") {\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    edges {\n      node {\n        id\n        ...todo_data\n        __typename\n      }\n      cursor\n    }\n  }\n}\n",
             "metadata": {}
         }
     } as any;
