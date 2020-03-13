@@ -94,12 +94,16 @@ LOGGING = {
             'format':
             '%(levelname)s|%(asctime)s|%(name)s>> %(message)s',
         },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
     },
     'handlers': {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
+            'formatter': 'simple',
         }
     },
     'loggers': {
@@ -114,10 +118,10 @@ LOGGING = {
             'propagate': False,
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG'
-    },
+    # 'root': {
+    #     'handlers': ['console'],
+    #     'level': 'DEBUG'
+    # },
 }
 
 # Database

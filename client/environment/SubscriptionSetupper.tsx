@@ -34,7 +34,7 @@ class SubscriptionSetupper {
                  }
                  observable.subscribe({
                      next: (value: any) => {
-                         if (value.errors !== undefined) {
+                         if (value.errors !== undefined && value.errors !== null && value.errors.length > 0) {
                              console.error('subscribe Some Error occurred!!', value.errors)
                          }
                      }
