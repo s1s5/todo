@@ -46,22 +46,16 @@ class TodoList_ extends React.Component<Props, State> {
             next: (data:TodoSubscData) => console.log('next', data),
             error: (error:Error) => console.log('error', error),
         }
-
+        console.log(observer)
         return (<div>
-          <ReactRelayContext.Consumer>
-            {
-                ({ environment }) => (
-                    <TodoSubsc source={ {environment, id: this.props.id, observer: observer } }>
-                      { loadingStatus => <div>{loadingStatus}</div> }
-                    </TodoSubsc>
-                )
-            }
-          </ReactRelayContext.Consumer>
+          <TodoSubsc variables={ {id: this.props.id} } observer={ observer } />
           <h3>{ this.props.data.title }</h3>
           <List className={this.props.classes.root}>
-          { this.props.data.todoSet.edges.map((edge) => (
-              <div key={ edge.node.id }><Todo data={ edge.node }/></div>
-          ))}
+          {
+              this.props.data.todoSet.edges.map((edge) => (
+                  <div key={ edge.node.id }><Todo data={ edge.node }/></div>
+              ))
+          }
           </List>
           <AddTodoButton todolist__id={ this.props.data.id } />
           <button onClick={ this._refetch }>refetch</button>

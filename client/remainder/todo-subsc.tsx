@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { IEnvironment, Observer } from 'relay-runtime'
+import { IEnvironment, Observer, Variables } from 'relay-runtime'
 import { graphql, requestSubscription } from 'react-relay'
-import { createSubscription } from "create-subscription";
+// import { createSubscription } from "create-subscription";
 
 // export type Data = {
 //     operation: string,
@@ -30,8 +30,9 @@ fragment todoSubsc_data on TodoListMutation {
     }
 }`
 
+export {fragment}
 
-const request_subscription = (id:string, environment:IEnvironment, observer: Observer<Data>) => {
+const request_subscription = (environment:IEnvironment, observer: Observer<Data>, variables: Variables) => {
     const subscriptionConfig = {
         subscription: graphql`
             subscription todoSubsc_Subscription($id: ID!) {
@@ -51,7 +52,7 @@ const request_subscription = (id:string, environment:IEnvironment, observer: Obs
                 }
             }
         `,
-        variables: {id: id},
+        variables: variables,
         /* updater: (data:any) => {
          *     console.log(data)
          * },*/
@@ -67,17 +68,23 @@ const request_subscription = (id:string, environment:IEnvironment, observer: Obs
         environment,
         subscriptionConfig
     )
+
     const subsc = {unsubscribe: dispose, closed: false}
     observer.start && observer.start(subsc) 
     return () => {
+        console.log("dispose", observer)
         observer.unsubscribe && observer.unsubscribe(subsc)
         dispose()
     }
 }
 
-export default createSubscription<{environment: IEnvironment, id:string, observer: Observer<Data>}, any>({
-    getCurrentValue: (_: any) => undefined,
-    subscribe: (source: any, _:any) => {
-        return  request_subscription(source.id, source.environment, source.observer)
-    }
-})
+
+// export default createSubscription<{environment: IEnvironment, id:string, observer: Observer<Data>}, any>({
+//     getCurrentValue: (_: any) => undefined,
+//     subscribe: (source: any, _:any) => {
+//         return  request_subscription(source.id, source.environment, source.observer)
+//     }
+// })
+
+import createSubscription from '../environment/create-subscription'
+export default createSubscription(request_subscription)
