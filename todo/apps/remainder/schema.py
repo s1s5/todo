@@ -1,3 +1,4 @@
+import logging
 import collections
 import graphene
 from graphql_relay import from_global_id
@@ -7,6 +8,8 @@ from graphene_django.filter import DjangoFilterConnectionField
 from django_filters import FilterSet, OrderingFilter
 
 from . import models
+
+logger = logging.getLogger(__name__)
 
 
 class TodoListNode(DjangoObjectType):
@@ -171,7 +174,6 @@ class Subscription(object):
     def resolve_todo_created(root, info, parent_id):
         from graphene_subscriptions.events import CREATED
         parent_id = int(from_global_id(parent_id)[1])
-        print("resolve_todo_created CREATED", parent_id)
         return root.filter(
             lambda event: (
                 event.operation == CREATED and
@@ -182,41 +184,22 @@ class Subscription(object):
     def resolve_todo_updated(root, info, parent_id):
         from graphene_subscriptions.events import UPDATED
         parent_id = int(from_global_id(parent_id)[1])
-        print("resolve_todo_updated UPDATED", parent_id)
-        # import datetime
-        # from rx import Observable
-        # return Observable.interval(3000).map(lambda i: models.Todo.objects.filter(parent_id=parent_id)[0])
-        # import sys
-        # _s = sys.stdout
-        # def f(event):
-        #     print("return event : ", event, file=_s)
-        #     print("return event : ", event.operation, UPDATED, file=_s)
-        #     print("return event : ", event.instance, file=_s)
-        #     print("return event : ", event.instance.parent_id, parent_id, file=_s)
-        #     print("return event : ", type(event.instance.parent_id), type(parent_id), file=_s)
-        #     print(event.operation == UPDATED, isinstance(event.instance, models.Todo),
-        #           event.instance.parent_id == parent_id)
-        #     return event.instance
-        # print("return start!!! ", file=_s)
-        # return root.map(f)
         return root.filter(
             lambda event: (
                 event.operation == UPDATED and
                 isinstance(event.instance, models.Todo) and
                 event.instance.parent_id == parent_id)
         ).map(lambda event: event.instance)
-        # ).map(f)
 
     def resolve_todolist_mutation(root, info, id):
         _id = int(from_global_id(id)[1])
-
-        def f(event):
-            if isinstance(event.instance, models.TodoList):
-                return TodoListMutationValueObject(operation=event.operation, todolist=event.instance, todo=None)
-            return TodoListMutationValueObject(operation=event.operation, todolist=None, todo=event.instance)
 
         return root.filter(
             lambda event: (
                 (isinstance(event.instance, models.TodoList) and event.instance.id == _id) or
                 (isinstance(event.instance, models.Todo) and event.instance.parent_id == _id))
-        ).map(f)
+        ).map(lambda event: TodoListMutationValueObject(
+            operation=event.operation,
+            todolist=event.instance if isinstance(event.instance, models.TodoList) else None,
+            todo=event.instance if isinstance(event.instance, models.Todo) else None)
+        )

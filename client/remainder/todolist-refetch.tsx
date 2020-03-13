@@ -43,7 +43,8 @@ class TodoList_ extends React.Component<Props, State> {
         console.log("@todolist refetch render")
         console.log(this.props.data)
         const observer = {
-            next: (data:TodoSubscData) => console.log('next', data)
+            next: (data:TodoSubscData) => console.log('next', data),
+            error: (error:Error) => console.log('error', error),
         }
 
         return (<div>

@@ -15,6 +15,9 @@ class SubscriptionSetupper {
     
     createClient() {
         this.client = new SubscriptionClient(this.uri, {reconnect: true})
+        this.client.on('error', (error: any) => {
+            console.error("client error", error)
+        })
     }
     
     setup = (request: RequestParameters,
@@ -29,6 +32,13 @@ class SubscriptionSetupper {
                      subscribe: observable.subscribe,
                      dispose: () => {}
                  }
+                 observable.subscribe({
+                     next: (value: any) => {
+                         if (value.errors !== undefined) {
+                             console.error('subscribe Some Error occurred!!', value.errors)
+                         }
+                     }
+                 })
                  d.dispose = () => {
                      delete d.subscribe
                  }

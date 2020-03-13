@@ -62,7 +62,7 @@ const request_subscription = (id:string, environment:IEnvironment, observer: Obs
         onError: (error:Error) => (observer.error && observer.error(error)),
         onComplete: () => (observer.complete && observer.complete()),
     }
-    console.log(subscriptionConfig)
+    /* console.log(subscriptionConfig) */
     const {dispose} = requestSubscription(
         environment,
         subscriptionConfig
