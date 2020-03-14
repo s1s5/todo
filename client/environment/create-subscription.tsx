@@ -77,10 +77,32 @@ class SubscriptionWrapper<T> extends React.Component<Props<T>, State<T>> {
                     this._render())
 }
 
+const SubscriptionWrapper2 = <T extends object>(props: Props<T>) => {
+    let [value, setValue] = React.useState(() => ( props.value) )
+    React.useEffect(() => {
+        const observer = {
+            next: (value: any) => {
+                if (value.errors !== undefined && value.errors !== null && value.errors.length > 0) {
+                    console.error('subscribe Some Error occurred!!', value.errors)
+                }
+                setValue(value as T)
+                props.observer.next && props.observer.next(value)
+            },
+            error: (error: Error) => (props.observer.error && props.observer.error(error)),
+            complete: () => (props.observer.complete && props.observer.complete()),
+        }
+        return props.subscribe(props.environment, observer, props.variables);
+    }, [props.environment, props.subscribe, props.observer, props.variables])
+    if (value === undefined) {
+        return (props.loading ? <>props.loading()</> : <span style={ {visibility: "hidden", width: "0px", height: "0px"} }>subscribing ...</span>)
+    }
+    return (props.children ? <>props.children(value)</> : <span style={ {visibility: "hidden", width: "0px", height: "0px"} }>{ value.toString() }</span>)
+}
+
 const createSubscription = <T extends object>(subscribe: (environment: IEnvironment, observer: Observer<T>, variables:Variables) => (() => unknown)) => (
     (props: PartialProps<T>) => (
         <ReactRelayContext.Consumer>
-          {({ environment }) => <SubscriptionWrapper {...props} environment={ environment } subscribe={ subscribe } /> }
+          {({ environment }) => <SubscriptionWrapper2 {...props} environment={ environment } subscribe={ subscribe } /> }
         </ReactRelayContext.Consumer>
     )
 )
