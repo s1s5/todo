@@ -29,7 +29,7 @@ const AddTodoButton = (props:{todolist__id:string}) => {
     const classes = useStyles()
     return <ReactRelayContext.Consumer>
       {
-          (context:RelayContext | null) => (
+          (context) => (
               <Fab className={ classes.fab } color="primary" aria-label="add"  onClick={ () => (
                   commitMutation(
                       context!.environment,
