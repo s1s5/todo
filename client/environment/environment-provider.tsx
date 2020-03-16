@@ -64,14 +64,14 @@ const EnvironmentProvider = (props: Props) => {
         } else {
             network = Network.create(fetch_query)
         }
-        console.log("new environment created!!!", props.post_url, props.ws_url)
+        // console.log("new environment created!!!", props.post_url, props.ws_url)
         setEnvironment(new Environment({
             network: network,
             store: new Store(new RecordSource()),  
         }))
 
         return () => {
-            console.log("client close", client === undefined)
+            // console.log("client close", client === undefined)
             client && client.close()
         }
     }, [props.post_url, props.ws_url])

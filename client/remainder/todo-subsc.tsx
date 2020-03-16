@@ -33,7 +33,7 @@ fragment todoSubsc_data on TodoListMutation {
 export {fragment}
 
 const request_subscription = (environment:IEnvironment, observer: Observer<Data>, variables: Variables | undefined) => {
-    console.log("request_subscription", environment, observer, variables)
+    // console.log("request_subscription", environment, observer, variables)
     const subscriptionConfig : GraphQLSubscriptionConfig<Data> = {
         subscription: graphql`
             subscription todoSubsc_Subscription($id: ID!) {
@@ -77,7 +77,7 @@ const request_subscription = (environment:IEnvironment, observer: Observer<Data>
     const subsc = {unsubscribe: dispose, closed: false}
     observer.start && observer.start(subsc) 
     return () => {
-        console.log("dispose ended! observer=>", observer)
+        // console.log("dispose ended! observer=>", observer)
         observer.unsubscribe && observer.unsubscribe(subsc)
         dispose()
     }
