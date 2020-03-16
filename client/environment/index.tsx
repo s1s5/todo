@@ -19,24 +19,6 @@ import fetchQuery from './fetch-query'
 import SubscriptionSetupper from './subscription-setupper'
 import EnvironmentProvider from './environment-provider'
 
-const createEnvironment = (post_url:string, ws_url?:string) => {
-    const fetch_query = (request: RequestParameters,
-                         variables: Variables,
-                         cacheConfig: CacheConfig,
-                         uploadables?: UploadableMap | null) => fetchQuery(post_url, request, variables, cacheConfig, uploadables)
-    let network;
-    if (ws_url) {
-        const subsc_set_upper = new SubscriptionSetupper(ws_url)
-        network = Network.create(fetch_query, subsc_set_upper.setup)
-    } else {
-        network = Network.create(fetch_query)
-    }
-    return  new Environment({
-        network: network,
-        store: new Store(new RecordSource()),  
-    });
-}
-
 type WithEnvironmentProps = {
     environment: Environment,
 };
@@ -103,7 +85,7 @@ function createQueryRenderer<TOperation extends OperationType, Props>(
             return (
                 <ReactRelayContext.Consumer>
                   {(context:RelayContext | null) => (
-                      <QueryRenderer
+                      <QueryRenderer<TOperation>
                           environment={ context!.environment }
                           query={ query }
                           variables={ variables }
@@ -133,4 +115,4 @@ function createQueryRenderer<TOperation extends OperationType, Props>(
 }
 
 
-export {createEnvironment, withEnvironment, createQueryRenderer, EnvironmentProvider}
+export {withEnvironment, createQueryRenderer, EnvironmentProvider}

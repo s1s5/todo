@@ -14,7 +14,7 @@ import {
 import {ReactRelayContext} from 'react-relay'
 
 import fetchQuery from './fetch-query'
-import SubscriptionSetupper from './subscription-setupper'
+import { SubscriptionClient } from 'subscriptions-transport-ws'
 
 type Props = {
     post_url: string,
@@ -23,7 +23,10 @@ type Props = {
 }
 
 const EnvironmentProvider = (props: Props) => {
-    const environment = React.useMemo(() => {
+    const [client, setClient] = React.useState<SubscriptionClient>()
+    const [environment, setEnvironment] = React.useState<Environment>()
+
+    React.useLayoutEffect(() => {
         const fetch_query = (
             request: RequestParameters,
             variables: Variables,
@@ -31,18 +34,52 @@ const EnvironmentProvider = (props: Props) => {
             uploadables?: UploadableMap | null) => fetchQuery(
                 props.post_url, request, variables, cacheConfig, uploadables)
 
-        let network;
+        let network
         if (props.ws_url) {
-            const subsc_set_upper = new SubscriptionSetupper(props.ws_url)
-            network = Network.create(fetch_query, subsc_set_upper.setup)
+            const c = new SubscriptionClient(props.ws_url!, {
+                lazy: true,  // これがないとhot-reloadで二重で接続されたりする？
+                reconnect: true,
+            })
+            c.on('error', (error: any) => {
+                console.error("client error", error)
+            })
+            setClient(c)
+
+            network = Network.create(
+                fetch_query,
+                (request: RequestParameters,
+                 variables: Variables,
+                 cacheConfig: CacheConfig) => {
+                     const query = request.text!
+                     const observable = c.request({query, variables})
+                     const d = {
+                         subscribe: observable.subscribe,
+                         dispose: () => {}
+                     }
+                     d.dispose = () => {
+                         delete d.subscribe
+                     }
+                     return d
+                 })
         } else {
             network = Network.create(fetch_query)
         }
-        return new Environment({
+        console.log("new environment created!!!", props.post_url, props.ws_url)
+        setEnvironment(new Environment({
             network: network,
             store: new Store(new RecordSource()),  
-        })
+        }))
+
+        return () => {
+            console.log("client close", client === undefined)
+            client && client.close()
+        }
     }, [props.post_url, props.ws_url])
+    
+    if (environment === undefined) {
+        return <></>
+    }
+
     return (
         <ReactRelayContext.Provider value={ {environment} }>
           { props.children }

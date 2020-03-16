@@ -56,8 +56,8 @@ const App = () => {
 
     return (
         <EnvironmentProvider
-            post_url={'http://127.0.0.1:42100/graphql/'}
-            ws_url= {'ws://localhost:42100/graphql/'}>
+            post_url='http://127.0.0.1:42100/graphql/'
+            ws_url='ws://localhost:42100/graphql/'>
           <div className={classes.root}>
             <ThemeProvider theme={theme}>
               <AppBar position="static">
