@@ -25,7 +25,7 @@ class TodoFilterSet(FilterSet):
     # see https://django-filter.readthedocs.io/en/master/guide/usage.html
     class Meta:
         model = models.Todo
-        # excludeは使えない？
+        # excludeは使えない？ <- Nodeに書く
         # exclude = ['parent']
         fields = {
             'text': ['exact', 'icontains', 'istartswith'],
@@ -53,6 +53,7 @@ class TodoFilterSet(FilterSet):
 class TodoNode(DjangoObjectType):
     class Meta:
         model = models.Todo
+        exclude = ['parent']
         interfaces = (graphene.relay.Node, )
         filterset_class = TodoFilterSet
 
