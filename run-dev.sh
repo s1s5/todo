@@ -3,15 +3,18 @@
 
 set -eu  # <= 0以外が返るものがあったら止まる, 未定義の変数を使おうとしたときに打ち止め
 
-trap 'kill $(jobs -p)' INT
 
 if [ `uname` = "Darwin" ]; then
+    trap 'kill $(jobs -p)' INT
+
     npm run start &
     npm run relay -- --watch &
     docker-compose build
     docker-compose up &
+
+    wait $(jobs -p)
 else
-    echo "foo"
+    docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.override-linux.yml build
+    docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.override-linux.yml up
 fi
 
-wait $(jobs -p)
