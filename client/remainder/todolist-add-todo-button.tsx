@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {graphql, commitMutation, ReactRelayContext} from 'react-relay'
+import {graphql, commitMutation, RelayContext, ReactRelayContext} from 'react-relay'
 
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/Add'
@@ -19,10 +19,10 @@ const addTodoMutation = graphql`
 const AddTodoButton = (props:{todolist__id:string}) => (
     <ReactRelayContext.Consumer>
       {
-          ({ environment }) => (
+          (context:RelayContext | null) => (
               <Fab color="primary" aria-label="add"  onClick={ () => (
                   commitMutation(
-                      environment,
+                      context!.environment,
                       {
                           mutation: addTodoMutation,
                           variables: {

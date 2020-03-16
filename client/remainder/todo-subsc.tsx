@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { IEnvironment, Observer, Variables } from 'relay-runtime'
+import { IEnvironment, Observer, Variables, GraphQLSubscriptionConfig } from 'relay-runtime'
 import { graphql, requestSubscription } from 'react-relay'
 // import { createSubscription } from "create-subscription";
 
@@ -32,8 +32,8 @@ fragment todoSubsc_data on TodoListMutation {
 
 export {fragment}
 
-const request_subscription = (environment:IEnvironment, observer: Observer<Data>, variables: Variables) => {
-    const subscriptionConfig = {
+const request_subscription = (environment:IEnvironment, observer: Observer<Data>, variables: Variables | undefined) => {
+    const subscriptionConfig : GraphQLSubscriptionConfig<Data> = {
         subscription: graphql`
             subscription todoSubsc_Subscription($id: ID!) {
                 # 一個しか無理？
@@ -52,16 +52,20 @@ const request_subscription = (environment:IEnvironment, observer: Observer<Data>
                 }
             }
         `,
-        variables: variables,
+        variables: {},
         /* updater: (data:any) => {
          *     console.log(data)
          * },*/
         // updater?: SelectorStoreUpdater<TSubscriptionPayload>
         // updaterとonNextどっちも呼ばれる
         // updater: (data:any) => console.log("updater@request_hello_subscription", data),
-        onNext: (data:Data) => (observer.next && observer.next(data)),
+        onNext: (data:Data | null | undefined) => (data && observer.next && observer.next(data)),
         onError: (error:Error) => (observer.error && observer.error(error)),
-        onComplete: () => (observer.complete && observer.complete()),
+        onCompleted: () => (observer.complete && observer.complete()),
+    }
+
+    if (variables !== undefined) {
+        subscriptionConfig["variables"] = variables
     }
     /* console.log(subscriptionConfig) */
     const {dispose} = requestSubscription(

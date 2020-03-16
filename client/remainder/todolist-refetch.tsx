@@ -53,7 +53,7 @@ class TodoList_ extends React.Component<Props, State> {
           <List className={this.props.classes.root}>
           {
               this.props.data.todoSet.edges.map((edge) => (
-                  <div key={ edge.node.id }><Todo data={ edge.node }/></div>
+                  <div key={ edge!.node!.id }><Todo data={ edge!.node! }/></div>
               ))
           }
           </List>
@@ -80,7 +80,10 @@ class TodoList_ extends React.Component<Props, State> {
                     console.log('successfully completed')
                 }
             },
-            {force: true},  // Assuming we've configured a network layer cache, we want to ensure we fetch the latest data.
+            {
+                force: true,  // Assuming we've configured a network layer cache, we want to ensure we fetch the latest data.
+                fetchPolicy: 'network-only',
+            },
         );
     }
 }

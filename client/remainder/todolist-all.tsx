@@ -14,12 +14,13 @@ type Props = {
 }
 
 const TodoList = (props: Props) => {
+    const todolist = props.query!.todolist!
     return (<div>
-      <h3>todo list : id={ props.query.todolist.id }, { props.query.todolist.title }</h3>
-      { props.query.todolist.todoSet.edges.map((edge) => (
-          <div key={ edge.node.id }><Todo data={ edge.node }/></div>
+      <h3>todo list : id={ todolist.id }, { todolist.title }</h3>
+      { todolist.todoSet.edges.map((edge) => (
+          <div key={ edge!.node!.id }><Todo data={ edge!.node! }/></div>
       ))}
-      <AddTodoButton todolist__id={ props.query.todolist.id } />
+      <AddTodoButton todolist__id={ todolist.id } />
     </div>)
 }
 
@@ -47,11 +48,14 @@ const TodoListFragment = createFragmentContainer(
     }
 )
 
-export default createQueryRenderer(TodoListFragment, TodoList, {
+import {todolistAll_TodoList_Query} from './__generated__/todolistAll_TodoList_Query.graphql'
+
+export default createQueryRenderer<todolistAll_TodoList_Query, Props>(TodoListFragment, TodoList, {
     query: graphql`
         query todolistAll_TodoList_Query($id: ID!) {
             ...todolistAll_query @arguments(id: $id)
         }
     `,
-    get_variables: (props:any) => ({id: props.id})  // TODO: どうやってタイプセーフにする？
+    get_variables: (props) => ({id: props.id}),  // TODO: どうやってタイプセーフにする？
+    variables: {id: ''},
 })

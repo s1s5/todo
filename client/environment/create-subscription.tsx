@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { IEnvironment, Observer, Variables, } from 'relay-runtime'
+import { RelayContext, IEnvironment, Observer, Variables, } from 'relay-runtime'
 import {ReactRelayContext} from 'react-relay';
 
 
@@ -7,13 +7,13 @@ type PartialProps<T> = {
     observer?: Observer<T>,
     variables?: Variables,
     loading?: () => React.ReactNode,
-    children?: (value: T) => React.ReactNode,
+    children?: (value: T | undefined) => React.ReactNode,
     value?: T | undefined,
 }
 
 type Props<T> = {
     environment: IEnvironment,
-    subscribe: (environment: IEnvironment, observer: Observer<T>, variables:Variables) => (() => unknown)
+    subscribe: (environment: IEnvironment, observer: Observer<T>, variables: Variables | undefined) => (() => void)
 } & PartialProps<T>
 
 type State<T> = {
@@ -23,12 +23,12 @@ type State<T> = {
 class SubscriptionWrapper<T> extends React.Component<Props<T>, State<T>> {
     readonly state: State<T> = { value: undefined }
 
-    _unsubscribe: () => unknown | undefined
+    _unsubscribe: (() => unknown) | undefined = undefined
     _mounted: boolean = true
 
     _value = () => (this.state.value === undefined ? this.props.value : this.state.value)
     _loading = () => (this.props.loading ? this.props.loading() : <span style={ {visibility: "hidden", width: "0px", height: "0px"} }>subscribing ...</span>)
-    _render = () => (this.props.children ? this.props.children(this._value()) : <span style={ {visibility: "hidden", width: "0px", height: "0px"} }>{ this._value().toString() }</span>)
+    _render = () => (this.props.children ? this.props.children!(this._value()) : <span style={ {visibility: "hidden", width: "0px", height: "0px"} }>rendering</span>)
 
     _subscribe = () => {
         this._clear()
@@ -39,12 +39,12 @@ class SubscriptionWrapper<T> extends React.Component<Props<T>, State<T>> {
                     console.error('subscribe Some Error occurred!!', value.errors)
                 }
                 _this.setState({value})
-                _this.props.observer.next && _this.props.observer.next(value)
+                _this.props.observer && _this.props.observer.next && _this.props.observer.next(value)
             },
-            error: (error: Error) => (_this.props.observer.error && _this.props.observer.error(error)),
-            complete: () => (_this.props.observer.complete && _this.props.observer.complete()),
+            error: (error: Error) => (_this.props.observer && _this.props.observer.error && _this.props.observer.error(error)),
+            complete: () => (_this.props.observer && _this.props.observer.complete && _this.props.observer.complete()),
         }
-        this._unsubscribe = this.props.subscribe(this.props.environment, observer, this.props.variables);
+        this._unsubscribe = this.props.subscribe(this.props.environment, observer, this.props.variables)
         console.log("subscribe !!!!")
     }
 
@@ -86,10 +86,10 @@ const SubscriptionWrapper2 = <T extends object>(props: Props<T>) => {
                     console.error('subscribe Some Error occurred!!', value.errors)
                 }
                 setValue(value as T)
-                props.observer.next && props.observer.next(value)
+                props.observer&& props.observer.next && props.observer.next(value)
             },
-            error: (error: Error) => (props.observer.error && props.observer.error(error)),
-            complete: () => (props.observer.complete && props.observer.complete()),
+            error: (error: Error) => (props.observer && props.observer.error && props.observer.error(error)),
+            complete: () => (props.observer && props.observer.complete && props.observer.complete()),
         }
         return props.subscribe(props.environment, observer, props.variables);
     }, [props.environment, props.subscribe, props.observer, props.variables])
@@ -99,10 +99,10 @@ const SubscriptionWrapper2 = <T extends object>(props: Props<T>) => {
     return (props.children ? <>props.children(value)</> : <span style={ {visibility: "hidden", width: "0px", height: "0px"} }>{ value.toString() }</span>)
 }
 
-const createSubscription = <T extends object>(subscribe: (environment: IEnvironment, observer: Observer<T>, variables:Variables) => (() => unknown)) => (
+const createSubscription = <T extends object>(subscribe: (environment: IEnvironment, observer: Observer<T>, variables: Variables | undefined) => (() => unknown)) => (
     (props: PartialProps<T>) => (
         <ReactRelayContext.Consumer>
-          {({ environment }) => <SubscriptionWrapper2 {...props} environment={ environment } subscribe={ subscribe } /> }
+          {(context:RelayContext | null) => <SubscriptionWrapper2 {...props} environment={ context!.environment } subscribe={ subscribe } /> }
         </ReactRelayContext.Consumer>
     )
 )

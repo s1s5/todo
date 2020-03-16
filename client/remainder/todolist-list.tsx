@@ -36,7 +36,7 @@ const TodoList = (props: Props) => {
 
     return <div>
       {
-          props.query.todolists.edges.map((edge:any) => (
+          props.query.todolists!.edges.map((edge:any) => (
               <>
                 <ListItem button onClick={ () => { setOpen(!open) } }>
                   <ListItemText primary={ `${edge.node.title}` } />
@@ -88,4 +88,5 @@ export default createQueryRenderer(TodoListFragment, TodoList, {
             ...todolistList_query
         }        
     `,
+    variables: {},
 })

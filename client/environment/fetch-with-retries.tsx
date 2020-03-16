@@ -10,15 +10,10 @@ const ExecutionEnvironment = {
     };
 
 export type InitWithRetries = {
-    body?: BodyInit | null,
-    cache?: RequestCache,
-    credentials?: RequestCredentials,
-    headers?: HeadersInit,
     fetchTimeout?: number | null,
-    method?: string | null,
-    mode?: RequestMode,
     retryDelays?: Array<number> | null,
-};
+} & RequestInit
+
 
 const DEFAULT_TIMEOUT = 15000;
 const DEFAULT_RETRIES = [1000, 3000];

@@ -9,22 +9,29 @@ import {
     Variables,
     UploadableMap,
     CacheConfig,
-//    RelayContext
+    RelayContext,
+    OperationType,
 } from 'relay-runtime';
 
 import {ReactRelayContext} from 'react-relay';
 
-import fetchQuery from './fetchQuery'
-import SubscriptionSetupper from './SubscriptionSetupper'
+import fetchQuery from './fetch-query'
+import SubscriptionSetupper from './subscription-setupper'
 
 const createEnvironment = (post_url:string, ws_url?:string) => {
     const fetch_query = (request: RequestParameters,
                          variables: Variables,
                          cacheConfig: CacheConfig,
                          uploadables?: UploadableMap | null) => fetchQuery(post_url, request, variables, cacheConfig, uploadables)
-    const subsc_set_upper = new SubscriptionSetupper(ws_url)
+    let network;
+    if (ws_url) {
+        const subsc_set_upper = new SubscriptionSetupper(ws_url)
+        network = Network.create(fetch_query, subsc_set_upper.setup)
+    } else {
+        network = Network.create(fetch_query)
+    }
     return  new Environment({
-        network: Network.create(fetch_query, subsc_set_upper.setup),
+        network: network,
         store: new Store(new RecordSource()),  
     });
 }
@@ -38,17 +45,11 @@ const withEnvironment = <P extends object>(
 Component: React.ComponentType<P>,
 ): React.FC<Omit<P, keyof WithEnvironmentProps>> => props => (
     <ReactRelayContext.Consumer>
-      {({ environment }) => <Component {...props as P} environment={ environment } />}
+      {(context:RelayContext | null) => <Component {...props as P} environment={ context!.environment } />}
     </ReactRelayContext.Consumer>
 );
 
 import {QueryRenderer, GraphQLTaggedNode, RelayProp, Container as FragmentContainer} from 'react-relay';
-
-type Config = {
-    query: GraphQLTaggedNode,
-    get_variables?: (props: Object) => object,
-    variables?: Variables,
-}
 
 // const createQueryRenderer = <P extends object>(
 // FragmentContainer: React.ComponentType<P>, config: Config
@@ -82,11 +83,17 @@ type WithQueryProps = {
     query: any,
 };
 
+type Config<Props, TOperation extends OperationType> = {
+    query: GraphQLTaggedNode,
+    get_variables?: (props: Omit<Props, keyof WithQueryProps>) => TOperation["variables"],
+    variables: TOperation["variables"],
+}
 
-function createQueryRenderer<Props>(
+
+function createQueryRenderer<TOperation extends OperationType, Props>(
     FragmentComponent: any,  // TODO: ここどう設定していいんだかわからん
     Component: React.ComponentType<Props & { relay?: RelayProp }>,
-    config: Config,
+    config: Config<Props, TOperation>,
 ) {
     const {query, get_variables} = config;
     class QueryRendererWrapper extends React.Component<Omit<Props, keyof WithQueryProps>> {
@@ -94,18 +101,22 @@ function createQueryRenderer<Props>(
             const variables = get_variables ? get_variables(this.props) : config.variables;  // TODO: マージすべき？
             return (
                 <ReactRelayContext.Consumer>
-                  {({ environment }) => (
+                  {(context:RelayContext | null) => (
                       <QueryRenderer
-                          environment={ environment }
+                          environment={ context!.environment }
                           query={ query }
                           variables={ variables }
-                          render={({ error, props }) => {
-                                  if (error) {
-                                      return <span>{error.toString()}</span>;
+                          render={ (r_props: {
+                                  error: Error | null;
+                                  props: TOperation['response'] | null;
+                                  retry: (() => void) | null;
+                          }) => {
+                                  if (r_props.error) {
+                                      return <span>{r_props.error.toString()}</span>;
                                   }
-                                  console.log(props);
-                                  if (props) {
-                                      return <FragmentComponent {...this.props } query={ props } />;
+                                  console.log(r_props.props);
+                                  if (r_props.props) {
+                                      return <FragmentComponent {...this.props } query={ r_props.props } />;
                                   }
                                   
                                   return <span>loading</span>;
