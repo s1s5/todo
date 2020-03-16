@@ -4,6 +4,7 @@ import {Environment} from 'relay-runtime'
 import {graphql, QueryRenderer, createRefetchContainer, RelayRefetchProp, ReactRelayContext} from 'react-relay'
 
 import { withStyles, WithStyles, Theme } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container'
 import List from '@material-ui/core/List'
 
 
@@ -18,9 +19,13 @@ import {todoSubsc_data as TodoSubscData} from './__generated__/todoSubsc_data.gr
 
 const styles = (theme: Theme) => ({
     root: {
-        width: '100%',
-        maxWidth: 360,
         backgroundColor: theme.palette.background.paper,
+        maxHeight: '100%',
+//        position: 'absolute',  // 使えない、elementに直接指定
+        width: '100%',
+        height: '100%',
+//        overflowY: 'auto',  // 使えない
+//        overflowX: 'hidden',  // 使えない
     },
 })
 
@@ -39,24 +44,25 @@ class TodoList_ extends React.Component<Props, State> {
     }
     
     render() {
-
-        console.log("@todolist refetch render")
-        console.log(this.props.data)
+        // console.log("@todolist refetch render")
+        // console.log(this.props.data)
         const observer = {
             next: (data:TodoSubscData) => console.log('next', data),
             error: (error:Error) => console.log('error', error),
         }
-        console.log(observer)
+        // console.log(observer)
         return (<div>
           <TodoSubsc variables={ {id: this.props.id} } observer={ observer } />
           <h3>{ this.props.data.title }</h3>
-          <List className={this.props.classes.root}>
+          <Container maxWidth="sm" >
+            <List className={this.props.classes.root}>
           {
               this.props.data.todoSet.edges.map((edge) => (
-                  <div key={ edge!.node!.id }><Todo data={ edge!.node! }/></div>
+                  <li key={ edge!.node!.id }><div><Todo data={ edge!.node! }/></div></li>
               ))
           }
           </List>
+          </Container>
           <AddTodoButton todolist__id={ this.props.data.id } />
           <button onClick={ this._refetch }>refetch</button>
         </div>)
@@ -66,7 +72,7 @@ class TodoList_ extends React.Component<Props, State> {
         const self = this
         this.props.relay.refetch(
             (refetchVariables) => {
-                console.log("refetch variables called", refetchVariables)
+                // console.log("refetch variables called", refetchVariables)
                 return {
                     ...refetchVariables,
                     after: self.props.data.todoSet?.pageInfo.endCursor
@@ -77,7 +83,7 @@ class TodoList_ extends React.Component<Props, State> {
                 if (error) {
                     console.log('Error occurred', error)
                 } else {
-                    console.log('successfully completed')
+                    // console.log('successfully completed')
                 }
             },
             {
@@ -95,7 +101,7 @@ const TodoListRefetch = createRefetchContainer(
         data: graphql`
             fragment todolistRefetch_data on TodoListNode
             @argumentDefinitions(
-                count: { type: "Int", defaultValue: 1 },
+                count: { type: "Int", defaultValue: 10 },
                 after: { type: "String"}
             ) {
                 id
@@ -146,7 +152,7 @@ const TodoListQuery = (props: {id: string, environment: Environment}) => {
                            console.log(error)
                            return <span>{error.toString()}</span>;
                        }
-                       console.log(props);
+                   // console.log(props);
                        if (props) {
                            return <TodoListRefetch id={ props_.id } data={ props.todolist } />
                        }
