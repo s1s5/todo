@@ -37,7 +37,7 @@ const TodoList = (props: Props) => {
     return <div>
       {
           props.query.todolists!.edges.map((edge:any) => (
-              <>
+              <div key={ edge.node.id }>
                 <ListItem button onClick={ () => { setOpen(!open) } }>
                   <ListItemText primary={ `${edge.node.title}` } />
                   {open ? <ExpandLess /> : <ExpandMore />}
@@ -61,7 +61,7 @@ const TodoList = (props: Props) => {
                     </Link>
                   </List>
                 </Collapse>
-              </>
+              </div>
           ))
       }
     </div>

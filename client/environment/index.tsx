@@ -17,6 +17,7 @@ import {ReactRelayContext} from 'react-relay';
 
 import fetchQuery from './fetch-query'
 import SubscriptionSetupper from './subscription-setupper'
+import EnvironmentProvider from './environment-provider'
 
 const createEnvironment = (post_url:string, ws_url?:string) => {
     const fetch_query = (request: RequestParameters,
@@ -132,4 +133,4 @@ function createQueryRenderer<TOperation extends OperationType, Props>(
 }
 
 
-export {createEnvironment, withEnvironment, createQueryRenderer}
+export {createEnvironment, withEnvironment, createQueryRenderer, EnvironmentProvider}

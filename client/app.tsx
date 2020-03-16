@@ -10,8 +10,8 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles, ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 
 
-import {createEnvironment} from './environment/index'
-const environment = createEnvironment('http://127.0.0.1:42100/graphql/', 'ws://localhost:42100/graphql/')
+import {EnvironmentProvider} from './environment/index'
+// const environment = createEnvironment('http://127.0.0.1:42100/graphql/', 'ws://localhost:42100/graphql/')
 
 import TodoList from './remainder/todolist'
 import TodoListList from './remainder/todolist-list'
@@ -55,27 +55,29 @@ const App = () => {
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
-          <ThemeProvider theme={theme}>
-            <AppBar position="static">
-              <Toolbar>
-                <Typography variant="h6" className={classes.title}>
-                  Todoサンプル
-                </Typography>
-              </Toolbar>
-            </AppBar>
-            <Container>
-              <ReactRelayContext.Provider value={ {environment} }>
+        <EnvironmentProvider
+            post_url={'http://127.0.0.1:42100/graphql/'}
+            ws_url= {'ws://localhost:42100/graphql/'}>
+          <div className={classes.root}>
+            <ThemeProvider theme={theme}>
+              <AppBar position="static">
+                <Toolbar>
+                  <Typography variant="h6" className={classes.title}>
+                    Todoサンプル
+                  </Typography>
+                </Toolbar>
+              </AppBar>
+              <Container>
                 <Router>
                   <Route path='/:id([A-Za-z0-9_=]+)/' component={ ({match}:any) => {
-                          return <TodoList id={ match.params.id }/>
+                      return <TodoList id={ match.params.id }/>
                   }} />
                   <Route path='/' exact component={ () => <TodoListList/> }/>
                 </Router>
-              </ReactRelayContext.Provider>
-            </Container>
-          </ThemeProvider>
-        </div>
+              </Container>
+            </ThemeProvider>
+          </div>
+        </EnvironmentProvider>
     )
 }
 export default hot(App)
