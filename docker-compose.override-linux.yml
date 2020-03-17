@@ -15,6 +15,8 @@ services:
 
   js-builder:
     image: node
+    ports:
+      - "42101:42101"
     command: |
       bash -c "
       cd /app; npm run start

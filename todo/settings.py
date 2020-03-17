@@ -275,9 +275,13 @@ MIDDLEWARE.insert(
     'corsheaders.middleware.CorsMiddleware',
 )
 
-CORS_ORIGIN_REGEX_WHITELIST = [
-    r"^http://localhost:.*$",
-]
+if DEBUG:
+    CORS_ORIGIN_ALLOW_ALL = True
+else:
+    CORS_ORIGIN_REGEX_WHITELIST = [
+        r"^http://[.\w]+:.*$",
+    ]
+
 #CORS_ORIGIN_WHITELIST = [
 #    "https://example.com",
 #    "https://sub.example.com",
