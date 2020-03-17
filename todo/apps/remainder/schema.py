@@ -9,6 +9,7 @@ import django_filters
 from django_filters import FilterSet, OrderingFilter
 
 from . import models
+from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +35,11 @@ class TodoFilterSet(FilterSet):
             'completed': ['exact'],
         }
 
-    order_by = OrderingFilter(
+    order_by = CustomOrderingFilter(
         fields=(
             ('created_at', 'created_at'),
             ('modified_at', 'modified_at'),
+            ('pk', 'pk'),
         )
     )
 
@@ -56,140 +58,16 @@ class TodoFilterSet(FilterSet):
         return super().filter_queryset(queryset)
 
 
-
-from graphql_relay.utils import base64, unbase64, is_str
-from graphql_relay.connection.connectiontypes import Connection, PageInfo, Edge
-
-
-def connection_from_queryset(queryset, args=None, connection_type=None,
-                             edge_type=None, pageinfo_type=None):
-    print("connection_from_queryset")
-    PREFIX = 'connection_from_queryset:'
-
-    def cursor_to_pk(cursor):
-        try:
-            return int(unbase64(cursor)[len(PREFIX):])
-        except TypeError:
-            return 0
-
-    def pk_to_cursor(pk):
-        return base64(PREFIX + str(pk))
-
-    connection_type = connection_type or Connection
-    edge_type = edge_type or Edge
-    pageinfo_type = pageinfo_type or PageInfo
-
-    args = args or {}
-
-    before = args.get('before')
-    after = args.get('after')
-    first = args.get('first')
-    last = args.get('last')
-
-    next_qs, prev_qs = None, None
-    if before:
-        pk = cursor_to_pk(before)
-        if pk:
-            before_qs = queryset.filter(pk__lte=pk)
-            queryset = queryset.filter(pk__gt=pk)
-
-    if after:
-        pk = cursor_to_pk(after)
-        if pk:
-            after_qs = queryset.filter(pk__gte=pk)
-            queryset = queryset.filter(pk__lt=pk)
-    print("HOGE")
-    print(queryset)
-    if isinstance(first, int):
-        
-        queryset = queryset[:first]
-
-    if isinstance(last, int):
-        logger.warning('performance warning queryset.count called')
-        queryset = queryset[max(0, queryset.count() - last):]
-
-    edges = [
-        edge_type(
-            node=node,
-            cursor=pk_to_cursor(node.pk)
-        )
-        for node in queryset
-    ]
-
-    first_edge_cursor = edges[0].cursor if edges else None
-    last_edge_cursor = edges[-1].cursor if edges else None
-    # lower_bound = after_offset + 1 if after else 0
-    # upper_bound = before_offset if before else list_length
-
-    return connection_type(
-        edges=edges,
-        page_info=pageinfo_type(
-            start_cursor=first_edge_cursor,
-            end_cursor=last_edge_cursor,
-            has_previous_page=False,  # TODO
-            has_next_page=False,
-        )
-    )
-
-
-from django.db.models.query import QuerySet
-from graphene_django.utils import maybe_queryset
-from graphene.relay import PageInfo
-
-def resolve_connection(connection, args, iterable):
-    print("HOGEE")
-    try:
-        iterable = maybe_queryset(iterable)
-        print(iterable)
-        print(dir(iterable))
-        print(iterable.order_by())
-        print(args)
-        print("FOOO")
-        connection = connection_from_queryset(
-            iterable, args,
-            connection_type=connection,
-            edge_type=connection.Edge,
-            pageinfo_type=PageInfo)
-        return connection
-    except Exception:
-        print("error...")
-        logger.exception('resolve_connection failed')
-
-
-DjangoConnectionField.resolve_connection = resolve_connection
-
-
-class FilterMixin(object):
-    @classmethod
-    def resolve_connection(cls, connection, args, iterable):
-        print("HOGE!", iterable[:3])
-        iterable = maybe_queryset(iterable)
-        connection = connection_from_queryset(
-            iterable, args,
-            connection_type=connection,
-            edge_type=connection.Edge,
-            pageinfo_type=PageInfo)
-        # connection.iterable = iterable
-        # connection.length = iterable.count()
-        return connection
-
-
-class CustomDjangoFilterConnectionField(FilterMixin, DjangoFilterConnectionField):
-    pass
-
-
-
-class ConnectionClass(graphene.relay.Connection):
-    extra = graphene.String()
-
-    class Meta:
-        abstract = True
-
-    class Edge:
-        def __init__(self, *args, **kwargs):
-            print('ConnectionClass.Edge : ', args, kwargs)
-            super().__init__(*args, **kwargs)
-        other = graphene.String()
+# pageInfoに追加の情報を入れることができる
+# class ConnectionClass(graphene.relay.Connection):
+#     extra = graphene.String()
+#     class Meta:
+#         abstract = True
+#     class Edge:
+#         def __init__(self, *args, **kwargs):
+#             print('ConnectionClass.Edge : ', args, kwargs)
+#             super().__init__(*args, **kwargs)
+#         other = graphene.String()
 
 
 class TodoNode(DjangoObjectType):
@@ -198,7 +76,7 @@ class TodoNode(DjangoObjectType):
         exclude = ['parent']
         interfaces = (graphene.relay.Node, )
         filterset_class = TodoFilterSet
-        connection_class = ConnectionClass
+        # connection_class = ConnectionClass
 
 
 class TodoListCreateMutation(graphene.relay.mutation.ClientIDMutation):
