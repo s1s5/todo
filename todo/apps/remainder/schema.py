@@ -6,7 +6,7 @@ from graphene_django import DjangoObjectType, DjangoConnectionField
 # from graphene_django.forms.mutation import DjangoModelFormMutation
 from graphene_django.filter import DjangoFilterConnectionField
 import django_filters
-from django_filters import FilterSet, OrderingFilter
+# from django_filters import FilterSet, OrderingFilter
 
 from . import models
 from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter
@@ -14,18 +14,10 @@ from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter
 logger = logging.getLogger(__name__)
 
 
-class TodoListNode(DjangoObjectType):
-    class Meta:
-        model = models.TodoList
-        filter_fields = {
-            'title': ['exact', 'icontains', 'istartswith'],
-        }
-        interfaces = (graphene.relay.Node, )
-
-
-class TodoFilterSet(FilterSet):
+class TodoFilterSet(django_filters.FilterSet):
     # see https://django-filter.readthedocs.io/en/master/guide/usage.html
     parent_id = django_filters.CharFilter(method='filter_with_parent_id')
+
     class Meta:
         model = models.Todo
         # excludeは使えない？ <- Nodeに書く
@@ -77,6 +69,16 @@ class TodoNode(DjangoObjectType):
         interfaces = (graphene.relay.Node, )
         filterset_class = TodoFilterSet
         # connection_class = ConnectionClass
+
+
+class TodoListNode(DjangoObjectType):
+    class Meta:
+        model = models.TodoList
+        filter_fields = {
+            'title': ['exact', 'icontains', 'istartswith'],
+        }
+        interfaces = (graphene.relay.Node, )
+    todoSet = CustomDjangoFilterConnectionField(TodoNode)
 
 
 class TodoListCreateMutation(graphene.relay.mutation.ClientIDMutation):

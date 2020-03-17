@@ -7,8 +7,8 @@ from base64 import b64encode, b64decode
 import django_filters
 from django.db.models import Q
 
-from graphql_relay.utils import base64, unbase64
-from graphql_relay.connection.connectiontypes import Connection, Edge
+# from graphql_relay.utils import base64, unbase64
+# from graphql_relay.connection.connectiontypes import Connection, Edge
 from graphene.relay import PageInfo
 from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.utils import maybe_queryset
@@ -44,9 +44,40 @@ def instance_to_cursor(obj, order_by):
     return b64encode(bio.getvalue()).decode('utf-8')
 
 
+def filter_with_cond(queryset, order_by, cond, flag):
+    if not cond:
+        return queryset
+    sumq, q = None, None
+    for order in order_by:
+        if order.startswith('-'):
+            field = order[1:]
+            expr = '{}__{}t'.format(field, flag[0])
+        else:
+            field = order
+            expr = '{}__{}t'.format(field, flag[1])
+        # print(field, cond[order])
+        if q is None:
+            # queryset = queryset.filter(**{
+            #     expr: cond[order]
+            # })
+            cq = Q(**{expr: cond[order]})
+            q = Q(field=cond[order])
+            sumq = cq
+        else:
+            # queryset = queryset.filter(q and Q(**{expr: cond[order]}))
+            cq = q and Q(**{expr: cond[order]})
+            q = q and Q(field=cond[order])
+            sumq = sumq or cq
+    return queryset.filter(sumq), queryset.exclude(sumq)
+
+
 def connection_from_queryset(queryset, args, connection_type,
                              edge_type, pageinfo_type):
-    order_by = args['order_by'].split(',')
+    if 'order_by' in args:  # TODO: order_byは固定・・・
+        order_by = args['order_by'].split(',')
+    else:
+        assert hasattr(queryset.model._meta, 'ordering'), 'must specify order_by or ordering in models'
+        order_by = queryset.model._meta.ordering
 
     connection_type = connection_type
     edge_type = edge_type
@@ -59,54 +90,26 @@ def connection_from_queryset(queryset, args, connection_type,
     first = args.get('first')
     last = args.get('last')
 
-    next_qs, prev_qs = None, None
+    has_next_page, has_previous_page = False, False
     if before:
         cond = cursor_to_condition(before, order_by)
-        print(cond)
-        if cond:
-            sumq, q = None, None
-            for order in order_by:
-                if order.startswith('-'):
-                    field = order[1:]
-                    expr = '{}__gt'.format(field)
-                else:
-                    field = order
-                    expr = '{}__lt'.format(field)
-                print(field, cond[order])
-                if q is None:
-                    # queryset = queryset.filter(**{
-                    #     expr: cond[order]
-                    # })
-                    cq = Q(**{expr: cond[order]})
-                    q = Q(field=cond[order])
-                    sumq = cq
-                else:
-                    # queryset = queryset.filter(q and Q(**{expr: cond[order]}))
-                    cq = q and Q(**{expr: cond[order]})
-                    q = q and Q(field=cond[order])
-                    sumq = sumq or cq
-            queryset = queryset.filter(sumq)
+        queryset, qs_qx = filter_with_cond(queryset, order_by, cond, ['g', 'l'])
+        has_next_page = qs_qx.exists()
 
     if after:
         cond = cursor_to_condition(after, order_by)
-        if cond:
-            for order in order_by:
-                if order.startswith('-'):
-                    field = '{}__lt'.format(order[1:])
-                else:
-                    field = '{}__gt'.format(order)
-                queryset = queryset.filter(**{
-                    field: cond[order]
-                })
+        queryset, qs_qx = filter_with_cond(queryset, order_by, cond, ['l', 'g'])
+        has_previous_page = qs_qx.exists()
 
-    print("HOGE")
-    print(queryset)
     if isinstance(first, int):
+        has_next_page = queryset[first:].exists()
         queryset = queryset[:first]
 
     if isinstance(last, int):
         logger.warning('performance warning queryset.count called')
-        queryset = queryset[max(0, queryset.count() - last):]
+        index = max(0, queryset.count() - last)
+        has_next_page = queryset[:index].exists()
+        queryset = queryset[index:]
 
     edges = [
         edge_type(
@@ -118,16 +121,14 @@ def connection_from_queryset(queryset, args, connection_type,
 
     first_edge_cursor = edges[0].cursor if edges else None
     last_edge_cursor = edges[-1].cursor if edges else None
-    # lower_bound = after_offset + 1 if after else 0
-    # upper_bound = before_offset if before else list_length
 
     return connection_type(
         edges=edges,
         page_info=pageinfo_type(
             start_cursor=first_edge_cursor,
             end_cursor=last_edge_cursor,
-            has_previous_page=False,  # TODO
-            has_next_page=False,
+            has_previous_page=has_previous_page,
+            has_next_page=has_next_page,
         )
     )
 
@@ -145,6 +146,7 @@ class CustomDjangoFilterConnectionField(DjangoFilterConnectionField):
                 connection_type=connection,
                 edge_type=connection.Edge,
                 pageinfo_type=PageInfo)
+            # TODO: DjangoConnectionFieldでは下記を代入してるけど必要なのか？
             # connection.iterable = iterable
             # connection.length = iterable.count()
             return connection
@@ -178,5 +180,5 @@ class CustomOrderingFilter(django_filters.OrderingFilter):
                     multiple_choices.append((
                         ','.join([field for field, _ in j]),
                         ','.join([str(disp) for _, disp in j])))
-        print(multiple_choices)
+        # print(multiple_choices)
         return choices + multiple_choices

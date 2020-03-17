@@ -56,8 +56,8 @@ class TodoList_ extends React.Component<Props, State> {
             error: (error:Error) => console.log('error', error),
         }
         // console.log(observer)
-        console.log(this.props.data.todoSet.pageInfo)
-        console.log(this.props.data.todoSet.edges)
+        /* console.log(this.props.data.todoSet.pageInfo)
+         * console.log(this.props.data.todoSet.edges) */
         return (<div>
           <TodoSubsc variables={ {id: this.props.id} } observer={ observer } />
           <h3>{ this.props.data.title }</h3>

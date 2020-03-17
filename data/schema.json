@@ -750,17 +750,13 @@
                 }
               ],
               "deprecationReason": null,
-              "description": "",
+              "description": null,
               "isDeprecated": false,
               "name": "todoSet",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "TodoNodeConnection",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "TodoNodeConnection",
+                "ofType": null
               }
             }
           ],
