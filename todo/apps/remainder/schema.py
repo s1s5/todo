@@ -58,6 +58,8 @@ class TodoFilterSet(FilterSet):
 
 
 from graphql_relay.utils import base64, unbase64, is_str
+from graphql_relay.connection.connectiontypes import Connection, PageInfo, Edge
+
 
 def connection_from_queryset(queryset, args=None, connection_type=None,
                              edge_type=None, pageinfo_type=None):
@@ -84,7 +86,7 @@ def connection_from_queryset(queryset, args=None, connection_type=None,
     first = args.get('first')
     last = args.get('last')
 
-    before_qs, after_qs = None, None
+    next_qs, prev_qs = None, None
     if before:
         pk = cursor_to_pk(before)
         if pk:
@@ -99,10 +101,12 @@ def connection_from_queryset(queryset, args=None, connection_type=None,
     print("HOGE")
     print(queryset)
     if isinstance(first, int):
+        
         queryset = queryset[:first]
 
     if isinstance(last, int):
-        queryset = queryset.reverse()[last:].reverse()
+        logger.warning('performance warning queryset.count called')
+        queryset = queryset[max(0, queryset.count() - last):]
 
     edges = [
         edge_type(
@@ -126,8 +130,7 @@ def connection_from_queryset(queryset, args=None, connection_type=None,
             has_next_page=False,
         )
     )
-    
-    
+
 
 from django.db.models.query import QuerySet
 from graphene_django.utils import maybe_queryset
@@ -137,6 +140,11 @@ def resolve_connection(connection, args, iterable):
     print("HOGEE")
     try:
         iterable = maybe_queryset(iterable)
+        print(iterable)
+        print(dir(iterable))
+        print(iterable.order_by())
+        print(args)
+        print("FOOO")
         connection = connection_from_queryset(
             iterable, args,
             connection_type=connection,
