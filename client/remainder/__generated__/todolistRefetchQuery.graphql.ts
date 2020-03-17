@@ -1,11 +1,13 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 5437f83b1fe1c9eeff3fc8b51ee28db4 */
+/* @relayHash edab1e7d29087410941cfdff2e10e002 */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
 export type todolistRefetchQueryVariables = {
-    count?: number | null;
+    first?: number | null;
+    last?: number | null;
+    before?: string | null;
     after?: string | null;
     todolist_id: string;
 };
@@ -23,12 +25,14 @@ export type todolistRefetchQuery = {
 
 /*
 query todolistRefetchQuery(
-  $count: Int
+  $first: Int
+  $last: Int
+  $before: String
   $after: String
   $todolist_id: ID!
 ) {
   todolist(id: $todolist_id) {
-    ...todolistRefetch_data_2QE1um
+    ...todolistRefetch_data_pbnwq
     id
   }
 }
@@ -39,13 +43,15 @@ fragment todo_data on TodoNode {
   text
 }
 
-fragment todolistRefetch_data_2QE1um on TodoListNode {
+fragment todolistRefetch_data_pbnwq on TodoListNode {
   id
   title
-  todoSet(first: $count, after: $after, orderBy: "-created_at") {
+  todoSet(first: $first, last: $last, before: $before, after: $after, orderBy: "-created_at") {
     pageInfo {
-      endCursor
       hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
     }
     edges {
       node {
@@ -63,8 +69,20 @@ const node: ConcreteRequest = (function () {
     var v0 = [
         ({
             "kind": "LocalArgument",
-            "name": "count",
+            "name": "first",
             "type": "Int",
+            "defaultValue": null
+        } as any),
+        ({
+            "kind": "LocalArgument",
+            "name": "last",
+            "type": "Int",
+            "defaultValue": null
+        } as any),
+        ({
+            "kind": "LocalArgument",
+            "name": "before",
+            "type": "String",
             "defaultValue": null
         } as any),
         ({
@@ -90,18 +108,28 @@ const node: ConcreteRequest = (function () {
         "name": "after",
         "variableName": "after"
     } as any), v3 = ({
+        "kind": "Variable",
+        "name": "before",
+        "variableName": "before"
+    } as any), v4 = ({
+        "kind": "Variable",
+        "name": "first",
+        "variableName": "first"
+    } as any), v5 = ({
+        "kind": "Variable",
+        "name": "last",
+        "variableName": "last"
+    } as any), v6 = ({
         "kind": "ScalarField",
         "alias": null,
         "name": "id",
         "args": null,
         "storageKey": null
-    } as any), v4 = [
+    } as any), v7 = [
         (v2 /*: any*/),
-        ({
-            "kind": "Variable",
-            "name": "first",
-            "variableName": "count"
-        } as any),
+        (v3 /*: any*/),
+        (v4 /*: any*/),
+        (v5 /*: any*/),
         ({
             "kind": "Literal",
             "name": "orderBy",
@@ -131,11 +159,9 @@ const node: ConcreteRequest = (function () {
                             "name": "todolistRefetch_data",
                             "args": [
                                 (v2 /*: any*/),
-                                {
-                                    "kind": "Variable",
-                                    "name": "count",
-                                    "variableName": "count"
-                                }
+                                (v3 /*: any*/),
+                                (v4 /*: any*/),
+                                (v5 /*: any*/)
                             ]
                         }
                     ]
@@ -156,7 +182,7 @@ const node: ConcreteRequest = (function () {
                     "concreteType": "TodoListNode",
                     "plural": false,
                     "selections": [
-                        (v3 /*: any*/),
+                        (v6 /*: any*/),
                         {
                             "kind": "ScalarField",
                             "alias": null,
@@ -169,7 +195,7 @@ const node: ConcreteRequest = (function () {
                             "alias": null,
                             "name": "todoSet",
                             "storageKey": null,
-                            "args": (v4 /*: any*/),
+                            "args": (v7 /*: any*/),
                             "concreteType": "TodoNodeConnection",
                             "plural": false,
                             "selections": [
@@ -185,14 +211,28 @@ const node: ConcreteRequest = (function () {
                                         {
                                             "kind": "ScalarField",
                                             "alias": null,
-                                            "name": "endCursor",
+                                            "name": "hasNextPage",
                                             "args": null,
                                             "storageKey": null
                                         },
                                         {
                                             "kind": "ScalarField",
                                             "alias": null,
-                                            "name": "hasNextPage",
+                                            "name": "hasPreviousPage",
+                                            "args": null,
+                                            "storageKey": null
+                                        },
+                                        {
+                                            "kind": "ScalarField",
+                                            "alias": null,
+                                            "name": "startCursor",
+                                            "args": null,
+                                            "storageKey": null
+                                        },
+                                        {
+                                            "kind": "ScalarField",
+                                            "alias": null,
+                                            "name": "endCursor",
                                             "args": null,
                                             "storageKey": null
                                         }
@@ -216,7 +256,7 @@ const node: ConcreteRequest = (function () {
                                             "concreteType": "TodoNode",
                                             "plural": false,
                                             "selections": [
-                                                (v3 /*: any*/),
+                                                (v6 /*: any*/),
                                                 {
                                                     "kind": "ScalarField",
                                                     "alias": null,
@@ -255,7 +295,7 @@ const node: ConcreteRequest = (function () {
                             "kind": "LinkedHandle",
                             "alias": null,
                             "name": "todoSet",
-                            "args": (v4 /*: any*/),
+                            "args": (v7 /*: any*/),
                             "handle": "connection",
                             "key": "todolistRefetch_todoSet",
                             "filters": [
@@ -270,10 +310,10 @@ const node: ConcreteRequest = (function () {
             "operationKind": "query",
             "name": "todolistRefetchQuery",
             "id": null,
-            "text": "query todolistRefetchQuery(\n  $count: Int\n  $after: String\n  $todolist_id: ID!\n) {\n  todolist(id: $todolist_id) {\n    ...todolistRefetch_data_2QE1um\n    id\n  }\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolistRefetch_data_2QE1um on TodoListNode {\n  id\n  title\n  todoSet(first: $count, after: $after, orderBy: \"-created_at\") {\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n    edges {\n      node {\n        id\n        ...todo_data\n        __typename\n      }\n      cursor\n    }\n  }\n}\n",
+            "text": "query todolistRefetchQuery(\n  $first: Int\n  $last: Int\n  $before: String\n  $after: String\n  $todolist_id: ID!\n) {\n  todolist(id: $todolist_id) {\n    ...todolistRefetch_data_pbnwq\n    id\n  }\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolistRefetch_data_pbnwq on TodoListNode {\n  id\n  title\n  todoSet(first: $first, last: $last, before: $before, after: $after, orderBy: \"-created_at\") {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      node {\n        id\n        ...todo_data\n        __typename\n      }\n      cursor\n    }\n  }\n}\n",
             "metadata": {}
         }
     } as any;
 })();
-(node as any).hash = '31ac48b95079205576b608c9fb7db835';
+(node as any).hash = 'f3f8399c8a89bdf0c708afbcb40bd034';
 export default node;

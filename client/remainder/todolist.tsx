@@ -4,6 +4,7 @@ import {useRouteMatch, Switch, Route} from "react-router-dom";
 import TodoListPaginated from './todolist-paginated'
 import TodoListRefetch from './todolist-refetch'
 import TodoListAll from './todolist-all'
+import TodoListFetchQuery from './todolist-fetch-query'
 
 //          <Link to={`${match.url}/recommend`}>some text</Link>
 //          
@@ -17,6 +18,9 @@ const TodoList = (props: { id: string }) => {
             </Route>
             <Route path={`${match.path}refetch/`}>
               <TodoListRefetch id={props.id}/>
+            </Route>
+            <Route path={`${match.path}fetchquery/`}>
+              <TodoListFetchQuery id={props.id}/>
             </Route>
             <Route path={`${match.path}all/`}>
               <TodoListAll id={ props.id }/>

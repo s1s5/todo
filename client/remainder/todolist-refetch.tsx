@@ -47,10 +47,17 @@ class TodoList_ extends React.Component<Props, State> {
         // console.log("@todolist refetch render")
         // console.log(this.props.data)
         const observer = {
-            next: (data:TodoSubscData) => console.log('next', data),
+            next: (data:TodoSubscData) => {
+                console.log('next', data)
+                console.log(data.operation)
+                console.log(data.todolist)
+                console.log(data.todo)
+            },
             error: (error:Error) => console.log('error', error),
         }
         // console.log(observer)
+        console.log(this.props.data.todoSet.pageInfo)
+        console.log(this.props.data.todoSet.edges)
         return (<div>
           <TodoSubsc variables={ {id: this.props.id} } observer={ observer } />
           <h3>{ this.props.data.title }</h3>
@@ -64,7 +71,8 @@ class TodoList_ extends React.Component<Props, State> {
           </List>
           </Container>
           <AddTodoButton todolist__id={ this.props.data.id } />
-          <button onClick={ this._refetch }>refetch</button>
+          <button onClick={ this._refetch }>refetch-next</button>
+          <button onClick={ this._refetch2 }>refetch-prev</button>
         </div>)
     }
 
@@ -74,8 +82,35 @@ class TodoList_ extends React.Component<Props, State> {
             (refetchVariables) => {
                 // console.log("refetch variables called", refetchVariables)
                 return {
-                    ...refetchVariables,
+                    first: 1,
                     after: self.props.data.todoSet?.pageInfo.endCursor
+                }
+            },
+            null,  // We can use the refetchVariables as renderVariables
+            (error) => {
+                if (error) {
+                    console.log('Error occurred', error)
+                } else {
+                    // console.log('successfully completed')
+                }
+            },
+            {
+                force: true,  // Assuming we've configured a network layer cache, we want to ensure we fetch the latest data.
+                fetchPolicy: 'network-only',
+            },
+        );
+    }
+
+    _refetch2 = () => {
+        const self = this
+        this.props.relay.refetch(
+            (refetchVariables) => {
+                // console.log("refetch variables called", refetchVariables)
+                // { first : 1} だけだと今までの結果が消える
+                // { last : 1, before: ...} だと追加したあとで表示されるベキであっても無視される。
+                return {
+                    last: 1,
+                    before: self.props.data.todoSet?.pageInfo.startCursor,
                 }
             },
             null,  // We can use the refetchVariables as renderVariables
@@ -101,17 +136,24 @@ const TodoListRefetch = createRefetchContainer(
         data: graphql`
             fragment todolistRefetch_data on TodoListNode
             @argumentDefinitions(
-                count: { type: "Int", defaultValue: 10 },
-                after: { type: "String"}
+                first: { type: "Int" },
+                last: { type: "Int" },
+                before: { type: "String" },
+                after: { type: "String" }
             ) {
                 id
                 title
                 todoSet(
-                    first: $count
+                    first: $first
+                    last: $last
+                    before: $before
                     after: $after
                     orderBy: "-created_at"
                 ) @connection(key: "todolistRefetch_todoSet") {
                     pageInfo {
+                        hasNextPage
+                        hasPreviousPage
+                        startCursor
                         endCursor
                     }
                     edges {
@@ -125,24 +167,29 @@ const TodoListRefetch = createRefetchContainer(
     },
     graphql`
         query todolistRefetchQuery(
-            $count: Int
+            $first: Int
+            $last: Int
+            $before: String
             $after: String
             $todolist_id: ID!
         ) {
             todolist(id: $todolist_id) {
-                ...todolistRefetch_data @arguments(count: $count, after: $after)
+                ...todolistRefetch_data @arguments(first: $first, last: $last,
+                                                   before: $before, after: $after)
             }
         }`
 )
 
+import {todolistRefetch_first_Query} from './__generated__/todolistRefetch_first_Query.graphql'
+
 const TodoListQuery = (props: {id: string, environment: Environment}) => {
     const props_ = props
-    return <QueryRenderer
+    return <QueryRenderer<todolistRefetch_first_Query>
                environment={ props_.environment }
                query={graphql`
                    query todolistRefetch_first_Query($todolist_id: ID!) {
                        todolist(id: $todolist_id) {
-                           ...todolistRefetch_data
+                           ...todolistRefetch_data @arguments(first: 100)
                        }
                    }
                `}
@@ -153,7 +200,7 @@ const TodoListQuery = (props: {id: string, environment: Environment}) => {
                            return <span>{error.toString()}</span>;
                        }
                    // console.log(props);
-                       if (props) {
+                       if (props && props.todolist) {
                            return <TodoListRefetch id={ props_.id } data={ props.todolist } />
                        }
                        return <span>loading</span>

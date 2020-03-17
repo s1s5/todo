@@ -110,18 +110,18 @@ LOGGING = {
         os.path.basename(PROJECT_NAME): {
             'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': False,
+            'propagate': True,
         },
         'django': {
             'handlers': ['console'],
             'level': 'INFO',
-            'propagate': False,
+            'propagate': True,
         },
     },
-    # 'root': {
-    #     'handlers': ['console'],
-    #     'level': 'DEBUG'
-    # },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG'
+    },
 }
 
 # Database
@@ -227,8 +227,9 @@ DEBUG_TOOLBAR_PANELS = [
 ############################################
 
 GRAPHENE = {
-    # # firstかlastが有効なときにしか聞かない・・・バグだろこれ
-    # 'RELAY_CONNECTION_MAX_LIMIT': 100,
+    # firstかlastが有効なときにしか聞かない・・・バグだろこれ
+    # これを超えてリクエストしてもなんのエラーもでない・・・？
+    'RELAY_CONNECTION_MAX_LIMIT': 100,
 
     # # DjangoFilterConnectionField用、大量のデータを一気にフェッチするのを防ぐ
     # # 下のような感じでfirstのデフォルト値を指定しておく
