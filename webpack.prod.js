@@ -9,13 +9,15 @@ module.exports = merge(common, {
     mode: 'production', // 本番モード
     output: {
         path: path.resolve(__dirname, 'dist', 'prod'),
-        publicPath: '/static/prod/',
+        publicPath: '/static/prod/',  // Djangoでどうserveするかに関わる
         filename: '[name].[hash].js',
         chunkFilename: '[name].[hash].js',
     },
     optimization: {
         splitChunks: {
             chunks: 'initial',
+            // maxSize: 244000,  // これ入れるとdjango-webpack-loaderがうまく動かない
+            // minSize: 100000,  // 効果あるかよくわからなかったので一旦OFF
         },
         minimize: true,
         minimizer: [
