@@ -2,6 +2,7 @@ const path = require('path')
 const merge = require('webpack-merge') // webpack-merge
 const common = require('./webpack.common.js') // 汎用設定をインポート
 const TerserPlugin = require('terser-webpack-plugin')
+const BundleTracker = require('webpack-bundle-tracker')
 
 // common設定とマージする
 module.exports = merge(common, {
@@ -29,4 +30,7 @@ module.exports = merge(common, {
             }),
         ],
     },
+    plugins: [
+        new BundleTracker({filename: './dist/prod/webpack-stats.json'})
+    ],
 })

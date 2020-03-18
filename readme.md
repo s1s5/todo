@@ -74,3 +74,10 @@ npm install @material-ui/core @material-ui/icons
 #     <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width"/>
 # あたりを追記して、HtmlWebpackPluginのtemplateに指定しておく
 ```
+
+``` shell
+# Djangoとwebpackの連携
+npm install --save-dev webpack-bundle-tracker
+pip install django-webpack-loader
+```
+

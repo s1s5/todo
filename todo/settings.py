@@ -176,6 +176,7 @@ STATIC_ROOT = env('STATIC_ROOT')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, PROJECT_DIR, "static"),
+    os.path.join(BASE_DIR, "dist"),
 )
 
 ############################################
@@ -288,6 +289,22 @@ else:
 #    "http://localhost:8080",
 #    "http://127.0.0.1:42100",
 #]
+
+# webpack loader
+INSTALLED_APPS += [
+    'webpack_loader',
+]
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': 'prod/', # must end with slash
+        # 'POLL_INTERVAL': 0.1,
+        # 'TIMEOUT': None,
+        # 'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
+        # 'LOADER_CLASS': 'webpack_loader.loader.WebpackLoader',
+        'STATS_FILE': os.path.join(BASE_DIR, 'dist', 'prod', 'webpack-stats.json')
+    }
+}
 
 
 ############################################
