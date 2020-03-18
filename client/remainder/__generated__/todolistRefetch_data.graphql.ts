@@ -19,7 +19,7 @@ export type todolistRefetch_data = {
                 readonly " $fragmentRefs": FragmentRefs<"todo_data">;
             } | null;
         } | null>;
-    };
+    } | null;
     readonly " $refType": "todolistRefetch_data";
 };
 export type todolistRefetch_data$data = todolistRefetch_data;
