@@ -19,7 +19,7 @@ const TodoList = (props: Props) => {
     console.log(props)
     return (<div>
       <h3>todo list : id={ props.data.id }, { props.data.title }</h3>
-      { props.data.todoSet.edges.map((edge) => (
+      { props.data.todoSet!.edges.map((edge) => (
           <div key={ edge!.node!.id }><Todo data={ edge!.node! }/></div>
       ))}
       <AddTodoButton todolist__id={ props.data.id } />
