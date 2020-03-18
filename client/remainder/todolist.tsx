@@ -6,7 +6,7 @@ import {useRouteMatch, Switch, Route} from "react-router-dom";
 // import TodoListAll from './todolist-all'
 // import TodoListFetchQuery from './todolist-fetch-query'
 
-
+// https://ja.reactjs.org/docs/code-splitting.html
 const TodoListPaginated = React.lazy(() => import('./todolist-paginated'))
 const TodoListRefetch = React.lazy(() => import('./todolist-refetch'))
 const TodoListAll = React.lazy(() => import('./todolist-all'))
