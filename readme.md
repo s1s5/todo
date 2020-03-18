@@ -19,6 +19,9 @@ npm init
 # babel, webpackのインストール
 npm install --save-dev @babel/core @babel/plugin-proposal-class-properties @babel/plugin-proposal-decorators @babel/preset-env @babel/preset-react @babel/preset-typescript webpack webpack-cli webpack-dev-server babel-loader
 
+# webpackのリリース設定用のパッケージのインストール
+npm install --save-dev webpack-merge terser-webpack-plugin
+
 # typescriptを使うためのインストール
 npm install --save-dev fork-ts-checker-webpack-plugin  typescript
 
