@@ -16,7 +16,11 @@ type Props = {
 }
 
 const TodoList = (props: Props) => {
-    console.log(props)
+    console.log(props.data.todoSet)
+    if (props.data.todoSet === null) {
+        return <div>some error occurred</div>
+    }
+
     return (<div>
       <h3>todo list : id={ props.data.id }, { props.data.title }</h3>
       { props.data.todoSet.edges.map((edge) => (

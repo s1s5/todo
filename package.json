@@ -4,9 +4,10 @@
   "description": "mkvirtualenv --no-site-packages -p /usr/bin/python3 todo pip install django django-admin startproject todo",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.babel.js",
+    "build:prod": "webpack --config webpack.prod.js",
+    "build:dev": "webpack --config webpack.dev.js",
     "relay": "relay-compiler --src ./client --schema ./data/schema.json --language typescript --extensions tsx",
-    "start": "webpack-dev-server --host 0.0.0.0 --port 42101 --disable-host-check --hot --history-api-fallback=true",
+    "start": "webpack-dev-server --host 0.0.0.0 --port 42101 --disable-host-check --hot --history-api-fallback=true --config webpack.dev.js",
     "test": "jest --coverage"
   },
   "babel": {
@@ -52,10 +53,13 @@
     "relay-compiler-language-typescript": "^12.0.0",
     "relay-modern-typescript-transformer": "0.0.3",
     "relay-test-utils": "^9.0.0",
+    "terser-webpack-plugin": "^2.3.5",
     "typescript": "^3.8.3",
     "webpack": "^4.42.0",
+    "webpack-bundle-tracker": "^0.4.3",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.10.3",
+    "webpack-merge": "^4.2.2"
   },
   "dependencies": {
     "@hot-loader/react-dom": "^16.12.0",

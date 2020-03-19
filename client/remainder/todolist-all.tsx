@@ -17,7 +17,7 @@ const TodoList = (props: Props) => {
     const todolist = props.query!.todolist!
     return (<div>
       <h3>todo list : id={ todolist.id }, { todolist.title }</h3>
-      { todolist.todoSet.edges.map((edge) => (
+      { todolist.todoSet!.edges.map((edge) => (
           <div key={ edge!.node!.id }><Todo data={ edge!.node! }/></div>
       ))}
       <AddTodoButton todolist__id={ todolist.id } />

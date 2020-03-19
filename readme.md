@@ -19,6 +19,9 @@ npm init
 # babel, webpackのインストール
 npm install --save-dev @babel/core @babel/plugin-proposal-class-properties @babel/plugin-proposal-decorators @babel/preset-env @babel/preset-react @babel/preset-typescript webpack webpack-cli webpack-dev-server babel-loader
 
+# webpackのリリース設定用のパッケージのインストール
+npm install --save-dev webpack-merge terser-webpack-plugin
+
 # typescriptを使うためのインストール
 npm install --save-dev fork-ts-checker-webpack-plugin  typescript
 
@@ -63,7 +66,7 @@ npm install --save-dev @types/hoist-non-react-statics
 
 ``` shell
 # material-uiを使ってみる
-npm install @material-ui/core @material-ui/icons
+npm install --save @material-ui/core @material-ui/icons
 
 # この辺はどれが必須なんだ・・？？, date-fns@2は使えない
 @material-ui/pickers @date-io/date-fns@1.3.13 date-fns
@@ -75,3 +78,10 @@ npm install @material-ui/core @material-ui/icons
 #     <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width"/>
 # あたりを追記して、HtmlWebpackPluginのtemplateに指定しておく
 ```
+
+``` shell
+# Djangoとwebpackの連携
+npm install --save-dev webpack-bundle-tracker
+pip install django-webpack-loader
+```
+

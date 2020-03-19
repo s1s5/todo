@@ -9,6 +9,7 @@ x-app-base:
     - DEBUG=True
     - DATABASE_URL=psql://psqluser:psqlpass@db/todo
     - PYTHONUNBUFFERED=1
+    - STATIC_ROOT=/data/static
     - MEDIA_ROOT=/data/media
   volumes:
     - .:/usr/src/app

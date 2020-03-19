@@ -73,7 +73,7 @@ def filter_with_cond(queryset, order_by, cond, flag):
 
 def connection_from_queryset(queryset, args, connection_type,
                              edge_type, pageinfo_type):
-    if 'order_by' in args:  # TODO: order_byは固定・・・
+    if 'order_by' in args and args['order_by']:  # TODO: order_byは固定・・・
         order_by = args['order_by'].split(',')
     else:
         assert hasattr(queryset.model._meta, 'ordering'), 'must specify order_by or ordering in models'
@@ -158,7 +158,8 @@ class CustomOrderingFilter(django_filters.OrderingFilter):
     max_conbination = 3
 
     def filter(self, qs, value):
-        value = sum((y for y in (x.split(',') for x in value) if y), [])
+        if value:
+            value = sum((y for y in (x.split(',') for x in value) if y), [])
         return super().filter(qs, value)
 
     def build_choices(self, fields, labels):

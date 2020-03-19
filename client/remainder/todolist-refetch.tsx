@@ -64,7 +64,7 @@ class TodoList_ extends React.Component<Props, State> {
           <Container maxWidth="sm" >
             <List className={this.props.classes.root}>
           {
-              this.props.data.todoSet.edges.map((edge) => (
+              this.props.data.todoSet!.edges.map((edge) => (
                   <li key={ edge!.node!.id }><div><Todo data={ edge!.node! }/></div></li>
               ))
           }
@@ -189,7 +189,7 @@ const TodoListQuery = (props: {id: string, environment: Environment}) => {
                query={graphql`
                    query todolistRefetch_first_Query($todolist_id: ID!) {
                        todolist(id: $todolist_id) {
-                           ...todolistRefetch_data @arguments(first: 100)
+                           ...todolistRefetch_data @arguments(first: 1)
                        }
                    }
                `}
