@@ -65,6 +65,10 @@ npm install --save-dev @types/hoist-non-react-statics
 # material-uiを使ってみる
 npm install @material-ui/core @material-ui/icons
 
+# この辺はどれが必須なんだ・・？？, date-fns@2は使えない
+@material-ui/pickers @date-io/date-fns@1.3.13 date-fns
+
+
 # dev-index.htmlの追加
 #     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
 #     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
