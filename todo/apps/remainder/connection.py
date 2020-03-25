@@ -33,6 +33,9 @@ def cursor_to_condition(cursor, order_by):
 
 
 def instance_to_cursor(obj, order_by):
+    f = getattr
+    if isinstance(obj, dict):
+        f = lambda o, k: o[k]
     bio = io.BytesIO()
     for order in order_by:
         pickle.dump(order, file=bio)
@@ -40,7 +43,7 @@ def instance_to_cursor(obj, order_by):
             field = order[1:]
         else:
             field = order
-        pickle.dump(getattr(obj, field), file=bio)
+        pickle.dump(f(obj, field), file=bio)
     return b64encode(bio.getvalue()).decode('utf-8')
 
 
