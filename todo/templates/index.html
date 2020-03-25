@@ -1,4 +1,4 @@
-{% load render_bundle from webpack_loader %}
+{# {% load render_bundle from webpack_loader %}#}
 <!DOCTYPE html>
 <html>
   <head>
@@ -13,10 +13,10 @@
          margin: 0;
      }
     </style>
-    {% render_bundle 'main' 'css' %}
+    {# {% render_bundle 'main' 'css' %}#}
   </head>
   <body>
-    {% render_bundle 'vendors~main' 'js' %}
-    {% render_bundle 'main' 'js' %}
+    {#% render_bundle 'vendors~main' 'js' %#}
+    {#% render_bundle 'main' 'js' %#}
   </body>
 </html>
