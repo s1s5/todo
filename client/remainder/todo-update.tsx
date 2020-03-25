@@ -18,8 +18,9 @@ type MyCheckBoxProps<T> = {
     on_change: () => unknown,
 }
 
-const MyCheckBox_ = (props:MyCheckBoxProps<boolean>) => (
-    <FormControl error={ props.error_message !== undefined }>
+const MyCheckBox_ = React.memo((props:MyCheckBoxProps<boolean>) => {
+    console.log('my checkbox rendered')
+    return <FormControl error={ props.error_message !== undefined }>
       <InputLabel htmlFor={props.form_id}>タスク完了</InputLabel>
       <Checkbox
           id={ props.form_id }
@@ -29,34 +30,45 @@ const MyCheckBox_ = (props:MyCheckBoxProps<boolean>) => (
       />
       <FormHelperText id={ props.form_id + "-help-text" }>{ `${props.error_message}, ` }Some important helper text</FormHelperText>
     </FormControl>
-)
+})// , [props] )//[props.form_id, props.error_message,, props.value, props.on_change])
 
+const ContextWrapper = (props:any) => {
+    const {Component, context, on_change, ...other_props} = props
+    const _on_change = React.useCallback((event:any) => {
+        const {value} = event.target
+        context.set_value( (prev:any) => {
+            const next = {...prev}
+            // next[props.name] = !prev[props.name]
+            // nameのチェックを入れたい, Component作成時に初期値が必ずundefinedじゃないことを保証すればいい？
+            if (on_change === undefined) {
+                next[props.name] = value
+            } else {
+                next[props.name] = on_change(value, prev[props.name])
+            }
+            return next
+        })
+    }, [context.set_value, props.name])
+    console.log(other_props)
+    return <Component
+               on_change={ _on_change }
+               {...other_props} />
+}
 
-const wrapper = (Compoent: any, on_change: (((event:any, prev:any) => any) | undefined) = undefined) => ( (props: any) => (
-    <FormContext.Consumer>
-      { (context) => {
-            console.log('wrapper -> ', props.name, context.value[props.name])
-            return <Compoent
-                       form_id={ `${context.form_id}-${props.name}` }
-                       value={ context.value[props.name] }
-                       error_message={ props.name in context.errors ? context.errors[props.name] : undefined }
-                       on_change={ (event:any) => {
-                           const {value} = event.target
-                           context.set_value( (prev:any) => {
-                               const next = {...prev}
-                               // next[props.name] = !prev[props.name]
-                               // nameのチェックを入れたい, Component作成時に初期値が必ずundefinedじゃないことを保証すればいい？
-                               if (on_change === undefined) {
-                                   next[props.name] = value
-                               } else {
-                                   next[props.name] = on_change(value, prev[props.name])
-                               }
-                               return next
-                           })
-                       }} />
-      }}
-    </FormContext.Consumer>    
-))
+const wrapper = (Component: any, on_change: (((event:any, prev:any) => any) | undefined) = undefined) => ( (props: any) => {
+    return <FormContext.Consumer>
+    { (context) => {
+        // console.log('wrapper -> ', props.name, context.value[props.name])
+        return <ContextWrapper
+        Component={Component}
+        context={context}
+                   form_id={ `${context.form_id}-${props.name}` }
+                   value={ context.value[props.name] }
+                   error_message={ props.name in context.errors ? context.errors[props.name] : undefined }
+        on_change={ on_change }
+        { ...props } />
+    }}
+    </FormContext.Consumer>
+})
 
 // const MyCheckBox = (props:any) => (
 //     <FormContext.Consumer>
@@ -106,8 +118,8 @@ type MyFormGroupProps = {
 }
 
 const MyFormGroup = (props: MyFormGroupProps) => {
-    console.log('MYFORMGROUP->', props)
-    console.log(props.errors)
+    // console.log('MYFORMGROUP->', props)
+    // console.log(props.errors)
 
     // TODO: React.useMemoを使おうとすると怒られる・・・
 //     const errors: any = {}
@@ -125,8 +137,8 @@ const MyFormGroup = (props: MyFormGroupProps) => {
         props.errors.map((e: any) => {
             const {field, messages} = e
             if (d[field] === undefined) {
-            d[field] = ''
-        }
+                d[field] = ''
+            }
             d[field] = messages.reduce((a : string, c : string) => (a + c), d[field])
         })
         return d
