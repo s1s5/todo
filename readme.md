@@ -69,7 +69,9 @@ npm install --save-dev @types/hoist-non-react-statics
 npm install --save @material-ui/core @material-ui/icons
 
 # この辺はどれが必須なんだ・・？？, date-fns@2は使えない
-@material-ui/pickers @date-io/date-fns@1.3.13 date-fns
+npm install --save @material-ui/pickers @date-io/date-fns@1.3.13 date-fns
+npm install --save material-ui-dropzone @material-ui/lab
+
 
 
 # dev-index.htmlの追加

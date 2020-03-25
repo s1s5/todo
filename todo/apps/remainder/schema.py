@@ -11,7 +11,51 @@ import django_filters
 from . import models
 from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter
 
+
 logger = logging.getLogger(__name__)
+
+
+def injection(func):
+    def f(*args, **kwargs):
+        print('calling : ', func, args, kwargs)
+        return func(*args, **kwargs)
+    return f
+
+
+def decorator(wrapper):
+    # これはQueryとかにしかつけられない。。。
+    def f(klass):
+        print(klass)
+        print(klass.__dict__)
+        print(graphene.types.utils.yank_fields_from_attrs(klass.__dict__))
+
+        get_resolver_for_type = (
+            graphene.utils.get_unbound_function.get_unbound_function(
+                graphene.types.typemap.TypeMap.get_resolver_for_type))
+        # print(get_resolver_for_type)
+        for name, field in graphene.types.utils.yank_fields_from_attrs(klass.__dict__).items():
+            # resolver = getattr(klass, "resolve_{}".format(field_name), None)
+            # print(klass, name, field.default_value)
+            resolver = get_resolver_for_type(None, type('', (klass, graphene.ObjectType), {}),
+                                             name, field.default_value)
+            setattr(klass, 'resolve_{}'.format(name), wrapper(resolver))
+            print(name, field, 'resolver = ', resolver)
+        return klass
+    return f
+
+
+def decorator2(wrapper):
+    # loginが必要だったり、権限チェックはこっちか・・
+    def f(klass):
+        print(klass, DjangoObjectType)
+        assert issubclass(klass, DjangoObjectType)
+        setattr(klass, 'get_queryset', wrapper(klass.get_queryset))
+        return klass
+    return f
+
+
+test_dec = decorator(injection)
+test_dec2 = decorator2(injection)
 
 
 class TodoFilterSet(django_filters.FilterSet):
@@ -61,15 +105,66 @@ class TodoFilterSet(django_filters.FilterSet):
 #             super().__init__(*args, **kwargs)
 #         other = graphene.String()
 
+class TodoExtraNode(DjangoObjectType):
+    class Meta:
+        model = models.TodoExtra
+        # fields = ['description']
+        interfaces = (graphene.relay.Node, )
 
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        # TodoNode.extraからアクセスするときに呼び出されないのはなぜ・・・？？
+        print("HOGE TodoExtra get_queryset called!!!", queryset, info)
+        return super().get_queryset(queryset, info)
+
+
+@test_dec2
 class TodoNode(DjangoObjectType):
+    # on = 'objects' 以外を指定すれば、default_manager以外を使用することができる
     class Meta:
         model = models.Todo
-        exclude = ['parent']
+        # fieldsかexcludeを必ず指定
+        # fields = ['text']
+        # exclude = ['parent']
         interfaces = (graphene.relay.Node, )
         filterset_class = TodoFilterSet
         # connection_class = ConnectionClass
 
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        # print(cls, queryset, info)
+        # print('info: ', dir(info))
+        # for key in dir(info):
+        #     if key.startswith('__'):
+        #         continue
+        #     if key == 'schema':
+        #         continue
+        #     print(key, '==>', getattr(info, key))
+        # こうしたりしておかないとextraごとにquery発行が行われるが、
+        # 必要ないケースにおいてもselect_relatedが呼ばれる。。。
+        # info.field_astsから判断する必要がありそう
+        print("FOO")
+        print(info.field_asts)
+        print(info.field_asts[0], type(info.field_asts[0]))
+        print(dir(info.field_asts[0]))
+        # print(queryset.values('id', 'text'))
+        return queryset.select_related('extra')
+    # extra = DjangoConnectionField(TodoExtraNode)
+    #    extra = DjangoFilterConnectionField(TodoExtraNode)
+
+
+# 同じモデルは登録しないほうがいい。他のノードからリンクを辿って参照するときに、後のものが使われる
+# @test_dec2
+# class TodoNode2(DjangoObjectType):
+#     # on = 'objects' 以外を指定すれば、default_manager以外を使用することができる
+#     class Meta:
+#         model = models.Todo
+#         # fieldsかexcludeを必ず指定
+#         fields = ['text']
+#         # exclude = ['parent']
+#         interfaces = (graphene.relay.Node, )
+#         filterset_class = TodoFilterSet
+#         # connection_class = ConnectionClass
 
 class TodoListNode(DjangoObjectType):
     class Meta:
@@ -77,8 +172,16 @@ class TodoListNode(DjangoObjectType):
         filter_fields = {
             'title': ['exact', 'icontains', 'istartswith'],
         }
+        fields = [
+            'title', 'author', 'created_at', 'modified_at',
+            # 'todo_set',
+        ]
         interfaces = (graphene.relay.Node, )
-    todoSet = CustomDjangoFilterConnectionField(TodoNode)
+
+    # fieldsには書いてもかかなくてもいい
+    # ForeignKeyとかで参照されている場合にはこうやって指定しないと駄目
+    # なんでかちゃんとリンクしているやつだけfilterされている。。不思議！
+    todo_set = CustomDjangoFilterConnectionField(TodoNode)
 
 
 class TodoListCreateMutation(graphene.relay.mutation.ClientIDMutation):
@@ -152,7 +255,9 @@ class TodoListMutation(graphene.ObjectType):
 
 
 class Query(object):
-    todo = graphene.Field(TodoNode)
+    todo = graphene.Field(TodoNode)  # こっちはアクセスできない
+    todo2 = graphene.relay.Node.Field(TodoNode)  # こっちはglobal_idで引ける
+    todoextra = graphene.Field(TodoExtraNode)
     todolist = graphene.relay.Node.Field(TodoListNode)
     todolists = DjangoFilterConnectionField(TodoListNode)
     todos = CustomDjangoFilterConnectionField(TodoNode,
