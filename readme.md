@@ -66,7 +66,7 @@ npm install --save-dev @types/hoist-non-react-statics
 
 ``` shell
 # material-uiを使ってみる
-npm install --save @material-ui/core @material-ui/icons
+npm install --save @material-ui/core @material-ui/icons @material-ui/pickers
 
 # dev-index.htmlの追加
 #     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
