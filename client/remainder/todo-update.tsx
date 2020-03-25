@@ -7,6 +7,7 @@ import {
     Checkbox,
     Input,
     Button,
+    FormControlLabel,
 } from '@material-ui/core'
 
 const FormContext = React.createContext<any>({});
@@ -21,14 +22,18 @@ type MyCheckBoxProps<T> = {
 const MyCheckBox_ = React.memo((props:MyCheckBoxProps<boolean>) => {
     console.log('my checkbox rendered')
     return <FormControl error={ props.error_message !== undefined }>
-      <InputLabel htmlFor={props.form_id}>タスク完了</InputLabel>
+      <FormControlLabel
+        control={
       <Checkbox
           id={ props.form_id }
           checked={props.value}
           onChange={props.on_change}
           aria-describedby={ props.form_id + "-help-text" }
       />
-      <FormHelperText id={ props.form_id + "-help-text" }>{ `${props.error_message}, ` }Some important helper text</FormHelperText>
+        }
+    label="タスク完了"
+    labelPlacement="end"/>
+    <FormHelperText id={ props.form_id + "-help-text" }>{ `${props.error_message}, ` }Some important helper text</FormHelperText>
     </FormControl>
 })// , [props] )//[props.form_id, props.error_message,, props.value, props.on_change])
 
