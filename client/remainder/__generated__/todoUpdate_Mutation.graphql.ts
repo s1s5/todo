@@ -1,12 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 8510671585dac5d101f1276f93733760 */
+/* @relayHash 689ce0bd2604f2b182879918c3ea93a2 */
 
 import { ConcreteRequest } from "relay-runtime";
 export type TodoUpdateFormMutationInput = {
     completed?: boolean | null;
     text: string;
-    id?: string | null;
+    id: string;
     clientMutationId?: string | null;
 };
 export type todoUpdate_MutationVariables = {

@@ -68,6 +68,7 @@
     "core-js": "^3.6.4",
     "create-subscription": "^16.13.0",
     "hoist-non-react-statics": "^3.3.2",
+    "lodash": "^4.17.15",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-hot-loader": "^4.12.19",
