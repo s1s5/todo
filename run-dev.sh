@@ -3,6 +3,9 @@
 
 set -eu  # <= 0以外が返るものがあったら止まる, 未定義の変数を使おうとしたときに打ち止め
 
+export USER_ID=`id -u`
+export GROUP_ID=`id -g`
+
 
 if [ `uname` = "Darwin" ]; then
     trap 'kill $(jobs -p)' INT

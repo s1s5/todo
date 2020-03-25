@@ -6,12 +6,16 @@ from base64 import b64encode, b64decode
 
 import django_filters
 from django.db.models import Q
+from django import forms
 
 # from graphql_relay.utils import base64, unbase64
 # from graphql_relay.connection.connectiontypes import Connection, Edge
 from graphene.relay import PageInfo
+from graphql_relay import from_global_id
 from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.utils import maybe_queryset
+
+from graphene_django.forms.mutation import DjangoFormMutation, DjangoModelFormMutation
 
 
 logger = logging.getLogger(__name__)
@@ -186,3 +190,31 @@ class CustomOrderingFilter(django_filters.OrderingFilter):
                         ','.join([str(disp) for _, disp in j])))
         # print(multiple_choices)
         return choices + multiple_choices
+
+
+CustomDjangoFormMutation = DjangoFormMutation
+
+
+class CustomDjangoModelFormMutation(DjangoModelFormMutation):
+    class Meta:
+        abstract = True
+
+    def clean_id(self):
+        id = self.cleaned_data.get('id')
+        print("HOGE id")
+        return id
+
+    @classmethod
+    def get_form_kwargs(cls, root, info, **input):
+        kwargs = {"data": input}
+
+        pk = input.pop("id", None)
+        if pk:
+            try:
+                pk = from_global_id(pk)[1]
+            except Exception:
+                raise forms.ValidationError('idの値が不正です')
+            instance = cls._meta.model._default_manager.get(pk=pk)
+            kwargs["instance"] = instance
+
+        return kwargs

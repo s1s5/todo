@@ -1,15 +1,21 @@
 import logging
 import collections
 import graphene
+
+from django import forms
+
+
 from graphql_relay import from_global_id
 from graphene_django import DjangoObjectType, DjangoConnectionField
 # from graphene_django.forms.mutation import DjangoModelFormMutation
 from graphene_django.filter import DjangoFilterConnectionField
 import django_filters
 # from django_filters import FilterSet, OrderingFilter
+from graphene_django.forms.mutation import DjangoFormMutation
+
 
 from . import models
-from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter
+from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter, CustomDjangoModelFormMutation
 
 
 logger = logging.getLogger(__name__)
@@ -45,6 +51,7 @@ def decorator(wrapper):
 
 
 def decorator2(wrapper):
+    # こっちはDjangoObjectTypeのノードに対するデコレータ
     # loginが必要だったり、権限チェックはこっちか・・
     def f(klass):
         print(klass, DjangoObjectType)
@@ -105,15 +112,19 @@ class TodoFilterSet(django_filters.FilterSet):
 #             super().__init__(*args, **kwargs)
 #         other = graphene.String()
 
+@test_dec2
 class TodoExtraNode(DjangoObjectType):
     class Meta:
         model = models.TodoExtra
         # fields = ['description']
+        filter_fields = {
+        }
         interfaces = (graphene.relay.Node, )
 
     @classmethod
     def get_queryset(cls, queryset, info):
         # TodoNode.extraからアクセスするときに呼び出されないのはなぜ・・・？？
+        # manyの場合にしかconnectionは張られない・・・
         print("HOGE TodoExtra get_queryset called!!!", queryset, info)
         return super().get_queryset(queryset, info)
 
@@ -125,10 +136,17 @@ class TodoNode(DjangoObjectType):
         model = models.Todo
         # fieldsかexcludeを必ず指定
         # fields = ['text']
-        # exclude = ['parent']
+        exclude = ['parent']
         interfaces = (graphene.relay.Node, )
         filterset_class = TodoFilterSet
         # connection_class = ConnectionClass
+
+    # extra = CustomDjangoFilterConnectionField(TodoExtraNode)
+
+    def resolve_extra(instance, info):
+        # 現状ここで権限チェックするしかなさそう
+        print('TodoNode.resolve_extra', 'instance =', instance, 'info =', info)
+        return getattr(instance, 'extra', None)
 
     @classmethod
     def get_queryset(cls, queryset, info):
@@ -165,6 +183,65 @@ class TodoNode(DjangoObjectType):
 #         interfaces = (graphene.relay.Node, )
 #         filterset_class = TodoFilterSet
 #         # connection_class = ConnectionClass
+
+
+class TodoUpdateForm(forms.ModelForm):
+    class Meta:
+        model = models.Todo
+        fields = ('completed', 'text')
+        # gid  = forms.CharField()
+        # completed = forms.BooleanField(required=False)
+        # text = forms.CharField(help_text='ここにtodoの詳細')
+
+    def clean_completed(self):
+        completed = self.cleaned_data.get('completed')
+        if completed:
+            raise forms.ValidationError('そんな簡単に達成できません！')
+        return completed
+
+    def clean_text(self):
+        text = self.cleaned_data.get('text')
+        if text:
+            raise forms.ValidationError('修正したくありません！')
+        return text
+
+
+class TodoUpdateFormMutation(CustomDjangoModelFormMutation):
+    '''
+    mutation($input: TodoUpdateFormMutationInput!) {
+  todoUpdateForm(input: $input){
+    errors{
+      field
+      messages
+    }
+todo {
+  completed
+  text
+}
+  }
+}
+
+---- variables
+{
+  "input": {
+    "id": "VG9kb05vZGU6MQ==",
+    "completed": false,
+    "text": "todo-001(todolist-001)"
+  }
+}
+    '''
+    class Meta:
+        form_class = TodoUpdateForm
+
+    # todo = graphene.Field(TodoNode)
+
+    # @classmethod
+    # def perform_mutate(cls, form, info):
+    #     print('TodoUpdateFormMutation.perform_mutate', cls, form, info)
+    #     obj = form.save()
+    #     kwargs = {cls._meta.return_field_name: obj}
+    #     return cls(errors=[], **kwargs)
+
 
 class TodoListNode(DjangoObjectType):
     class Meta:
@@ -209,6 +286,7 @@ class TodoListUpdateMutation(graphene.relay.mutation.ClientIDMutation):
         todolist.title = title
         todolist.save()
         return TodoListUpdateMutation(todolist=todolist)
+
 
 
 class TodoCreateMutation(graphene.relay.mutation.ClientIDMutation):
@@ -272,6 +350,7 @@ class Mutation(object):
     todolist_update = TodoListUpdateMutation.Field()
     todo_create = TodoCreateMutation.Field()
     todo_update = TodoUpdateMutation.Field()
+    todo_update_form = TodoUpdateFormMutation.Field()
 
 
 class Subscription(object):
