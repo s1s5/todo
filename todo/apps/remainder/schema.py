@@ -15,7 +15,7 @@ from graphene_django.forms.mutation import DjangoFormMutation
 
 
 from . import models
-from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter, CustomDjangoModelFormMutation
+from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter, DjangoUpdateModelFormMutation
 
 
 logger = logging.getLogger(__name__)
@@ -206,7 +206,7 @@ class TodoUpdateForm(forms.ModelForm):
         return text
 
 
-class TodoUpdateFormMutation(CustomDjangoModelFormMutation):
+class TodoUpdateFormMutation(DjangoUpdateModelFormMutation):
     '''
     mutation($input: TodoUpdateFormMutationInput!) {
   todoUpdateForm(input: $input){

@@ -216,9 +216,9 @@ const TodoUpdateForm = (props:{ id: string, environment: any}) => {
                       }
                       // console.log('repsonse = ', response)
                   },
-                  onError: (error: Error) => {
-                      set_form_errors(error.errors.map((e) => e.message))
-                      console.log('errors = ', error.errors.map((e) => e.message))
+                  onError: (error: any) => {
+                      set_form_errors(error.errors.map((e: any) => e.message))
+                      console.log('errors = ', error.errors.map((e:any) => e.message))
                       console.log('update error!!!')
                       console.log('error = ', error)
                       

@@ -8,6 +8,7 @@ import django_filters
 from django.db.models import Q
 from django import forms
 
+import graphene
 # from graphql_relay.utils import base64, unbase64
 # from graphql_relay.connection.connectiontypes import Connection, Edge
 from graphene.relay import PageInfo
@@ -195,14 +196,71 @@ class CustomOrderingFilter(django_filters.OrderingFilter):
 CustomDjangoFormMutation = DjangoFormMutation
 
 
-class CustomDjangoModelFormMutation(DjangoModelFormMutation):
+class DjangoCreateModelFormMutation(DjangoModelFormMutation):
+    inject_id = False
+
     class Meta:
         abstract = True
 
-    def clean_id(self):
-        id = self.cleaned_data.get('id')
-        print("HOGE id")
-        return id
+    @classmethod
+    def __init_subclass_with_meta__(
+        cls,
+        form_class=None,
+        model=None,
+        return_field_name=None,
+        only_fields=(),
+        exclude_fields=(),
+        **options
+    ):
+        from graphene.types.utils import yank_fields_from_attrs
+        from graphene_django.registry import get_global_registry
+        from graphene_django.forms.mutation import DjangoModelDjangoFormMutationOptions, fields_for_form
+        from collections import OrderedDict
+
+        if not form_class:
+            raise Exception("form_class is required for DjangoModelFormMutation")
+
+        if not model:
+            model = form_class._meta.model
+
+        if not model:
+            raise Exception("model is required for DjangoModelFormMutation")
+
+        form = form_class()
+        input_fields = fields_for_form(form, only_fields, exclude_fields)
+        # ここを書き換えたいだけなのに・・・
+        if cls.inject_id:
+            input_fields["id"] = graphene.ID(required=True)
+
+        registry = get_global_registry()
+        model_type = registry.get_type_for_model(model)
+        if not model_type:
+            raise Exception("No type registered for model: {}".format(model.__name__))
+
+        if not return_field_name:
+            model_name = model.__name__
+            return_field_name = model_name[:1].lower() + model_name[1:]
+
+        output_fields = OrderedDict()
+        output_fields[return_field_name] = graphene.Field(model_type)
+
+        _meta = DjangoModelDjangoFormMutationOptions(cls)
+        _meta.form_class = form_class
+        _meta.model = model
+        _meta.return_field_name = return_field_name
+        _meta.fields = yank_fields_from_attrs(output_fields, _as=graphene.Field)
+
+        input_fields = yank_fields_from_attrs(input_fields, _as=graphene.InputField)
+        super(DjangoModelFormMutation, cls).__init_subclass_with_meta__(
+            _meta=_meta, input_fields=input_fields, **options
+        )
+
+
+class DjangoUpdateModelFormMutation(DjangoCreateModelFormMutation):
+    inject_id = True
+
+    class Meta:
+        abstract = True
 
     @classmethod
     def get_form_kwargs(cls, root, info, **input):
