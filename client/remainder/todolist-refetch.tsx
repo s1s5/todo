@@ -16,6 +16,7 @@ import TodoSubsc from './todo-subsc'
 import {todolistRefetch_data} from './__generated__/todolistRefetch_data.graphql'
 import {todoSubsc_data as TodoSubscData} from './__generated__/todoSubsc_data.graphql'
 
+import TodoUpdateForm from './todo-update'
 
 const styles = (theme: Theme) => ({
     root: {
@@ -59,6 +60,7 @@ class TodoList_ extends React.Component<Props, State> {
         /* console.log(this.props.data.todoSet.pageInfo)
          * console.log(this.props.data.todoSet.edges) */
         return (<div>
+          <TodoUpdateForm id={ this.props.data.todoSet!.edges[0]!.node!.id } />
           <TodoSubsc variables={ {id: this.props.id} } observer={ observer } />
           <h3>{ this.props.data.title }</h3>
           <Container maxWidth="sm" >

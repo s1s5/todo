@@ -15,8 +15,8 @@ class TodoList(models.Model):
 
 class Todo(models.Model):
     parent = models.ForeignKey(TodoList, on_delete=models.PROTECT)
-    completed = models.BooleanField()
-    text = models.TextField()
+    completed = models.BooleanField('達成したらチェックを入れましょう')
+    text = models.TextField(help_text='やりたいことを明記してください')
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
