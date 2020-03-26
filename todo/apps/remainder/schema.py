@@ -11,11 +11,11 @@ from graphene_django import DjangoObjectType, DjangoConnectionField
 from graphene_django.filter import DjangoFilterConnectionField
 import django_filters
 # from django_filters import FilterSet, OrderingFilter
-from graphene_django.forms.mutation import DjangoFormMutation
+# from graphene_django.forms.mutation import DjangoFormMutation
 
 
 from . import models
-from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter, DjangoUpdateModelFormMutation
+from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter, DjangoUpdateModelFormMutation, DjangoFormMutation
 
 from graphene_file_upload.scalars import Upload
 from graphene_django.forms.converter import convert_form_field
@@ -169,7 +169,10 @@ class TodoNode(DjangoObjectType):
         #     print(key, '==>', getattr(info, key))
         # こうしたりしておかないとextraごとにquery発行が行われるが、
         # 必要ないケースにおいてもselect_relatedが呼ばれる。。。
+
         # info.field_astsから判断する必要がありそう
+        # connection経由かそうじゃないかの2パターンだけか？
+        # 複数クエリ同時だとどうなる？？
         print("FOO")
         print(info.field_asts)
         print(info.field_asts[0], type(info.field_asts[0]))
@@ -253,7 +256,13 @@ todo {
 
 
 class SingleFileUploadForm(forms.Form):
-    file = forms.FileField()
+    file = forms.FileField(required=False)
+
+    def save(self):
+        print("HOGEHOGE")
+        print(dir(self))
+        print(self.files)
+        print(self.cleaned_data)
 
 
 class SingleFileUploadFormMutation(DjangoFormMutation):
@@ -262,14 +271,14 @@ class SingleFileUploadFormMutation(DjangoFormMutation):
 
     success = graphene.Boolean()
 
-    @classmethod
-    def mutate_and_get_payload(cls, root, info, file, **kwargs):
-        # do something with your file
-        print("HOGEHOGE")
-        print(file) # <= filename
-        print(info.context.FILES['file'].read())
-        # print(file.read())
-        return SingleFileUploadFormMutation(success=True)
+    # @classmethod
+    # def mutate_and_get_payload(cls, root, info, file=None, **kwargs):
+    #     # do something with your file
+    #     print("HOGEHOGE")
+    #     print(file)  # <= filename
+    #     print(info.context.FILES['file'].read())
+    #     # print(file.read())
+    #     return SingleFileUploadFormMutation(success=True)
 
 
 class TodoListNode(DjangoObjectType):

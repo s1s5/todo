@@ -16,7 +16,9 @@ from graphql_relay import from_global_id
 from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.utils import maybe_queryset
 
-from graphene_django.forms.mutation import DjangoFormMutation, DjangoModelFormMutation
+from graphene_django.forms.mutation import BaseDjangoFormMutation
+from graphene_django.forms.mutation import DjangoFormMutation as OrgDjangoFormMutation
+from graphene_django.forms.mutation import DjangoModelFormMutation
 
 
 logger = logging.getLogger(__name__)
@@ -193,10 +195,30 @@ class CustomOrderingFilter(django_filters.OrderingFilter):
         return choices + multiple_choices
 
 
-CustomDjangoFormMutation = DjangoFormMutation
+class AcceptFileMixin(object):
+    @classmethod
+    def get_form_kwargs(cls, root, info, **input):
+        kwargs = {"data": input}
+
+        pk = input.pop("id", None)
+        if pk:
+            try:
+                pk = from_global_id(pk)[1]
+            except Exception:
+                raise forms.ValidationError('idの値が不正です')
+            instance = cls._meta.model._default_manager.get(pk=pk)
+            kwargs["instance"] = instance
+
+        kwargs["files"] = info.context.FILES  # TODO
+        return kwargs
 
 
-class DjangoCreateModelFormMutation(DjangoModelFormMutation):
+class DjangoFormMutation(AcceptFileMixin, OrgDjangoFormMutation):
+    class Meta:
+        abstract = True
+
+
+class DjangoCreateModelFormMutation(AcceptFileMixin, DjangoModelFormMutation):
     inject_id = False
 
     class Meta:
@@ -262,17 +284,15 @@ class DjangoUpdateModelFormMutation(DjangoCreateModelFormMutation):
     class Meta:
         abstract = True
 
-    @classmethod
-    def get_form_kwargs(cls, root, info, **input):
-        kwargs = {"data": input}
-
-        pk = input.pop("id", None)
-        if pk:
-            try:
-                pk = from_global_id(pk)[1]
-            except Exception:
-                raise forms.ValidationError('idの値が不正です')
-            instance = cls._meta.model._default_manager.get(pk=pk)
-            kwargs["instance"] = instance
-
-        return kwargs
+    # @classmethod
+    # def get_form_kwargs(cls, root, info, **input):
+    #     kwargs = {"data": input}
+    #     pk = input.pop("id", None)
+    #     if pk:
+    #         try:
+    #             pk = from_global_id(pk)[1]
+    #         except Exception:
+    #             raise forms.ValidationError('idの値が不正です')
+    #         instance = cls._meta.model._default_manager.get(pk=pk)
+    #         kwargs["instance"] = instance
+    #     return kwargs
