@@ -87,11 +87,11 @@ const TodoUpdateForm = (props:{ id: string }) => {
             <MyCheckBox name="completed" />
             <MyTextInput name="text" />
           </FormGroup>
-          <div>{
+          {/* <div>{
               Object.entries(value).map((value) => (
-                  <h6 key={ value[0] }>{ value[0] } : { (value as any)[1].toString() }</h6>
+              <h6 key={ value[0] }>{ value[0] } : { (value as any)[1].toString() }</h6>
               ))
-          }</div>
+              }</div> */}
           <CommitTrigger<todoUpdate_Mutation["response"]>
               onSuccess={ () => console.log('success!!') }
               onFailure={ () => console.log('failed...') }
