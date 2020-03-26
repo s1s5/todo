@@ -50,9 +50,9 @@ class TodoList_ extends React.Component<Props, State> {
         const observer = {
             next: (data:TodoSubscData) => {
                 console.log('next', data)
-                console.log(data.operation)
-                console.log(data.todolist)
-                console.log(data.todo)
+//                console.log(data.operation)
+//                console.log(data.todolist)
+//                console.log(data.todo)
             },
             error: (error:Error) => console.log('error', error),
         }
