@@ -13,12 +13,20 @@ type Props = {
 const single_file_upload_mutation = graphql`
     mutation singleFileUpload_Mutation($input: SingleFileUploadFormMutationInput!) {
         singleFileUpload(input: $input) {
+#         xx0: singleFileUpload(input: $input) {
             errors {
                 field
                 messages
             }
             success
         }
+#        xx1: singleFileUpload(input: $input) {
+#            errors {
+#                field
+#                messages
+#            }
+#            success
+#        }
     }
 `
 
