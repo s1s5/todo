@@ -82,6 +82,7 @@ const Form = <T extends Object>(props: Props<T>) => {
                         set_errors(response)
                         on_failure && on_failure(response)
                     } else {
+                        set_errors([])
                         on_success && on_success(response)
                     }
 

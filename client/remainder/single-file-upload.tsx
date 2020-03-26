@@ -51,7 +51,7 @@ const SingleFileUpload = (props: Props) => {
                     console.log('onError!!!', error)
                 },
                 uploadables: {
-                    file: file!,
+                    "singleFileUpload-file[0]": file!,
                 },
             }
         )

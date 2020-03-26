@@ -6,19 +6,22 @@ from base64 import b64encode, b64decode
 
 import django_filters
 from django.db.models import Q
-from django import forms
+# from django import forms
 
-import graphene
+# import graphene
 # from graphql_relay.utils import base64, unbase64
 # from graphql_relay.connection.connectiontypes import Connection, Edge
 from graphene.relay import PageInfo
-from graphql_relay import from_global_id
+# from graphql_relay import from_global_id
 from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.utils import maybe_queryset
 
-from graphene_django.forms.mutation import BaseDjangoFormMutation
-from graphene_django.forms.mutation import DjangoFormMutation as OrgDjangoFormMutation
-from graphene_django.forms.mutation import DjangoModelFormMutation
+# from graphene_django.forms.mutation import BaseDjangoFormMutation
+# from graphene_django.forms.mutation import DjangoFormMutation as OrgDjangoFormMutation
+# from graphene_django.forms.mutation import DjangoModelFormMutation
+
+# from django.utils.datastructures import MultiValueDict
+# import natsort
 
 
 logger = logging.getLogger(__name__)
@@ -195,110 +198,130 @@ class CustomOrderingFilter(django_filters.OrderingFilter):
         return choices + multiple_choices
 
 
-class AcceptFileMixin(object):
-    @classmethod
-    def get_form_kwargs(cls, root, info, **input):
-        kwargs = {"data": input}
-        print(info)
-        print(info.context)
-        print(info.field_asts)
-        print(info.parent_type)
-        print(info.path)  # これをprefixにした方がよさそうな
-        print(dir(info))
+# class AcceptFileMixin(object):
+#     @classmethod
+#     def get_form_kwargs(cls, root, info, **input):
+#         prefix = info.path[0]
+#         kwargs = {
+#             "prefix": prefix,
+#             "data": {'{}-{}'.format(prefix, key): value for key, value in input.items()},
+#         }
+#         # print(info)
+#         # print(info.context)
+#         # print(info.field_asts)
+#         # print(info.parent_type)
+#         # print(info.path)  # これをprefixにした方がよさそうな
+#         # print(dir(info))
 
-        pk = input.pop("id", None)
-        if pk:
-            try:
-                pk = from_global_id(pk)[1]
-            except Exception:
-                raise forms.ValidationError('idの値が不正です')
-            instance = cls._meta.model._default_manager.get(pk=pk)
-            kwargs["instance"] = instance
+#         pk = input.pop("id", None)
+#         if pk:
+#             try:
+#                 pk = from_global_id(pk)[1]
+#             except Exception:
+#                 raise forms.ValidationError('idの値が不正です')
+#             instance = cls._meta.model._default_manager.get(pk=pk)
+#             kwargs["instance"] = instance
 
-        kwargs["files"] = info.context.FILES  # TODO
-        return kwargs
+#         # kwargs["files"] = info.context.FILES  # TODO
 
+#         tmp = {}
+#         for key, value in info.context.FILES.items():
+#             try:
+#                 new_key = key[:len(key) - 1 - key[::-1].index('[')]
+#             except ValueError:
+#                 new_key = key
+#             ll = tmp.get(new_key, [])
+#             ll.append((key, value))
+#             tmp[new_key] = ll
 
-class DjangoFormMutation(AcceptFileMixin, OrgDjangoFormMutation):
-    class Meta:
-        abstract = True
-
-
-class DjangoCreateModelFormMutation(AcceptFileMixin, DjangoModelFormMutation):
-    inject_id = False
-
-    class Meta:
-        abstract = True
-
-    @classmethod
-    def __init_subclass_with_meta__(
-        cls,
-        form_class=None,
-        model=None,
-        return_field_name=None,
-        only_fields=(),
-        exclude_fields=(),
-        **options
-    ):
-        from graphene.types.utils import yank_fields_from_attrs
-        from graphene_django.registry import get_global_registry
-        from graphene_django.forms.mutation import DjangoModelDjangoFormMutationOptions, fields_for_form
-        from collections import OrderedDict
-
-        if not form_class:
-            raise Exception("form_class is required for DjangoModelFormMutation")
-
-        if not model:
-            model = form_class._meta.model
-
-        if not model:
-            raise Exception("model is required for DjangoModelFormMutation")
-
-        form = form_class()
-        input_fields = fields_for_form(form, only_fields, exclude_fields)
-        # ここを書き換えたいだけなのに・・・
-        if cls.inject_id:
-            input_fields["id"] = graphene.ID(required=True)
-
-        registry = get_global_registry()
-        model_type = registry.get_type_for_model(model)
-        if not model_type:
-            raise Exception("No type registered for model: {}".format(model.__name__))
-
-        if not return_field_name:
-            model_name = model.__name__
-            return_field_name = model_name[:1].lower() + model_name[1:]
-
-        output_fields = OrderedDict()
-        output_fields[return_field_name] = graphene.Field(model_type)
-
-        _meta = DjangoModelDjangoFormMutationOptions(cls)
-        _meta.form_class = form_class
-        _meta.model = model
-        _meta.return_field_name = return_field_name
-        _meta.fields = yank_fields_from_attrs(output_fields, _as=graphene.Field)
-
-        input_fields = yank_fields_from_attrs(input_fields, _as=graphene.InputField)
-        super(DjangoModelFormMutation, cls).__init_subclass_with_meta__(
-            _meta=_meta, input_fields=input_fields, **options
-        )
+#         files = MultiValueDict()
+#         for key, values in tmp.items():
+#             for old_key, value in natsort.natsorted(values):
+#                 files.appendlist(key, value)
+#         kwargs["files"] = files
+#         return kwargs
 
 
-class DjangoUpdateModelFormMutation(DjangoCreateModelFormMutation):
-    inject_id = True
+# class DjangoFormMutation(AcceptFileMixin, OrgDjangoFormMutation):
+#     class Meta:
+#         abstract = True
 
-    class Meta:
-        abstract = True
 
-    # @classmethod
-    # def get_form_kwargs(cls, root, info, **input):
-    #     kwargs = {"data": input}
-    #     pk = input.pop("id", None)
-    #     if pk:
-    #         try:
-    #             pk = from_global_id(pk)[1]
-    #         except Exception:
-    #             raise forms.ValidationError('idの値が不正です')
-    #         instance = cls._meta.model._default_manager.get(pk=pk)
-    #         kwargs["instance"] = instance
-    #     return kwargs
+# class DjangoCreateModelFormMutation(AcceptFileMixin, DjangoModelFormMutation):
+#     inject_id = False
+
+#     class Meta:
+#         abstract = True
+
+#     @classmethod
+#     def __init_subclass_with_meta__(
+#         cls,
+#         form_class=None,
+#         model=None,
+#         return_field_name=None,
+#         only_fields=(),
+#         exclude_fields=(),
+#         **options
+#     ):
+#         from graphene.types.utils import yank_fields_from_attrs
+#         from graphene_django.registry import get_global_registry
+#         from graphene_django.forms.mutation import DjangoModelDjangoFormMutationOptions, fields_for_form
+#         from collections import OrderedDict
+
+#         if not form_class:
+#             raise Exception("form_class is required for DjangoModelFormMutation")
+
+#         if not model:
+#             model = form_class._meta.model
+
+#         if not model:
+#             raise Exception("model is required for DjangoModelFormMutation")
+
+#         form = form_class()
+#         input_fields = fields_for_form(form, only_fields, exclude_fields)
+#         # ここを書き換えたいだけなのに・・・
+#         if cls.inject_id:
+#             input_fields["id"] = graphene.ID(required=True)
+
+#         registry = get_global_registry()
+#         model_type = registry.get_type_for_model(model)
+#         if not model_type:
+#             raise Exception("No type registered for model: {}".format(model.__name__))
+
+#         if not return_field_name:
+#             model_name = model.__name__
+#             return_field_name = model_name[:1].lower() + model_name[1:]
+
+#         output_fields = OrderedDict()
+#         output_fields[return_field_name] = graphene.Field(model_type)
+
+#         _meta = DjangoModelDjangoFormMutationOptions(cls)
+#         _meta.form_class = form_class
+#         _meta.model = model
+#         _meta.return_field_name = return_field_name
+#         _meta.fields = yank_fields_from_attrs(output_fields, _as=graphene.Field)
+
+#         input_fields = yank_fields_from_attrs(input_fields, _as=graphene.InputField)
+#         super(DjangoModelFormMutation, cls).__init_subclass_with_meta__(
+#             _meta=_meta, input_fields=input_fields, **options
+#         )
+
+
+# class DjangoUpdateModelFormMutation(DjangoCreateModelFormMutation):
+#     inject_id = True
+
+#     class Meta:
+#         abstract = True
+
+#     # @classmethod
+#     # def get_form_kwargs(cls, root, info, **input):
+#     #     kwargs = {"data": input}
+#     #     pk = input.pop("id", None)
+#     #     if pk:
+#     #         try:
+#     #             pk = from_global_id(pk)[1]
+#     #         except Exception:
+#     #             raise forms.ValidationError('idの値が不正です')
+#     #         instance = cls._meta.model._default_manager.get(pk=pk)
+#     #         kwargs["instance"] = instance
+#     #     return kwargs

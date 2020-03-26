@@ -1,3 +1,4 @@
+git+https://github.com/s1s5/graphene-django.git@develop
 Automat==20.2.0
 Django==3.0.4
 PyHamcrest==2.0.2
@@ -23,7 +24,6 @@ django-debug-toolbar==2.2
 django-environ==0.4.5
 django-filter==2.2.0
 django-webpack-loader==0.7.0
-graphene-django==2.8.2
 graphene-file-upload==1.2.2
 graphene-subscriptions==1.0.2
 graphene==2.1.8
@@ -35,6 +35,7 @@ hyperlink==19.0.0
 idna==2.9
 incremental==17.5.0
 msgpack==0.6.2
+natsort==7.0.1
 promise==2.3
 psycopg2-binary==2.8.4
 pyOpenSSL==19.1.0

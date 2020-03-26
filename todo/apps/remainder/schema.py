@@ -1,6 +1,7 @@
 import logging
 import collections
 import graphene
+from natsort import natsorted
 
 from django import forms
 
@@ -15,7 +16,8 @@ import django_filters
 
 
 from . import models
-from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter, DjangoUpdateModelFormMutation, DjangoFormMutation
+from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter # , DjangoUpdateModelFormMutation, DjangoFormMutation
+from graphene_django.forms.mutation import DjangoUpdateModelFormMutation, DjangoFormMutation
 
 from graphene_file_upload.scalars import Upload
 from graphene_django.forms.converter import convert_form_field
@@ -265,7 +267,9 @@ class SingleFileUploadForm(forms.Form):
         print(self.cleaned_data)
         # 複数ファイルがアップロードされたときの扱い
         # https://stackoverflow.com/questions/11529216/django-multiple-file-field
-        # file_list = natsorted(self.files.getlist('{}-image'.format(self.prefix)), key=lambda file: file.name)
+        file_list = natsorted(self.files.getlist('{}-file'.format(self.prefix)), key=lambda file: file.name)
+        print('{}-file'.format(self.prefix))
+        print(file_list)
 
 
 class SingleFileUploadFormMutation(DjangoFormMutation):
