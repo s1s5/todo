@@ -199,6 +199,12 @@ class AcceptFileMixin(object):
     @classmethod
     def get_form_kwargs(cls, root, info, **input):
         kwargs = {"data": input}
+        print(info)
+        print(info.context)
+        print(info.field_asts)
+        print(info.parent_type)
+        print(info.path)  # これをprefixにした方がよさそうな
+        print(dir(info))
 
         pk = input.pop("id", None)
         if pk:

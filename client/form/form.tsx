@@ -18,6 +18,7 @@ type Props<T> = {
 // !!! mutationは以下のような感じで
 // !!! inputはmutationの名前「todoUpdateForm」 + 「Input」である必要がある。
 // !!! errorは「errors」に返ってこないとだめ
+// !!! todoUpdateFormの前に「xx: 」とかかけばaliasにすることができる。この場合mutationの名前が「xx」になる
 // graphql`
 //     mutation todoUpdate_Mutation($todoUpdateFormInput: TodoUpdateFormMutationInput!) {
 //         todoUpdateForm(input: $todoUpdateFormInput) {
