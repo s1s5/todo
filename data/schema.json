@@ -119,18 +119,6 @@
               }
             },
             {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "todoextra",
-              "type": {
-                "kind": "OBJECT",
-                "name": "TodoExtraNode",
-                "ofType": null
-              }
-            },
-            {
               "args": [
                 {
                   "defaultValue": null,

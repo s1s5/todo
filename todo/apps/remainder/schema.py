@@ -193,17 +193,17 @@ class TodoUpdateForm(forms.ModelForm):
         # completed = forms.BooleanField(required=False)
         # text = forms.CharField(help_text='ここにtodoの詳細')
 
-    def clean_completed(self):
-        completed = self.cleaned_data.get('completed')
-        if completed:
-            raise forms.ValidationError('そんな簡単に達成できません！')
-        return completed
+    # def clean_completed(self):
+    #     completed = self.cleaned_data.get('completed')
+    #     if completed:
+    #         raise forms.ValidationError('そんな簡単に達成できません！')
+    #     return completed
 
-    def clean_text(self):
-        text = self.cleaned_data.get('text')
-        if text:
-            raise forms.ValidationError('修正したくありません！')
-        return text
+    # def clean_text(self):
+    #     text = self.cleaned_data.get('text')
+    #     if text:
+    #         raise forms.ValidationError('修正したくありません！')
+    #     return text
 
 
 class TodoUpdateFormMutation(DjangoUpdateModelFormMutation):
@@ -335,7 +335,7 @@ class TodoListMutation(graphene.ObjectType):
 class Query(object):
     todo = graphene.Field(TodoNode)  # こっちはアクセスできない
     todo2 = graphene.relay.Node.Field(TodoNode)  # こっちはglobal_idで引ける
-    todoextra = graphene.Field(TodoExtraNode)
+    # todoextra = graphene.Field(TodoExtraNode)
     todolist = graphene.relay.Node.Field(TodoListNode)
     todolists = DjangoFilterConnectionField(TodoListNode)
     todos = CustomDjangoFilterConnectionField(TodoNode,
