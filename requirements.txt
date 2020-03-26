@@ -24,6 +24,7 @@ django-environ==0.4.5
 django-filter==2.2.0
 django-webpack-loader==0.7.0
 graphene-django==2.8.2
+graphene-file-upload==1.2.2
 graphene-subscriptions==1.0.2
 graphene==2.1.8
 graphql-core==2.3.1

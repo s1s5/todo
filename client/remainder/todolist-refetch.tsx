@@ -4,7 +4,11 @@ import {Environment} from 'relay-runtime'
 import {graphql, QueryRenderer, createRefetchContainer, RelayRefetchProp, ReactRelayContext} from 'react-relay'
 
 import { withStyles, WithStyles, Theme } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container'
+import {
+    Container,
+    Divider
+} from '@material-ui/core'
+
 import List from '@material-ui/core/List'
 
 
@@ -17,6 +21,7 @@ import {todolistRefetch_data} from './__generated__/todolistRefetch_data.graphql
 import {todoSubsc_data as TodoSubscData} from './__generated__/todoSubsc_data.graphql'
 
 import TodoUpdateForm from './todo-update'
+import SingleFileUpload from './single-file-upload'
 
 const styles = (theme: Theme) => ({
     root: {
@@ -75,6 +80,8 @@ class TodoList_ extends React.Component<Props, State> {
           <AddTodoButton todolist__id={ this.props.data.id } />
           <button onClick={ this._refetch }>refetch-next</button>
           <button onClick={ this._refetch2 }>refetch-prev</button>
+          <Divider/>
+          <SingleFileUpload />
         </div>)
     }
 

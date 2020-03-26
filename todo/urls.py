@@ -20,7 +20,7 @@ from django.urls import path
 from django.views import generic
 
 from graphene_django.views import GraphQLView
-
+# from graphene_file_upload.django import FileUploadGraphQLView as GraphQLView
 
 urlpatterns = [
     path('admin/', admin.site.urls),

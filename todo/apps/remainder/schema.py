@@ -17,6 +17,15 @@ from graphene_django.forms.mutation import DjangoFormMutation
 from . import models
 from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter, DjangoUpdateModelFormMutation
 
+from graphene_file_upload.scalars import Upload
+from graphene_django.forms.converter import convert_form_field
+
+
+@convert_form_field.register(forms.FileField)
+@convert_form_field.register(forms.ImageField)
+def convert_form_field_to_upload(field):
+    return Upload(description=field.help_text, required=field.required)
+
 
 logger = logging.getLogger(__name__)
 
@@ -243,6 +252,26 @@ todo {
     #     return cls(errors=[], **kwargs)
 
 
+class SingleFileUploadForm(forms.Form):
+    file = forms.FileField()
+
+
+class SingleFileUploadFormMutation(DjangoFormMutation):
+    class Meta:
+        form_class = SingleFileUploadForm
+
+    success = graphene.Boolean()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, file, **kwargs):
+        # do something with your file
+        print("HOGEHOGE")
+        print(file) # <= filename
+        print(info.context.FILES['file'].read())
+        # print(file.read())
+        return SingleFileUploadFormMutation(success=True)
+
+
 class TodoListNode(DjangoObjectType):
     class Meta:
         model = models.TodoList
@@ -286,7 +315,6 @@ class TodoListUpdateMutation(graphene.relay.mutation.ClientIDMutation):
         todolist.title = title
         todolist.save()
         return TodoListUpdateMutation(todolist=todolist)
-
 
 
 class TodoCreateMutation(graphene.relay.mutation.ClientIDMutation):
@@ -351,6 +379,7 @@ class Mutation(object):
     todo_create = TodoCreateMutation.Field()
     todo_update = TodoUpdateMutation.Field()
     todo_update_form = TodoUpdateFormMutation.Field()
+    single_file_upload = SingleFileUploadFormMutation.Field()
 
 
 class Subscription(object):
