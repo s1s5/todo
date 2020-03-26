@@ -15,9 +15,9 @@ import {
 } from '../form'
 
 const MyCheckBox_ = React.memo((props: FormProps<boolean>) => {
-    console.log('my checkbox rendered, ->', props.value, props.errorMessage)
+    console.log('my checkbox rendered, ->', props.value, props.errors)
     return (
-        <FormControl error={ props.errorMessage !== undefined }>
+        <FormControl error={ props.errors !== undefined }>
         <FormControlLabel
         control={
             <Checkbox
@@ -30,17 +30,17 @@ const MyCheckBox_ = React.memo((props: FormProps<boolean>) => {
         }
         label="タスク完了"
         labelPlacement="end"/>
-        <FormHelperText id={ props.formId + "-help-text" }>{ `${props.errorMessage}, ` }Some important helper text</FormHelperText>
+        <FormHelperText id={ props.formId + "-help-text" }>{ props.errors && `${props.errors}, ` }Some important helper text</FormHelperText>
     </FormControl>
     )
 })
 const MyCheckBox = withFormContext(MyCheckBox_)
 
 const MyTextInput_ = React.memo((props: FormProps<string>) => (
-    <FormControl error={ props.errorMessage !== undefined }>
+    <FormControl error={ props.errors !== undefined }>
       <InputLabel htmlFor={props.formId}>text</InputLabel>
       <Input id={props.formId} value={props.value} onChange={ (e) => props.onChange(e.target.value) } />
-      <FormHelperText id={ props.formId + "-help-text" }>{ `${props.errorMessage}, ` }Some important helper text</FormHelperText>
+      <FormHelperText id={ props.formId + "-help-text" }>{ props.errors && `${props.errors}, ` }Some important helper text</FormHelperText>
     </FormControl>
 ))
 
@@ -50,8 +50,8 @@ import { graphql } from 'react-relay'
 import { todoUpdate_Mutation } from './__generated__/todoUpdate_Mutation.graphql'
 
 const updateTodoMutation = graphql`
-    mutation todoUpdate_Mutation($input: TodoUpdateFormMutationInput!) {
-        todoUpdateForm(input: $input) {
+    mutation todoUpdate_Mutation($todoUpdateFormInput: TodoUpdateFormMutationInput!) {
+        todoUpdateForm(input: $todoUpdateFormInput) {
             errors {
                 field
                 messages
@@ -69,21 +69,21 @@ const updateTodoMutation = graphql`
 const TodoUpdateForm = (props:{ id: string }) => {
     // 初期値をセットしておかないと怒られる
     const [value, set_value] = React.useState<any>({
-        input: { 
+        todoUpdateFormInput: { 
             id: props.id,
             completed: false,
-            text: "my first text",
+            text: "test-036",
         },
     })
-    const [form_errors, set_form_errors] = React.useState<any[]>([])
-    const [errors, set_errors] = React.useState<any[]>([])
+    // const [form_errors, set_form_errors] = React.useState<any[]>([])
+    // const [errors, set_errors] = React.useState<any[]>([])
 
-    console.log('TodoUpdateForm', value)
-    console.log('TodoUpdateForm', errors)
+    // console.log('TodoUpdateForm', value)
+    // console.log('TodoUpdateForm', errors)
     return (
         <Form id="hoge" initialValue={ value } mutation={ updateTodoMutation }>
-          <FormGroup name="input">
-            { form_errors.map((e) => (<p>Error: {e}</p>)) }
+          <FormGroup name="todoUpdateForm">
+            {/* { form_errors.map((e) => (<p>Error: {e}</p>)) } */}
             <MyCheckBox name="completed" />
             <MyTextInput name="text" />
           </FormGroup>
@@ -92,7 +92,10 @@ const TodoUpdateForm = (props:{ id: string }) => {
                   <h6 key={ value[0] }>{ value[0] } : { (value as any)[1].toString() }</h6>
               ))
           }</div>
-          <CommitTrigger>
+          <CommitTrigger<todoUpdate_Mutation["response"]>
+              onSuccess={ () => console.log('success!!') }
+              onFailure={ () => console.log('failed...') }
+          >
             { (commit) => (
                 <Button onClick={ () => commit() } >commit</Button>
             )}

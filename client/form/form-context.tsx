@@ -7,7 +7,7 @@ type ContextType = {
     setValue: any,
     formErrors: any,
     errors: any,
-    commit: () => void,
+    commit: (on_success?: (response: any) => unknown, on_failure?: (response: any) => unknown) => void,
 }
 
 export default React.createContext<ContextType | null>(null)

@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 689ce0bd2604f2b182879918c3ea93a2 */
+/* @relayHash 39efba1e9ffd0e19c7d9b5f0d08fedd7 */
 
 import { ConcreteRequest } from "relay-runtime";
 export type TodoUpdateFormMutationInput = {
@@ -10,7 +10,7 @@ export type TodoUpdateFormMutationInput = {
     clientMutationId?: string | null;
 };
 export type todoUpdate_MutationVariables = {
-    input: TodoUpdateFormMutationInput;
+    todoUpdateFormInput: TodoUpdateFormMutationInput;
 };
 export type todoUpdate_MutationResponse = {
     readonly todoUpdateForm: {
@@ -34,9 +34,9 @@ export type todoUpdate_Mutation = {
 
 /*
 mutation todoUpdate_Mutation(
-  $input: TodoUpdateFormMutationInput!
+  $todoUpdateFormInput: TodoUpdateFormMutationInput!
 ) {
-  todoUpdateForm(input: $input) {
+  todoUpdateForm(input: $todoUpdateFormInput) {
     errors {
       field
       messages
@@ -54,7 +54,7 @@ const node: ConcreteRequest = (function () {
     var v0 = [
         ({
             "kind": "LocalArgument",
-            "name": "input",
+            "name": "todoUpdateFormInput",
             "type": "TodoUpdateFormMutationInput!",
             "defaultValue": null
         } as any)
@@ -68,7 +68,7 @@ const node: ConcreteRequest = (function () {
                 {
                     "kind": "Variable",
                     "name": "input",
-                    "variableName": "input"
+                    "variableName": "todoUpdateFormInput"
                 }
             ],
             "concreteType": "TodoUpdateFormMutationPayload",
@@ -154,10 +154,10 @@ const node: ConcreteRequest = (function () {
             "operationKind": "mutation",
             "name": "todoUpdate_Mutation",
             "id": null,
-            "text": "mutation todoUpdate_Mutation(\n  $input: TodoUpdateFormMutationInput!\n) {\n  todoUpdateForm(input: $input) {\n    errors {\n      field\n      messages\n    }\n    todo {\n      id\n      completed\n      text\n    }\n  }\n}\n",
+            "text": "mutation todoUpdate_Mutation(\n  $todoUpdateFormInput: TodoUpdateFormMutationInput!\n) {\n  todoUpdateForm(input: $todoUpdateFormInput) {\n    errors {\n      field\n      messages\n    }\n    todo {\n      id\n      completed\n      text\n    }\n  }\n}\n",
             "metadata": {}
         }
     } as any;
 })();
-(node as any).hash = 'a02d24a5ee12f1452cf18062ddb93050';
+(node as any).hash = '0d212708b67d35aad07dd6a035927066';
 export default node;

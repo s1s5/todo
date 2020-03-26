@@ -11,11 +11,12 @@ const FormGroup = (props: Props) => {
     return (
         <FormContext.Consumer>
           { (context) => {
-                const {formGroupId, ...others} = context!
+                const {formGroupId, errors, ...others} = context!
                 return (
                     <FormContext.Provider value={ {
-                        formGroupId: props.name,
-                        ...others} }>
+                            formGroupId: props.name,
+                            errors: props.name in errors ? errors[props.name].errors : undefined,
+                            ...others} }>
                       { props.children }
                     </FormContext.Provider>
                 )
