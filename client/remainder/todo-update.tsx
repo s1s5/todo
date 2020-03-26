@@ -68,7 +68,7 @@ const updateTodoMutation = graphql`
 
 const TodoUpdateForm = (props:{ id: string }) => {
     // 初期値をセットしておかないと怒られる
-    const [value, set_value] = React.useState<any>({
+    const [value, set_value] = React.useState<todoUpdate_Mutation["variables"]>({
         todoUpdateFormInput: { 
             id: props.id,
             completed: false,
@@ -81,7 +81,7 @@ const TodoUpdateForm = (props:{ id: string }) => {
     // console.log('TodoUpdateForm', value)
     // console.log('TodoUpdateForm', errors)
     return (
-        <Form id="hoge" initialValue={ value } mutation={ updateTodoMutation }>
+        <Form<todoUpdate_Mutation["variables"]> id="hoge" initialVariables={ value } mutation={ updateTodoMutation }>
           <FormGroup name="todoUpdateForm">
             {/* { form_errors.map((e) => (<p>Error: {e}</p>)) } */}
             <MyCheckBox name="completed" />

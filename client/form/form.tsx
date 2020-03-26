@@ -1,7 +1,7 @@
 import * as React from 'react'
 
-import {Environment, PayloadError, GraphQLTaggedNode} from 'relay-runtime'
-import {commitMutation} from 'react-relay'
+import {IEnvironment, PayloadError, GraphQLTaggedNode} from 'relay-runtime'
+import {ReactRelayContext, commitMutation} from 'react-relay'
 
 import {withEnvironment} from '../environment'
 import FormContext from './form-context'
@@ -9,10 +9,10 @@ import FormContext from './form-context'
 
 type Props<T> = {
     id: string,
-    initialValue: T,
+    initialVariables: T,
     mutation: GraphQLTaggedNode,
     children: React.ReactNode,
-    environment: Environment,
+    environment: IEnvironment,
 }
 
 // !!! mutationは以下のような感じで
@@ -35,7 +35,7 @@ type Props<T> = {
 // `
 
 const Form = <T extends Object>(props: Props<T>) => {
-    const [value, set_value] = React.useState(props.initialValue)
+    const [value, set_value] = React.useState(props.initialVariables)
     const [form_errors, set_form_errors] = React.useState<any[]>([])
     const [errors, set_errors] = React.useState<any>([])
 
@@ -125,5 +125,15 @@ const Form = <T extends Object>(props: Props<T>) => {
         </FormContext.Provider>
     )
 }
+// export default withEnvironment(Form)
 
-export default withEnvironment(Form)
+
+const FormWithEnv = <T extends Object>(props: Omit<Props<T>, 'environment'>) => (
+    <ReactRelayContext.Consumer>
+      {(context) =>
+          <Form<T> environment={ context!.environment } {...props} />
+      }
+    </ReactRelayContext.Consumer>
+)
+
+export default FormWithEnv
