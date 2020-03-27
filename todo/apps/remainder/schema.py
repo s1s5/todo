@@ -219,6 +219,10 @@ class TodoUpdateForm(forms.ModelForm):
     #         raise forms.ValidationError('修正したくありません！')
     #     return text
 
+    def save(self):
+        print('TodoUpdateForm >> files => ', self.files)
+        super().save()
+
 
 class TodoUpdateFormMutation(DjangoUpdateModelFormMutation):
     '''
@@ -263,8 +267,8 @@ class SingleFileUploadForm(forms.Form):
     def save(self):
         # print("HOGEHOGE")
         # print(dir(self))
-        # print(self.files)
-        # print(self.cleaned_data)
+        print(self.files)
+        print(self.cleaned_data)
         # 複数ファイルがアップロードされたときの扱い
         # https://stackoverflow.com/questions/11529216/django-multiple-file-field
         file_list = natsorted(
@@ -272,8 +276,12 @@ class SingleFileUploadForm(forms.Form):
             if self.prefix else
             self.files.getlist('file'),
             key=lambda file: file.name)
-        # print('{}-file'.format(self.prefix))
-        # print(file_list)
+        for f in file_list:
+            print(f)
+            print(dir(f))
+            print(f.name, f.file.getvalue()[:10], f.field_name, f.content_type)
+        print('{}-file'.format(self.prefix))
+        print(file_list)
 
 
 class SingleFileUploadFormMutation(DjangoFormMutation):

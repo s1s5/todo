@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 2eceba436c29e25146de9e454bb76a72 */
+/* @relayHash 8c566b213cb69d22f6f44a51d8e61e30 */
 
 import { ConcreteRequest } from "relay-runtime";
 export type SingleFileUploadFormMutationInput = {
@@ -8,7 +8,7 @@ export type SingleFileUploadFormMutationInput = {
     clientMutationId?: string | null;
 };
 export type singleFileUpload_MutationVariables = {
-    input: SingleFileUploadFormMutationInput;
+    singleFileUploadInput: SingleFileUploadFormMutationInput;
 };
 export type singleFileUpload_MutationResponse = {
     readonly singleFileUpload: {
@@ -28,9 +28,9 @@ export type singleFileUpload_Mutation = {
 
 /*
 mutation singleFileUpload_Mutation(
-  $input: SingleFileUploadFormMutationInput!
+  $singleFileUploadInput: SingleFileUploadFormMutationInput!
 ) {
-  singleFileUpload(input: $input) {
+  singleFileUpload(input: $singleFileUploadInput) {
     errors {
       field
       messages
@@ -44,7 +44,7 @@ const node: ConcreteRequest = (function () {
     var v0 = [
         ({
             "kind": "LocalArgument",
-            "name": "input",
+            "name": "singleFileUploadInput",
             "type": "SingleFileUploadFormMutationInput!",
             "defaultValue": null
         } as any)
@@ -58,7 +58,7 @@ const node: ConcreteRequest = (function () {
                 {
                     "kind": "Variable",
                     "name": "input",
-                    "variableName": "input"
+                    "variableName": "singleFileUploadInput"
                 }
             ],
             "concreteType": "SingleFileUploadFormMutationPayload",
@@ -119,10 +119,10 @@ const node: ConcreteRequest = (function () {
             "operationKind": "mutation",
             "name": "singleFileUpload_Mutation",
             "id": null,
-            "text": "mutation singleFileUpload_Mutation(\n  $input: SingleFileUploadFormMutationInput!\n) {\n  singleFileUpload(input: $input) {\n    errors {\n      field\n      messages\n    }\n    success\n  }\n}\n",
+            "text": "mutation singleFileUpload_Mutation(\n  $singleFileUploadInput: SingleFileUploadFormMutationInput!\n) {\n  singleFileUpload(input: $singleFileUploadInput) {\n    errors {\n      field\n      messages\n    }\n    success\n  }\n}\n",
             "metadata": {}
         }
     } as any;
 })();
-(node as any).hash = '918e70001665943c07c9c210c98b7a70';
+(node as any).hash = 'eae41fc8d4a5d0a72dfb9ad5a5aeb566';
 export default node;

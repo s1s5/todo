@@ -5,6 +5,7 @@ type ContextType = {
     formGroupId?: string,
     value: any,
     setValue: any,
+    setUploadables: any,
     formErrors: any,
     errors: any,
     commit: (on_success?: (response: any) => unknown, on_failure?: (response: any) => unknown) => void,

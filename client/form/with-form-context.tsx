@@ -6,14 +6,27 @@ import FormContext from './form-context'
 type Props<T> = {
     formId: string,
     value: T,
-    errors: readonly string [],
+    errors?: readonly string [],
     onChange: (value: T) => void,
+    onUpload: (event: any) => void,
 }
 
-const ContextWrapper = (props:any) => {
-    const {Component, context, onChange, ...other_props} = props
+type CWProps<P, T> = {
+    formId: string,
+    value: T,
+    name: string,
+    Component: React.ComponentType<P>,
+    context: any,
+    onChange?: (event: any, prev: T) => unknown,
+} & Omit<P, keyof Props<T>>
+
+const ContextWrapper = <P, T>(props: CWProps<P, T>) => {
+    const {
+        name, Component, context, onChange,
+        formId, value,
+        ...other_props} = props
     const key = `${context.formGroupId!}Input`
-    const _on_change = React.useCallback((new_value:any) => {
+    const _on_change = React.useCallback((new_value: T) => {
         context.setValue( (prev:any) => {
             const next = _.cloneDeep(prev)
             // next[props.name] = !prev[props.name]
@@ -28,6 +41,26 @@ const ContextWrapper = (props:any) => {
             return next
         })
     }, [context.setValue, context.formGroupId, props.name])
+
+    const _on_upload = React.useCallback((event: any) => {
+        // (e) => e.target.files &&  (e.target.files.item(0)!)
+//        context.setValue( (prev:any) => {
+//            const next = _.cloneDeep(prev)
+//            next[key][props.name] = 'files'
+//            return next
+        //        })
+        const files = event.target.files
+        console.log("_on_upload => ", files)
+        const ll: File [] = []
+        for (let i = 0; i < files.length; i++) {
+            ll.push(files.item(i))
+        }
+        context.setUploadables( (prev:any) => {
+            const next = _.clone(prev)
+            next[`${context.formGroupId!}-${props.name}`] = ll
+            return next
+        })
+    }, [context.setUploadables, context.formGroupId, props.name])
     // console.log(other_props)
 
     const _errors = React.useMemo(() => {
@@ -35,7 +68,7 @@ const ContextWrapper = (props:any) => {
             return undefined
         }
 
-        const e = context.errors.filter((x:any) => x.field == props.name).map(
+        const e: string [] = context.errors.filter((x:any) => x.field == props.name).map(
             (x:any) => x.messages).reduce((a: string[], x: string []) => a.concat(x), [])
 
         if (e.length == 0) {
@@ -44,27 +77,33 @@ const ContextWrapper = (props:any) => {
         return e
     }, [context.errors])
 
-    return <Component
+    const Component_ = Component as any  // TODO: なんでかうまく行かない。。
+    return <Component_
+               formId={ formId }
+               value={ value }
                onChange={ _on_change }
+               onUpload={ _on_upload }
                errors={_errors}
                {...other_props} />
 }
 
 
-const withFormContext = (Component: any, on_change: (((event:any, prev:any) => any) | undefined) = undefined) =>  ( (props: any) => {
-    return <FormContext.Consumer>
-      { (context) => {
-            // console.log('wrapper -> ', props.name, context.value[props.name])
-            return <ContextWrapper
-                       Component={Component}
-                       context={context!}
-                       formId={ `${context!.formBaseId}-${context!.formGroupId!}-${props.name}` }
-                       value={ context!.value[`${context!.formGroupId!}Input`][props.name] }
-                       onChange={ on_change }
-                       { ...props } />
-      }}
-    </FormContext.Consumer>
-})
+const withFormContext = <P, T>(
+  Component: React.ComponentType<P>, on_change: (((event:any, prev:any) => any) | undefined) = undefined) => (
+      (props: Omit<P, keyof Props<T>> & { name: string }) => {
+          return <FormContext.Consumer>
+            { (context) => {
+                  // console.log('wrapper -> ', props.name, context.value[props.name])
+                  return <ContextWrapper<P, T>
+                    Component={Component}
+                    context={context!}
+                    formId={ `${context!.formBaseId}-${context!.formGroupId!}-${props.name}` }
+                    value={ context!.value[`${context!.formGroupId!}Input`][props.name] }
+                    onChange={ on_change }
+                    { ...props } />
+            }}
+          </FormContext.Consumer>
+      })
 
 export {
     Props,

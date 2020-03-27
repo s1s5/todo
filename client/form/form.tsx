@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import {IEnvironment, PayloadError, GraphQLTaggedNode} from 'relay-runtime'
+import {IEnvironment, PayloadError, GraphQLTaggedNode, UploadableMap} from 'relay-runtime'
 import {ReactRelayContext, commitMutation} from 'react-relay'
 
 import {withEnvironment} from '../environment'
@@ -39,6 +39,7 @@ const Form = <T extends Object>(props: Props<T>) => {
     const [value, set_value] = React.useState(props.initialVariables)
     const [form_errors, set_form_errors] = React.useState<any[]>([])
     const [errors, set_errors] = React.useState<any>([])
+    const [uploadables, set_uploadables] = React.useState<any>({})
 
 //    const set_errors = (errors_: ReadonlyArray<{
 //        readonly field: string;
@@ -57,7 +58,21 @@ const Form = <T extends Object>(props: Props<T>) => {
 //        set_errors_(d)
 //    }
 
-    const commit_with_value = React.useCallback((value_, on_success, on_failure) => {
+    const commit_with_value = React.useCallback((value_, uploadables_, on_success, on_failure) => {
+        const u: UploadableMap = {}
+        console.log('uploadables_ => ', uploadables_)
+        Object.entries(uploadables_).map((e) => {
+            const [key, value]: [string, any] = e
+            if (value.constructor === Array) {
+                value.map((v: File | Blob, i: number) => {
+                    u[`${key}[${i}]`] = v
+                })
+            } else {
+                u[key] = value
+            }
+        })
+        console.log('u = ', u)
+        console.log(value_)
         commitMutation(
             props.environment,
             {
@@ -108,17 +123,21 @@ const Form = <T extends Object>(props: Props<T>) => {
                     // console.log('update error!!!')
                     // console.log('error = ', error)
                 },
+                uploadables: u,
             }
         )
     }, [props.environment, props.mutation])
 
-    const commit = React.useCallback((on_success?, on_failure?) => commit_with_value(value, on_success, on_failure), [value, commit_with_value])
+    const commit = React.useCallback(
+        (on_success?, on_failure?) => commit_with_value(value, uploadables, on_success, on_failure),
+        [value, uploadables, commit_with_value])
     
     return (
         <FormContext.Provider value={ {
             formBaseId: props.id,
             value: value,
             setValue: set_value,
+            setUploadables: set_uploadables,
             formErrors: form_errors,
             errors: errors,
             commit,
