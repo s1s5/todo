@@ -261,15 +261,19 @@ class SingleFileUploadForm(forms.Form):
     file = forms.FileField(required=False)
 
     def save(self):
-        print("HOGEHOGE")
-        print(dir(self))
-        print(self.files)
-        print(self.cleaned_data)
+        # print("HOGEHOGE")
+        # print(dir(self))
+        # print(self.files)
+        # print(self.cleaned_data)
         # 複数ファイルがアップロードされたときの扱い
         # https://stackoverflow.com/questions/11529216/django-multiple-file-field
-        file_list = natsorted(self.files.getlist('{}-file'.format(self.prefix)), key=lambda file: file.name)
-        print('{}-file'.format(self.prefix))
-        print(file_list)
+        file_list = natsorted(
+            self.files.getlist('{}-file'.format(self.prefix))
+            if self.prefix else
+            self.files.getlist('file'),
+            key=lambda file: file.name)
+        # print('{}-file'.format(self.prefix))
+        # print(file_list)
 
 
 class SingleFileUploadFormMutation(DjangoFormMutation):

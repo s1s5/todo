@@ -110,17 +110,17 @@ LOGGING = {
         os.path.basename(PROJECT_NAME): {
             'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
         'django': {
             'handlers': ['console'],
             'level': 'INFO',
-            'propagate': True,
+            'propagate': False,
         },
     },
     'root': {
         'handlers': ['console'],
-        'level': 'DEBUG'
+        'level': 'DEBUG',
     },
 }
 

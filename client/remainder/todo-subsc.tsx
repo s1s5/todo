@@ -68,7 +68,8 @@ const request_subscription = (environment:IEnvironment, observer: Observer<Data>
     if (variables !== undefined) {
         subscriptionConfig["variables"] = variables
     }
-    /* console.log(subscriptionConfig) */
+    
+    // console.log(subscriptionConfig)
     const {dispose} = requestSubscription(
         environment,
         subscriptionConfig

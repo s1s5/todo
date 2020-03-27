@@ -56,6 +56,7 @@ const SingleFileUpload = (props: Props) => {
             }
         )
     }
+    // multiple={ true }
     return (
         <div>
           <input id="file-data" type="file" onChange={ (e) => e.target.files && set_file(e.target.files.item(0)) } />
