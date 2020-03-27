@@ -86,7 +86,7 @@ const SubscriptionWrapper2 = <T extends object>(props: Props<T>) => {
                     console.error('subscribe Some Error occurred!!', value.errors)
                 }
                 setValue(value as T)
-                props.observer&& props.observer.next && props.observer.next(value)
+                props.observer && props.observer.next && props.observer.next(value)
             },
             error: (error: Error) => (props.observer && props.observer.error && props.observer.error(error)),
             complete: () => (props.observer && props.observer.complete && props.observer.complete()),
