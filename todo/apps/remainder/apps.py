@@ -6,3 +6,4 @@ class RemainderConfig(AppConfig):
 
     def ready(self):
         from . import signals
+        from . import schema

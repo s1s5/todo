@@ -10,15 +10,10 @@ const ExecutionEnvironment = {
     };
 
 export type InitWithRetries = {
-    body?: BodyInit | null,
-    cache?: RequestCache,
-    credentials?: RequestCredentials,
-    headers?: HeadersInit,
     fetchTimeout?: number | null,
-    method?: string | null,
-    mode?: RequestMode,
     retryDelays?: Array<number> | null,
-};
+} & RequestInit
+
 
 const DEFAULT_TIMEOUT = 15000;
 const DEFAULT_RETRIES = [1000, 3000];
@@ -61,7 +56,7 @@ function fetchWithRetries(uri: string, initWithRetries?: InitWithRetries | null)
                         if (response.status >= 200 && response.status < 300) {
                             // Got a response code that indicates success, resolve the promise.
                             resolve(response);
-                        } else if (response.status === 401) {
+                        } else if (response.status >= 400 && response.status < 500) {
                             resolve(response);
                         } else if (shouldRetry(requestsAttempted)) {
                             // Fetch was not successful, retrying.

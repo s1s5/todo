@@ -118,10 +118,10 @@ LOGGING = {
             'propagate': False,
         },
     },
-    # 'root': {
-    #     'handlers': ['console'],
-    #     'level': 'DEBUG'
-    # },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
 }
 
 # Database
@@ -176,6 +176,7 @@ STATIC_ROOT = env('STATIC_ROOT')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, PROJECT_DIR, "static"),
+    os.path.join(BASE_DIR, "dist"),
 )
 
 ############################################
@@ -227,8 +228,9 @@ DEBUG_TOOLBAR_PANELS = [
 ############################################
 
 GRAPHENE = {
-    # # firstかlastが有効なときにしか聞かない・・・バグだろこれ
-    # 'RELAY_CONNECTION_MAX_LIMIT': 100,
+    # firstかlastが有効なときにしか聞かない・・・バグだろこれ
+    # これを超えてリクエストしてもなんのエラーもでない・・・？
+    'RELAY_CONNECTION_MAX_LIMIT': 100,
 
     # # DjangoFilterConnectionField用、大量のデータを一気にフェッチするのを防ぐ
     # # 下のような感じでfirstのデフォルト値を指定しておく
@@ -274,15 +276,37 @@ MIDDLEWARE.insert(
     'corsheaders.middleware.CorsMiddleware',
 )
 
-CORS_ORIGIN_REGEX_WHITELIST = [
-    r"^http://localhost:.*$",
-]
+if DEBUG:
+    CORS_ORIGIN_ALLOW_ALL = True
+else:
+    CORS_ORIGIN_REGEX_WHITELIST = [
+        r"^http://[.\w]+:.*$",
+    ]
+
 #CORS_ORIGIN_WHITELIST = [
 #    "https://example.com",
 #    "https://sub.example.com",
 #    "http://localhost:8080",
 #    "http://127.0.0.1:42100",
 #]
+
+############################################
+# webpack loader
+############################################
+# INSTALLED_APPS += [
+#     'webpack_loader',
+# ]
+# WEBPACK_LOADER = {
+#     'DEFAULT': {
+#         'CACHE': not DEBUG,
+#         'BUNDLE_DIR_NAME': 'prod/', # must end with slash
+#         # 'POLL_INTERVAL': 0.1,
+#         # 'TIMEOUT': None,
+#         # 'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
+#         # 'LOADER_CLASS': 'webpack_loader.loader.WebpackLoader',
+#         'STATS_FILE': os.path.join(BASE_DIR, 'dist', 'prod', 'webpack-stats.json')
+#     }
+# }
 
 
 ############################################

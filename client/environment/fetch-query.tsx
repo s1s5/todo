@@ -1,8 +1,10 @@
 import {RequestParameters, QueryResponseCache, Variables, UploadableMap, CacheConfig } from 'relay-runtime';
+import fetchWithRetries from './fetch-with-retries';
 
 export const isMutation = (request: RequestParameters) => request.operationKind === 'mutation';
 export const isQuery = (request: RequestParameters) => request.operationKind === 'query';
 export const forceFetch = (cacheConfig: CacheConfig) => !!(cacheConfig && cacheConfig.force);
+
 
 export const handleData = (response: any) => {
     const contentType = response.headers.get('content-type');
@@ -16,7 +18,7 @@ export const handleData = (response: any) => {
 function getRequestBodyWithUploadables(request: RequestParameters, variables: Variables, uploadables: UploadableMap) {
     let formData = new FormData();
     formData.append('name', request.name);
-    formData.append('query', request.text);
+    formData.append('query', request.text!);
     formData.append('variables', JSON.stringify(variables));
 
     Object.keys(uploadables).forEach(key => {
@@ -36,7 +38,7 @@ function getRequestBodyWithoutUplodables(request: RequestParameters, variables: 
     });
 }
 
-export function getRequestBody(request: RequestParameters, variables: Variables, uploadables?: UploadableMap) {
+export function getRequestBody(request: RequestParameters, variables: Variables, uploadables?: UploadableMap | null) {
     if (uploadables) {
         return getRequestBodyWithUploadables(request, variables, uploadables);
     }
@@ -44,7 +46,7 @@ export function getRequestBody(request: RequestParameters, variables: Variables,
     return getRequestBodyWithoutUplodables(request, variables);
 }
 
-export const getHeaders = (uploadables?: UploadableMap) => {
+export const getHeaders = (uploadables?: UploadableMap | null) : Record<string, string> => {
     if (uploadables) {
         return {
             Accept: '*/*',
@@ -58,10 +60,9 @@ export const getHeaders = (uploadables?: UploadableMap) => {
 };
 
 
-import fetchWithRetries from './fetchWithRetries';
 
 
-const fetchQuery = async (url: string, request: RequestParameters, variables: Variables, uploadables: UploadableMap) => {
+const fetchQuery = async (url: string, request: RequestParameters, variables: Variables, uploadables?: UploadableMap | null) => {
     try {
         const body = getRequestBody(request, variables, uploadables);
         const headers = {
@@ -116,7 +117,7 @@ const cacheHandler = async (
     cacheConfig: CacheConfig,
     uploadables?: UploadableMap | null,
 ) => {
-    const queryID = request.text;
+    const queryID = request.text!;
     
     if (isMutation(request)) {
         queryResponseCache.clear();

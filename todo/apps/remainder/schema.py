@@ -1,43 +1,105 @@
 import logging
 import collections
 import graphene
+from natsort import natsorted
+
+from django import forms
+
+
 from graphql_relay import from_global_id
-from graphene_django import DjangoObjectType
+from graphene_django import DjangoObjectType, DjangoConnectionField
 # from graphene_django.forms.mutation import DjangoModelFormMutation
 from graphene_django.filter import DjangoFilterConnectionField
-from django_filters import FilterSet, OrderingFilter
+import django_filters
+# from django_filters import FilterSet, OrderingFilter
+# from graphene_django.forms.mutation import DjangoFormMutation
+
 
 from . import models
+from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter # , DjangoUpdateModelFormMutation, DjangoFormMutation
+from graphene_django.forms.mutation import DjangoUpdateModelFormMutation, DjangoFormMutation
+
+from graphene_file_upload.scalars import Upload
+from graphene_django.forms.converter import convert_form_field
+
+
+@convert_form_field.register(forms.FileField)
+@convert_form_field.register(forms.ImageField)
+def convert_form_field_to_upload(field):
+    return Upload(description=field.help_text, required=field.required)
+
 
 logger = logging.getLogger(__name__)
 
 
-class TodoListNode(DjangoObjectType):
-    class Meta:
-        model = models.TodoList
-        filter_fields = {
-            'title': ['exact', 'icontains', 'istartswith'],
-        }
-        interfaces = (graphene.relay.Node, )
+def injection(func):
+    def f(*args, **kwargs):
+        print('calling : ', func, args, kwargs)
+        return func(*args, **kwargs)
+    return f
 
 
-class TodoFilterSet(FilterSet):
+def decorator(wrapper):
+    # これはQueryとかにしかつけられない。。。
+    def f(klass):
+        print(klass)
+        print(klass.__dict__)
+        print(graphene.types.utils.yank_fields_from_attrs(klass.__dict__))
+
+        get_resolver_for_type = (
+            graphene.utils.get_unbound_function.get_unbound_function(
+                graphene.types.typemap.TypeMap.get_resolver_for_type))
+        # print(get_resolver_for_type)
+        for name, field in graphene.types.utils.yank_fields_from_attrs(klass.__dict__).items():
+            # resolver = getattr(klass, "resolve_{}".format(field_name), None)
+            # print(klass, name, field.default_value)
+            resolver = get_resolver_for_type(None, type('', (klass, graphene.ObjectType), {}),
+                                             name, field.default_value)
+            setattr(klass, 'resolve_{}'.format(name), wrapper(resolver))
+            print(name, field, 'resolver = ', resolver)
+        return klass
+    return f
+
+
+def decorator2(wrapper):
+    # こっちはDjangoObjectTypeのノードに対するデコレータ
+    # loginが必要だったり、権限チェックはこっちか・・
+    def f(klass):
+        print(klass, DjangoObjectType)
+        assert issubclass(klass, DjangoObjectType)
+        setattr(klass, 'get_queryset', wrapper(klass.get_queryset))
+        return klass
+    return f
+
+
+test_dec = decorator(injection)
+test_dec2 = decorator2(injection)
+
+
+class TodoFilterSet(django_filters.FilterSet):
     # see https://django-filter.readthedocs.io/en/master/guide/usage.html
+    parent_id = django_filters.CharFilter(method='filter_with_parent_id')
+
     class Meta:
         model = models.Todo
-        # excludeは使えない？
+        # excludeは使えない？ <- Nodeに書く
         # exclude = ['parent']
         fields = {
             'text': ['exact', 'icontains', 'istartswith'],
             'completed': ['exact'],
         }
 
-    order_by = OrderingFilter(
+    order_by = CustomOrderingFilter(
         fields=(
             ('created_at', 'created_at'),
             ('modified_at', 'modified_at'),
+            ('pk', 'pk'),
         )
     )
+
+    def filter_with_parent_id(self, queryset, name, value):
+        parent_id = int(from_global_id(value)[1])
+        return queryset.filter(parent_id=parent_id)
 
     def filter_queryset(self, queryset):
         """
@@ -50,11 +112,210 @@ class TodoFilterSet(FilterSet):
         return super().filter_queryset(queryset)
 
 
+# pageInfoに追加の情報を入れることができる
+# class ConnectionClass(graphene.relay.Connection):
+#     extra = graphene.String()
+#     class Meta:
+#         abstract = True
+#     class Edge:
+#         def __init__(self, *args, **kwargs):
+#             print('ConnectionClass.Edge : ', args, kwargs)
+#             super().__init__(*args, **kwargs)
+#         other = graphene.String()
+
+@test_dec2
+class TodoExtraNode(DjangoObjectType):
+    class Meta:
+        model = models.TodoExtra
+        # fields = ['description']
+        filter_fields = {
+        }
+        interfaces = (graphene.relay.Node, )
+
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        # TodoNode.extraからアクセスするときに呼び出されないのはなぜ・・・？？
+        # manyの場合にしかconnectionは張られない・・・
+        print("HOGE TodoExtra get_queryset called!!!", queryset, info)
+        return super().get_queryset(queryset, info)
+
+
+@test_dec2
 class TodoNode(DjangoObjectType):
+    # on = 'objects' 以外を指定すれば、default_manager以外を使用することができる
     class Meta:
         model = models.Todo
+        # fieldsかexcludeを必ず指定
+        # fields = ['text']
+        exclude = ['parent']
         interfaces = (graphene.relay.Node, )
         filterset_class = TodoFilterSet
+        # connection_class = ConnectionClass
+
+    # extra = CustomDjangoFilterConnectionField(TodoExtraNode)
+
+    def resolve_extra(instance, info):
+        # 現状ここで権限チェックするしかなさそう
+        print('TodoNode.resolve_extra', 'instance =', instance, 'info =', info)
+        return getattr(instance, 'extra', None)
+
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        # print(cls, queryset, info)
+        # print('info: ', dir(info))
+        # for key in dir(info):
+        #     if key.startswith('__'):
+        #         continue
+        #     if key == 'schema':
+        #         continue
+        #     print(key, '==>', getattr(info, key))
+        # こうしたりしておかないとextraごとにquery発行が行われるが、
+        # 必要ないケースにおいてもselect_relatedが呼ばれる。。。
+
+        # info.field_astsから判断する必要がありそう
+        # connection経由かそうじゃないかの2パターンだけか？
+        # 複数クエリ同時だとどうなる？？
+        print("FOO")
+        print(info.field_asts)
+        print(info.field_asts[0], type(info.field_asts[0]))
+        print(dir(info.field_asts[0]))
+        # print(queryset.values('id', 'text'))
+        return queryset.select_related('extra')
+    # extra = DjangoConnectionField(TodoExtraNode)
+    #    extra = DjangoFilterConnectionField(TodoExtraNode)
+
+
+# 同じモデルは登録しないほうがいい。他のノードからリンクを辿って参照するときに、後のものが使われる
+# @test_dec2
+# class TodoNode2(DjangoObjectType):
+#     # on = 'objects' 以外を指定すれば、default_manager以外を使用することができる
+#     class Meta:
+#         model = models.Todo
+#         # fieldsかexcludeを必ず指定
+#         fields = ['text']
+#         # exclude = ['parent']
+#         interfaces = (graphene.relay.Node, )
+#         filterset_class = TodoFilterSet
+#         # connection_class = ConnectionClass
+
+
+class TodoUpdateForm(forms.ModelForm):
+    class Meta:
+        model = models.Todo
+        fields = ('completed', 'text')
+        # gid  = forms.CharField()
+        # completed = forms.BooleanField(required=False)
+        # text = forms.CharField(help_text='ここにtodoの詳細')
+
+    # def clean_completed(self):
+    #     completed = self.cleaned_data.get('completed')
+    #     if completed:
+    #         raise forms.ValidationError('そんな簡単に達成できません！')
+    #     return completed
+
+    # def clean_text(self):
+    #     text = self.cleaned_data.get('text')
+    #     if text:
+    #         raise forms.ValidationError('修正したくありません！')
+    #     return text
+
+    def save(self):
+        print('TodoUpdateForm >> files => ', self.files)
+        super().save()
+
+
+class TodoUpdateFormMutation(DjangoUpdateModelFormMutation):
+    '''
+    mutation($input: TodoUpdateFormMutationInput!) {
+  todoUpdateForm(input: $input){
+    errors{
+      field
+      messages
+    }
+todo {
+  completed
+  text
+}
+  }
+}
+
+---- variables
+{
+  "input": {
+    "id": "VG9kb05vZGU6MQ==",
+    "completed": false,
+    "text": "todo-001(todolist-001)"
+  }
+}
+    '''
+    class Meta:
+        form_class = TodoUpdateForm
+
+    # todo = graphene.Field(TodoNode)
+
+    # @classmethod
+    # def perform_mutate(cls, form, info):
+    #     print('TodoUpdateFormMutation.perform_mutate', cls, form, info)
+    #     obj = form.save()
+    #     kwargs = {cls._meta.return_field_name: obj}
+    #     return cls(errors=[], **kwargs)
+
+
+class SingleFileUploadForm(forms.Form):
+    file = forms.FileField(required=False)
+
+    def save(self):
+        # print("HOGEHOGE")
+        # print(dir(self))
+        print(self.files)
+        print(self.cleaned_data)
+        # 複数ファイルがアップロードされたときの扱い
+        # https://stackoverflow.com/questions/11529216/django-multiple-file-field
+        file_list = natsorted(
+            self.files.getlist('{}-file'.format(self.prefix))
+            if self.prefix else
+            self.files.getlist('file'),
+            key=lambda file: file.name)
+        for f in file_list:
+            print(f)
+            print(dir(f))
+            print(f.name, f.file.getvalue()[:10], f.field_name, f.content_type)
+        print('{}-file'.format(self.prefix))
+        print(file_list)
+
+
+class SingleFileUploadFormMutation(DjangoFormMutation):
+    class Meta:
+        form_class = SingleFileUploadForm
+
+    success = graphene.Boolean()
+
+    # @classmethod
+    # def mutate_and_get_payload(cls, root, info, file=None, **kwargs):
+    #     # do something with your file
+    #     print("HOGEHOGE")
+    #     print(file)  # <= filename
+    #     print(info.context.FILES['file'].read())
+    #     # print(file.read())
+    #     return SingleFileUploadFormMutation(success=True)
+
+
+class TodoListNode(DjangoObjectType):
+    class Meta:
+        model = models.TodoList
+        filter_fields = {
+            'title': ['exact', 'icontains', 'istartswith'],
+        }
+        fields = [
+            'title', 'author', 'created_at', 'modified_at',
+            # 'todo_set',
+        ]
+        interfaces = (graphene.relay.Node, )
+
+    # fieldsには書いてもかかなくてもいい
+    # ForeignKeyとかで参照されている場合にはこうやって指定しないと駄目
+    # なんでかちゃんとリンクしているやつだけfilterされている。。不思議！
+    todo_set = CustomDjangoFilterConnectionField(TodoNode)
 
 
 class TodoListCreateMutation(graphene.relay.mutation.ClientIDMutation):
@@ -128,9 +389,16 @@ class TodoListMutation(graphene.ObjectType):
 
 
 class Query(object):
-    todo = graphene.Field(TodoNode)
+    todo = graphene.Field(TodoNode)  # こっちはアクセスできない
+    todo2 = graphene.relay.Node.Field(TodoNode)  # こっちはglobal_idで引ける
+    # todoextra = graphene.Field(TodoExtraNode)
     todolist = graphene.relay.Node.Field(TodoListNode)
     todolists = DjangoFilterConnectionField(TodoListNode)
+    todos = CustomDjangoFilterConnectionField(TodoNode,
+                                              filterset_class=TodoFilterSet)
+
+    # def resolve_todos(root, info, parent_id, *args, **kwargs):
+    #     return models.Todo.objects.filter(parent_id=parent_id)
 
 
 class Mutation(object):
@@ -138,6 +406,8 @@ class Mutation(object):
     todolist_update = TodoListUpdateMutation.Field()
     todo_create = TodoCreateMutation.Field()
     todo_update = TodoUpdateMutation.Field()
+    todo_update_form = TodoUpdateFormMutation.Field()
+    single_file_upload = SingleFileUploadFormMutation.Field()
 
 
 class Subscription(object):

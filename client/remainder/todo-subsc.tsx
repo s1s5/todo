@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { IEnvironment, Observer, Variables } from 'relay-runtime'
+import { IEnvironment, Observer, Variables, GraphQLSubscriptionConfig } from 'relay-runtime'
 import { graphql, requestSubscription } from 'react-relay'
 // import { createSubscription } from "create-subscription";
 
@@ -32,8 +32,9 @@ fragment todoSubsc_data on TodoListMutation {
 
 export {fragment}
 
-const request_subscription = (environment:IEnvironment, observer: Observer<Data>, variables: Variables) => {
-    const subscriptionConfig = {
+const request_subscription = (environment:IEnvironment, observer: Observer<Data>, variables: Variables | undefined) => {
+    // console.log("request_subscription", environment, observer, variables)
+    const subscriptionConfig : GraphQLSubscriptionConfig<Data> = {
         subscription: graphql`
             subscription todoSubsc_Subscription($id: ID!) {
                 # 一個しか無理？
@@ -52,18 +53,23 @@ const request_subscription = (environment:IEnvironment, observer: Observer<Data>
                 }
             }
         `,
-        variables: variables,
+        variables: {},
         /* updater: (data:any) => {
          *     console.log(data)
          * },*/
         // updater?: SelectorStoreUpdater<TSubscriptionPayload>
         // updaterとonNextどっちも呼ばれる
         // updater: (data:any) => console.log("updater@request_hello_subscription", data),
-        onNext: (data:Data) => (observer.next && observer.next(data)),
+        onNext: (data:Data | null | undefined) => (data && observer.next && observer.next(data)),
         onError: (error:Error) => (observer.error && observer.error(error)),
-        onComplete: () => (observer.complete && observer.complete()),
+        onCompleted: () => (observer.complete && observer.complete()),
     }
-    /* console.log(subscriptionConfig) */
+
+    if (variables !== undefined) {
+        subscriptionConfig["variables"] = variables
+    }
+    
+    // console.log(subscriptionConfig)
     const {dispose} = requestSubscription(
         environment,
         subscriptionConfig
@@ -72,7 +78,7 @@ const request_subscription = (environment:IEnvironment, observer: Observer<Data>
     const subsc = {unsubscribe: dispose, closed: false}
     observer.start && observer.start(subsc) 
     return () => {
-        console.log("dispose", observer)
+        // console.log("dispose ended! observer=>", observer)
         observer.unsubscribe && observer.unsubscribe(subsc)
         dispose()
     }

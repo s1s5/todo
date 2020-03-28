@@ -1,8 +1,17 @@
 import * as React from 'react'
-import {graphql, commitMutation, ReactRelayContext} from 'react-relay'
+import {graphql, commitMutation, RelayContext, ReactRelayContext} from 'react-relay'
+import { makeStyles } from '@material-ui/core/styles'
 
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/Add'
+
+const useStyles = makeStyles(theme => ({
+    fab: {
+        position: 'absolute',
+        bottom: theme.spacing(2),
+        right: theme.spacing(2),
+    }
+}));
 
 const addTodoMutation = graphql`
     mutation todolistAddTodoButton_Mutation($input: TodoCreateMutationInput!) {
@@ -16,13 +25,14 @@ const addTodoMutation = graphql`
     }
 `
 
-const AddTodoButton = (props:{todolist__id:string}) => (
-    <ReactRelayContext.Consumer>
+const AddTodoButton = (props:{todolist__id:string}) => {
+    const classes = useStyles()
+    return <ReactRelayContext.Consumer>
       {
-          ({ environment }) => (
-              <Fab color="primary" aria-label="add"  onClick={ () => (
+          (context) => (
+              <Fab className={ classes.fab } color="primary" aria-label="add"  onClick={ () => (
                   commitMutation(
-                      environment,
+                      context!.environment,
                       {
                           mutation: addTodoMutation,
                           variables: {
@@ -36,6 +46,6 @@ const AddTodoButton = (props:{todolist__id:string}) => (
           )
       }
     </ReactRelayContext.Consumer>
-)
+}
 
 export default AddTodoButton

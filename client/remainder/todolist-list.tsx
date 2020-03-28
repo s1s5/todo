@@ -36,7 +36,7 @@ const TodoList = (props: Props) => {
 
     return <div>
       {
-          props.query.todolists.edges.map((edge:any) => (
+          props.query.todolists!.edges.map((edge:any) => (
               <div key={ edge.node.id }>
                 <ListItem button onClick={ () => { setOpen(!open) } }>
                   <ListItemText primary={ `${edge.node.title}` } />
@@ -57,6 +57,11 @@ const TodoList = (props: Props) => {
                     <Link to={ `/${edge.node.id}/refetch/` }>
                       <ListItem button className={classes.nested}>
                         <ListItemText primary="リフェッチサンプル"/>
+                      </ListItem>
+                    </Link>
+                    <Link to={ `/${edge.node.id}/fetchquery/` }>
+                      <ListItem button className={classes.nested}>
+                        <ListItemText primary="fetchQueryサンプル"/>
                       </ListItem>
                     </Link>
                   </List>
@@ -88,4 +93,5 @@ export default createQueryRenderer(TodoListFragment, TodoList, {
             ...todolistList_query
         }        
     `,
+    variables: {},
 })

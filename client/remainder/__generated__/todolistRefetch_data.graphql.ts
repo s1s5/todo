@@ -8,6 +8,9 @@ export type todolistRefetch_data = {
     readonly title: string;
     readonly todoSet: {
         readonly pageInfo: {
+            readonly hasNextPage: boolean;
+            readonly hasPreviousPage: boolean;
+            readonly startCursor: string | null;
             readonly endCursor: string | null;
         };
         readonly edges: ReadonlyArray<{
@@ -16,7 +19,7 @@ export type todolistRefetch_data = {
                 readonly " $fragmentRefs": FragmentRefs<"todo_data">;
             } | null;
         } | null>;
-    };
+    } | null;
     readonly " $refType": "todolistRefetch_data";
 };
 export type todolistRefetch_data$data = todolistRefetch_data;
@@ -42,9 +45,9 @@ const node: ReaderFragment = (function () {
         "metadata": {
             "connection": [
                 {
-                    "count": "count",
-                    "cursor": "after",
-                    "direction": "forward",
+                    "count": null,
+                    "cursor": null,
+                    "direction": "bidirectional",
                     "path": [
                         "todoSet"
                     ]
@@ -54,9 +57,21 @@ const node: ReaderFragment = (function () {
         "argumentDefinitions": [
             {
                 "kind": "LocalArgument",
-                "name": "count",
+                "name": "first",
                 "type": "Int",
-                "defaultValue": 1
+                "defaultValue": null
+            },
+            {
+                "kind": "LocalArgument",
+                "name": "last",
+                "type": "Int",
+                "defaultValue": null
+            },
+            {
+                "kind": "LocalArgument",
+                "name": "before",
+                "type": "String",
+                "defaultValue": null
             },
             {
                 "kind": "LocalArgument",
@@ -101,14 +116,28 @@ const node: ReaderFragment = (function () {
                             {
                                 "kind": "ScalarField",
                                 "alias": null,
-                                "name": "endCursor",
+                                "name": "hasNextPage",
                                 "args": null,
                                 "storageKey": null
                             },
                             {
                                 "kind": "ScalarField",
                                 "alias": null,
-                                "name": "hasNextPage",
+                                "name": "hasPreviousPage",
+                                "args": null,
+                                "storageKey": null
+                            },
+                            {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "name": "startCursor",
+                                "args": null,
+                                "storageKey": null
+                            },
+                            {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "name": "endCursor",
                                 "args": null,
                                 "storageKey": null
                             }
@@ -161,5 +190,5 @@ const node: ReaderFragment = (function () {
         ]
     } as any;
 })();
-(node as any).hash = 'e83342873ec0a594150d19aece7a6318';
+(node as any).hash = '32c55937f13beeda0f5300fb685247a8';
 export default node;

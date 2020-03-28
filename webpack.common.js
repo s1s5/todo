@@ -1,16 +1,10 @@
 const path = require('path');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
-  mode: 'development',
-  entry: ['./client/index'],
-  output: {
-    path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js',
-    publicPath: '/'
-  },
+  entry: [
+      './client/index',
+  ],
   resolve: {
     modules: ['node_modules'],
     alias: {
@@ -34,8 +28,7 @@ module.exports = {
     ],
   },
   devtool: 'eval-source-map',
-  plugins: [new ForkTsCheckerWebpackPlugin(), new webpack.NamedModulesPlugin(),
-            new HtmlWebpackPlugin({
-                template: path.join(__dirname, 'client/dev-index.html'),
-            })],
+  plugins: [
+      new ForkTsCheckerWebpackPlugin(),
+  ],
 };

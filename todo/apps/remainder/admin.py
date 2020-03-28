@@ -11,3 +11,8 @@ class TodoListAdmin(admin.ModelAdmin):
 @admin.register(models.Todo)
 class TodoAdmin(admin.ModelAdmin):
     list_display = ('id', 'parent', 'completed', 'text', 'created_at', 'modified_at')
+
+
+@admin.register(models.TodoExtra)
+class TodoExtraAdmin(admin.ModelAdmin):
+    list_display = ('id', 'todo', 'description')
