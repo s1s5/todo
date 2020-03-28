@@ -267,8 +267,9 @@ class SingleFileUploadForm(forms.Form):
     def save(self):
         # print("HOGEHOGE")
         # print(dir(self))
-        print(self.files)
-        print(self.cleaned_data)
+        print('files', self.files)
+        print('cleaned_data', self.cleaned_data)
+
         # 複数ファイルがアップロードされたときの扱い
         # https://stackoverflow.com/questions/11529216/django-multiple-file-field
         file_list = natsorted(
@@ -276,12 +277,14 @@ class SingleFileUploadForm(forms.Form):
             if self.prefix else
             self.files.getlist('file'),
             key=lambda file: file.name)
+        print('=' * 30, len(file_list), '=' * 30)
         for f in file_list:
-            print(f)
-            print(dir(f))
-            print(f.name, f.file.getvalue()[:10], f.field_name, f.content_type)
-        print('{}-file'.format(self.prefix))
-        print(file_list)
+            # print(f)
+            # print(dir(f))
+            f.seek(0)
+            data = f.read()
+            print("name='{}', data='{}', type='{}'".format(f.name, data[:10], f.content_type))
+        # print('{}-file'.format(self.prefix))
 
 
 class SingleFileUploadFormMutation(DjangoFormMutation):
@@ -289,6 +292,33 @@ class SingleFileUploadFormMutation(DjangoFormMutation):
         form_class = SingleFileUploadForm
 
     success = graphene.Boolean()
+
+    # @classmethod
+    # def get_form_kwargs(cls, root, info, **input):
+    #     if info and info.path:
+    #         prefix = info.path[0]
+    #         kwargs = {
+    #             "prefix": prefix,
+    #             "data": {'{}-{}'.format(prefix, key): value for key, value in input.items()},
+    #         }
+    #     else:
+    #         kwargs = {
+    #             "data": input
+    #         }
+
+    #     pk = input.pop("id", None)
+    #     if pk:
+    #         try:
+    #             pk = from_global_id(pk)[1]
+    #         except Exception:
+    #             raise forms.ValidationError('invalid id format')
+    #         instance = cls._meta.model._default_manager.get(pk=pk)
+    #         kwargs["instance"] = instance
+
+    #     if info and hasattr(info.context, 'FILES'):
+    #         kwargs["files"] = info.context.FILES
+
+    #     return kwargs
 
     # @classmethod
     # def mutate_and_get_payload(cls, root, info, file=None, **kwargs):
