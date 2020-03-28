@@ -50,6 +50,7 @@ services:
       while [ true ]; do python manage.py graphql_schema --watch ; sleep 10; done
       "
 
+# following services must be off in macbook. This consumes much energy
   relay-builder:
     image: s1s5/watchnode
     # command: |
@@ -69,7 +70,6 @@ services:
       - .:/app
     # user: ${USER_ID}:${GROUP_ID}
 
-# following services must be off in macbook. This consumes much energy
   # js-builder:
   #   image: node
   #   command: |

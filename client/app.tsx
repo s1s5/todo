@@ -23,14 +23,14 @@ const theme = createMuiTheme({
         primary: {
 //            light: '#757ce8',
 //            main: '#3f50b5',
-            main: '#ff0000',
+            main: '#9a0036',
 //            dark: '#002884',
             contrastText: '#fff',
         },
         secondary: {
 //            light: '#ff7961',
 //            main: '#f44336',
-            main: '#00ff00',
+            main: '#388e3c',
 //            dark: '#ba000d',
             contrastText: '#000',
         },
@@ -57,7 +57,7 @@ const App = () => {
     return (
         <div className={classes.root}>
           <ThemeProvider theme={theme}>
-            <AppBar position="static">
+            <AppBar position="static" color="primary">
               <Toolbar>
                 <Typography variant="h6" className={classes.title}>
                   Todoサンプル
