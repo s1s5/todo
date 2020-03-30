@@ -12,6 +12,7 @@ import {todo_data} from './__generated__/todo_data.graphql'
 import TodoDelete from './todo-delete'
 
 type Props = {
+    parent_id: string,
     data: todo_data,
 }
 
@@ -29,7 +30,7 @@ const Todo = (props: Props) => (
       </ListItemIcon>
       <ListItemText id={ props.data.id } primary={`${props.data.text}`} />
       <ListItemIcon>
-        <TodoDelete id={ props.data.id }>{
+        <TodoDelete id={ props.data.id } parent_id={ props.parent_id }>{
             (commit: () => void) => (
                 <DeleteIcon onClick={ commit } />
             )

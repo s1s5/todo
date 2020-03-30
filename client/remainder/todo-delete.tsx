@@ -5,6 +5,7 @@ import {graphql, commitMutation} from 'react-relay'
 import {withEnvironment} from '../environment'
 
 type Props = {
+    parent_id: string,
     id: string,
     environment: Environment
     children: (commit: () => void) => React.ReactNode,
@@ -18,25 +19,33 @@ const TodoDelete = (props: Props) => {
                 mutation: graphql`
                     mutation todoDelete_Mutation($input: TodoDeleteMutationInput!) {
                         todoDelete(input: $input) {
-                            id
+                            deletedTodoId
                         }
                     }
                 `,
                 variables: {
                     input: {id: props.id},
                 },
-                configs: [{
-                    type: 'NODE_DELETE',
-                    deletedIDFieldName: 'id',
-                }, {
-                    type: 'RANGE_DELETE',
-                    parentID: props.id,
-                    connectionKeys: [{
-                        key: 'todolist_todoSet',
-                    }],
-                    // pathToConnection: ['todo', 'tags'],
-                    deletedIDFieldName: 'id',
-                }],
+                onCompleted: (response: any, errors: any) => {
+                    console.log(response)
+                },
+                configs: [
+                    {
+                        type: 'NODE_DELETE',
+                        deletedIDFieldName: 'id',
+                    },
+                    {
+                        type: 'RANGE_DELETE',
+                        parentName: 'todolist',
+                        parentID: props.parent_id,
+                        connectionKeys: [{
+                            key: 'todolist_todoSet',
+                        }, ],
+                        pathToConnection: ['todolist', 'todoSet'],
+                        deletedIDFieldName: 'deletedTodoId',
+                    },
+                ]
+                ,
             }
         )
     }, [props.id, props.environment])

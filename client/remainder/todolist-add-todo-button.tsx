@@ -45,7 +45,6 @@ const AddTodoButton = (props:{todolist__id:string}) => {
                           variables: {
                               input: {
                                   todolist: props.todolist__id,
-                                  text: 'hello world!',
                               },
                           },
                           onCompleted: (response: any, errors: any) => {

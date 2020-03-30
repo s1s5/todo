@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash cfb72873242f1af5a0d4524a4d2473e0 */
+/* @relayHash 77b6a1f02f1c9f6507a46311a6d14398 */
 
 import { ConcreteRequest } from "relay-runtime";
 export type TodoDeleteMutationInput = {
@@ -12,7 +12,7 @@ export type todoDelete_MutationVariables = {
 };
 export type todoDelete_MutationResponse = {
     readonly todoDelete: {
-        readonly id: string | null;
+        readonly deletedTodoId: string | null;
     } | null;
 };
 export type todoDelete_Mutation = {
@@ -27,7 +27,7 @@ mutation todoDelete_Mutation(
   $input: TodoDeleteMutationInput!
 ) {
   todoDelete(input: $input) {
-    id
+    deletedTodoId
   }
 }
 */
@@ -59,7 +59,7 @@ const node: ConcreteRequest = (function () {
                 {
                     "kind": "ScalarField",
                     "alias": null,
-                    "name": "id",
+                    "name": "deletedTodoId",
                     "args": null,
                     "storageKey": null
                 }
@@ -86,10 +86,10 @@ const node: ConcreteRequest = (function () {
             "operationKind": "mutation",
             "name": "todoDelete_Mutation",
             "id": null,
-            "text": "mutation todoDelete_Mutation(\n  $input: TodoDeleteMutationInput!\n) {\n  todoDelete(input: $input) {\n    id\n  }\n}\n",
+            "text": "mutation todoDelete_Mutation(\n  $input: TodoDeleteMutationInput!\n) {\n  todoDelete(input: $input) {\n    deletedTodoId\n  }\n}\n",
             "metadata": {}
         }
     } as any;
 })();
-(node as any).hash = 'a981e0dbab0dccd6678da5cfdeb085b1';
+(node as any).hash = 'f3ba8fcae2065041aeff70c5ddb40a98';
 export default node;

@@ -391,6 +391,9 @@ class TodoCreateMutation(graphene.relay.mutation.ClientIDMutation):
         todolist = models.TodoList.objects.get(pk=from_global_id(todolist)[1])
         print(info, todolist, text)
         todo = models.Todo.objects.create(parent=todolist, completed=False, text=text)
+        if not text:
+            todo.text = 'todo({})'.format(todo.pk)
+            todo.save()
 
         connection_type = CustomDjangoFilterConnectionField(TodoNode).type
         edge_type = connection_type.Edge
@@ -425,13 +428,14 @@ class TodoDeleteMutation(graphene.relay.mutation.ClientIDMutation):
     class Input:
         id = graphene.ID(required=True)
 
-    id = graphene.ID()
+    # id = graphene.ID()  # 名前被りするからidはつかっちゃだめ
+    deleted_todo_id = graphene.ID()
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, id):
         todo = models.Todo.objects.get(pk=from_global_id(id)[1])
         todo.delete()
-        return TodoDeleteMutation(id=id)
+        return TodoDeleteMutation(deleted_todo_id=id)
 
 
 TodoListMutationValueObject = collections.namedtuple("TodoListMutation", ["operation", "todolist", "todo"])

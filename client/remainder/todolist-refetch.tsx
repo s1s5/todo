@@ -80,7 +80,7 @@ class TodoList_ extends React.Component<Props, State> {
             <List className={this.props.classes.root}>
           {
               this.props.data.todoSet!.edges.map((edge) => (
-                  <li key={ edge!.node!.id }><div><Todo data={ edge!.node! }/></div></li>
+                  <li key={ edge!.node!.id }><div><Todo parent_id={ this.props.id } data={ edge!.node! }/></div></li>
               ))
           }
           </List>

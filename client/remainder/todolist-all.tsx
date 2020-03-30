@@ -19,10 +19,11 @@ const TodoList = (props: Props) => {
     return (<div>
       <h3>todo list : id={ todolist.id }, { todolist.title }</h3>
       { todolist.todoSet!.edges.map((edge) => {
-            if (edge == null || edge.node == null) {
-                return
-            }
-            return <div key={ edge!.node!.id }><Todo data={ edge!.node! }/></div>
+//            console.log('edge -> ', edge)
+//            if (edge == null || edge.node == null) {
+//                return
+//            }
+            return <div key={ edge!.node!.id }><Todo parent_id={ props.id } data={ edge!.node! }/></div>
       })}
       <AddTodoButton todolist__id={ todolist.id } />
     </div>)

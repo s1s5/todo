@@ -40,7 +40,7 @@ const TestRenderer = () => (
         }
             if (props) {
                 console.log(props.todolist.todoSet.edges)
-            return <Todo data={ props.todolist.todoSet.edges[0].node } />
+            return <Todo parent_id={ "parent_id" } data={ props.todolist.todoSet.edges[0].node } />
         }
         return <span>loading</span>
     }}

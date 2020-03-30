@@ -2188,7 +2188,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "id",
+              "name": "deletedTodoId",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
