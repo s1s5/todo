@@ -119,8 +119,58 @@ class MyAsyncioExecutor(object):
             return asyncgen_to_observable(result, loop=self.loop)
         return result
 
+from rx.core import ObserverBase
+
 
 class AsyncWebsocketConsumer(AsyncConsumer):
+    class Observer(ObserverBase):
+        def __init__(self, _send, _id):
+            super().__init__()
+
+            self._send = _send
+            self._id = _id
+
+        def _on_next_core(self, value):
+            try:
+                logger.debug('_on_next_core %s', value)
+                if value.errors:
+                    for error in value.errors:
+                        logger.error('subscription error',
+                                     exc_info=(type(error), error,
+                                               error.__traceback__))
+                self._send(self._id, 'data', dict(
+                    data=value.data,
+                    errors=[
+                        {'name': str(type(x)), 'message': str(x)}
+                        for x in value.errors] if value.errors else None,
+                ))
+            except Exception as e:
+                logger.exception(e)
+
+        def _on_error_core(self, error):
+            logger.debug('_on_error_core %s', error)
+            self._send(self._id, 'error', [{'name': str(type(error)), 'message': str(error)}])
+
+        def _on_completed_core(self):
+            logger.debug('_on_completed_core %s')
+            self._send(self._id, 'complete', None)
+
+        # def send(self, type, payload):
+        #     logger.debug('sending %s, %s', type, payload)
+        #     try:
+        #         ensure_future(self._send({
+        #             "type": "websocket.send",
+        #             "text": json.dumps(
+        #                 {
+        #                     "id": self._id,
+        #                     "type": type,
+        #                     "payload": payload,
+        #                 }
+        #             ),
+        #         }))
+        #     except Exception as e:
+        #         logger.exception(e)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.disposable_list = []
@@ -157,63 +207,82 @@ class AsyncWebsocketConsumer(AsyncConsumer):
             logger.debug('result = "%s", %s', result, hasattr(result, "subscribe"))
             if hasattr(result, "subscribe"):
                 logger.debug('subscribing result')
-                from rx.core import AnonymousObserver
-                def on_next(*args, **kwargs):
-                    logger.info('on_next %s, %s', args, kwargs)
-                    try:
-                        ensure_future(self._send_result(*args, **kwargs))
-                    except Exception as e:
-                        logger.exception(e)
-                    logger.info('sending resulton_next %s, %s', args, kwargs)
+                # from rx.core import AnonymousObserver
+                # def on_next(*args, **kwargs):
+                #     logger.info('on_next %s, %s', args, kwargs)
+                #     try:
+                #         ensure_future(self._send_result(*args, **kwargs))
+                #     except Exception as e:
+                #         logger.exception(e)
+                #     logger.info('sending resulton_next %s, %s', args, kwargs)
 
-                def on_error(*args, **kwargs):
-                    logger.info('on_error %s, %s', args, kwargs)
-                def on_completed(*args, **kwargs):
-                    logger.info('on_completed %s, %s', args, kwargs)
-                observer = AnonymousObserver(functools.partial(on_next, _id), on_error, on_completed)
+                # def on_error(*args, **kwargs):
+                #     logger.info('on_error %s, %s', args, kwargs)
+                # def on_completed(*args, **kwargs):
+                #     logger.info('on_completed %s, %s', args, kwargs)
+                # observer = AnonymousObserver(functools.partial(on_next, _id), on_error, on_completed)
                 # disposable = result.subscribe(functools.partial(self._send_result, _id))
+                observer = AsyncWebsocketConsumer.Observer(self._send, _id)
                 disposable = result.subscribe(observer)
                 logger.debug('subscribing disposable => %s', disposable)
                 self.disposable_list.append(disposable)
             else:
-                self._send_result(_id, result)
+                # self._send_result(_id, result)
+                self._send(_id, 'data', result)
+                logger.debug("self._send_result(_id, result) called!!???")
 
         elif request["type"] == "stop":
             pass
 
-    async def _send_result(self, _id, result, *args, **kwargs):
-        logger.debug('_send_result: result="%s", args="%s", kwargs="%s"', result, args, kwargs)
-        # async_to_sync(self.send)(result)
-        await self.send(_id, result)
-
-    async def send(self, _id, result):
-        if result.errors:
-            for error in result.errors:
-                logger.error('subscription error',
-                             exc_info=(type(error), error,
-                                       error.__traceback__))
-        errors = result.errors
-        logger.debug('sending result(%s) %s', id(self), result.data)
-        # create-subscription-wsに書いてある
-    # MessageTypes.GQL_DATA = 'data';
-    # MessageTypes.GQL_ERROR = 'error';[{name: '', message: '', originalError: <???>}]
-    # MessageTypes.GQL_COMPLETE = 'complete'; payload不要
-
-        await super().send(
-            {
+    def _send(self, _id, type, payload):
+        logger.debug('sending %s, %s', type, payload)
+        try:
+            ensure_future(super().send({
                 "type": "websocket.send",
                 "text": json.dumps(
                     {
                         "id": _id,
-                        "type": "data",
-                        "payload": {
-                            "data": result.data,
-                            "errors": list(map(str, errors)) if errors else None,
-                        },
+                        "type": type,
+                        "payload": payload,
                     }
                 ),
-            }
-        )
+            }))
+        except Exception as e:
+            logger.exception(e)
+
+    # async def _send_result(self, _id, result, *args, **kwargs):
+    #     logger.debug('_send_result: result="%s", args="%s", kwargs="%s"', result, args, kwargs)
+    #     # async_to_sync(self.send)(result)
+    #     await self.send(_id, result)
+
+    # async def send(self, _id, result):
+    #     if result.errors:
+    #         for error in result.errors:
+    #             logger.error('subscription error',
+    #                          exc_info=(type(error), error,
+    #                                    error.__traceback__))
+    #     errors = result.errors
+    #     logger.debug('sending result(%s) %s', id(self), result.data)
+    #     # create-subscription-wsに書いてある
+    # # MessageTypes.GQL_DATA = 'data';
+    # # MessageTypes.GQL_ERROR = 'error';[{name: '', message: '', originalError: <???>}]
+    # # MessageTypes.GQL_COMPLETE = 'complete'; payload不要
+
+    #     await super().send(
+    #         {
+    #             "type": "websocket.send",
+    #             "text": json.dumps(
+    #                 {
+    #                     "id": _id,
+    #                     "type": "data",
+    #                     "payload": {
+    #                         "data": result.data,
+    #                         "errors": list(map(str, errors)) if errors else None,
+    #                     },
+    #                 }
+    #             ),
+    #         }
+    #     )
 
     async def websocket_disconnect(self, message):
         logger.debug('websocket_disconnect')
