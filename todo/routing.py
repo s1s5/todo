@@ -190,6 +190,11 @@ class AsyncWebsocketConsumer(AsyncConsumer):
                                        error.__traceback__))
         errors = result.errors
         logger.debug('sending result(%s) %s', id(self), result.data)
+        # create-subscription-wsに書いてある
+    # MessageTypes.GQL_DATA = 'data';
+    # MessageTypes.GQL_ERROR = 'error';[{name: '', message: '', originalError: <???>}]
+    # MessageTypes.GQL_COMPLETE = 'complete'; payload不要
+
         await super().send(
             {
                 "type": "websocket.send",
