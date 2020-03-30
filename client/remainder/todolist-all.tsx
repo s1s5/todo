@@ -15,11 +15,15 @@ type Props = {
 
 const TodoList = (props: Props) => {
     const todolist = props.query!.todolist!
+    console.log(todolist)
     return (<div>
       <h3>todo list : id={ todolist.id }, { todolist.title }</h3>
-      { todolist.todoSet!.edges.map((edge) => (
-          <div key={ edge!.node!.id }><Todo data={ edge!.node! }/></div>
-      ))}
+      { todolist.todoSet!.edges.map((edge) => {
+            if (edge == null || edge.node == null) {
+                return
+            }
+            return <div key={ edge!.node!.id }><Todo data={ edge!.node! }/></div>
+      })}
       <AddTodoButton todolist__id={ todolist.id } />
     </div>)
 }
@@ -34,8 +38,15 @@ const TodoListFragment = createFragmentContainer(
                 todolist(id: $id) {
                     id
                     title
-                    todoSet {
+                    todoSet(first: 10) @connection(key: "todolist_todoSet", filters: []) {
+                        pageInfo {
+                            hasNextPage
+                            hasPreviousPage
+                            startCursor
+                            endCursor
+                        }
                         edges {
+                            cursor
                             node {
                                 id
                                 ...todo_data

@@ -21,6 +21,13 @@ const addTodoMutation = graphql`
                 completed
                 text
             }
+            todoEdge {
+                cursor
+                node {
+                    id
+                    ...todo_data
+                }
+            }
         }
     }
 `
@@ -36,8 +43,23 @@ const AddTodoButton = (props:{todolist__id:string}) => {
                       {
                           mutation: addTodoMutation,
                           variables: {
-                              input: {todolist: props.todolist__id},
+                              input: {
+                                  todolist: props.todolist__id,
+                                  text: 'hello world!',
+                              },
                           },
+                          onCompleted: (response: any, errors: any) => {
+                              console.log(response)
+                          },
+                          configs: [{
+                              type: 'RANGE_ADD',
+                              parentID: props.todolist__id,
+                              connectionInfo: [{
+                                  key: 'todolist_todoSet',
+                                  rangeBehavior: 'append',
+                              }],
+                              edgeName: 'todoEdge',
+                          }],
                       }
                   ))
               }>

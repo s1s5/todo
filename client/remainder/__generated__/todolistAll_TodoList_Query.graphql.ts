@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 6fc5e6cd626de4464d9256a1911b2239 */
+/* @relayHash 1481b4756031b1d3e160fd754940db5d */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
@@ -34,11 +34,19 @@ fragment todolistAll_query_1Bmzm5 on Query {
   todolist(id: $id) {
     id
     title
-    todoSet {
+    todoSet(first: 10) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
       edges {
+        cursor
         node {
           id
           ...todo_data
+          __typename
         }
       }
     }
@@ -66,7 +74,13 @@ const node: ConcreteRequest = (function () {
         "name": "id",
         "args": null,
         "storageKey": null
-    } as any);
+    } as any), v3 = [
+        ({
+            "kind": "Literal",
+            "name": "first",
+            "value": 10
+        } as any)
+    ];
     return {
         "kind": "Request",
         "fragment": {
@@ -109,11 +123,50 @@ const node: ConcreteRequest = (function () {
                             "kind": "LinkedField",
                             "alias": null,
                             "name": "todoSet",
-                            "storageKey": null,
-                            "args": null,
+                            "storageKey": "todoSet(first:10)",
+                            "args": (v3 /*: any*/),
                             "concreteType": "TodoNodeConnection",
                             "plural": false,
                             "selections": [
+                                {
+                                    "kind": "LinkedField",
+                                    "alias": null,
+                                    "name": "pageInfo",
+                                    "storageKey": null,
+                                    "args": null,
+                                    "concreteType": "PageInfo",
+                                    "plural": false,
+                                    "selections": [
+                                        {
+                                            "kind": "ScalarField",
+                                            "alias": null,
+                                            "name": "hasNextPage",
+                                            "args": null,
+                                            "storageKey": null
+                                        },
+                                        {
+                                            "kind": "ScalarField",
+                                            "alias": null,
+                                            "name": "hasPreviousPage",
+                                            "args": null,
+                                            "storageKey": null
+                                        },
+                                        {
+                                            "kind": "ScalarField",
+                                            "alias": null,
+                                            "name": "startCursor",
+                                            "args": null,
+                                            "storageKey": null
+                                        },
+                                        {
+                                            "kind": "ScalarField",
+                                            "alias": null,
+                                            "name": "endCursor",
+                                            "args": null,
+                                            "storageKey": null
+                                        }
+                                    ]
+                                },
                                 {
                                     "kind": "LinkedField",
                                     "alias": null,
@@ -123,6 +176,13 @@ const node: ConcreteRequest = (function () {
                                     "concreteType": "TodoNodeEdge",
                                     "plural": true,
                                     "selections": [
+                                        {
+                                            "kind": "ScalarField",
+                                            "alias": null,
+                                            "name": "cursor",
+                                            "args": null,
+                                            "storageKey": null
+                                        },
                                         {
                                             "kind": "LinkedField",
                                             "alias": null,
@@ -146,12 +206,28 @@ const node: ConcreteRequest = (function () {
                                                     "name": "text",
                                                     "args": null,
                                                     "storageKey": null
+                                                },
+                                                {
+                                                    "kind": "ScalarField",
+                                                    "alias": null,
+                                                    "name": "__typename",
+                                                    "args": null,
+                                                    "storageKey": null
                                                 }
                                             ]
                                         }
                                     ]
                                 }
                             ]
+                        },
+                        {
+                            "kind": "LinkedHandle",
+                            "alias": null,
+                            "name": "todoSet",
+                            "args": (v3 /*: any*/),
+                            "handle": "connection",
+                            "key": "todolist_todoSet",
+                            "filters": []
                         }
                     ]
                 }
@@ -161,7 +237,7 @@ const node: ConcreteRequest = (function () {
             "operationKind": "query",
             "name": "todolistAll_TodoList_Query",
             "id": null,
-            "text": "query todolistAll_TodoList_Query(\n  $id: ID!\n) {\n  ...todolistAll_query_1Bmzm5\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolistAll_query_1Bmzm5 on Query {\n  todolist(id: $id) {\n    id\n    title\n    todoSet {\n      edges {\n        node {\n          id\n          ...todo_data\n        }\n      }\n    }\n  }\n}\n",
+            "text": "query todolistAll_TodoList_Query(\n  $id: ID!\n) {\n  ...todolistAll_query_1Bmzm5\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolistAll_query_1Bmzm5 on Query {\n  todolist(id: $id) {\n    id\n    title\n    todoSet(first: 10) {\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n        startCursor\n        endCursor\n      }\n      edges {\n        cursor\n        node {\n          id\n          ...todo_data\n          __typename\n        }\n      }\n    }\n  }\n}\n",
             "metadata": {}
         }
     } as any;

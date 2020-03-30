@@ -28,3 +28,4 @@ class Todo(models.Model):
 class TodoExtra(models.Model):
     todo = models.OneToOneField(Todo, on_delete=models.CASCADE, related_name="extra")
     description = models.TextField()
+

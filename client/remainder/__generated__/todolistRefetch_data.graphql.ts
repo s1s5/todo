@@ -92,8 +92,8 @@ const node: ReaderFragment = (function () {
             {
                 "kind": "LinkedField",
                 "alias": "todoSet",
-                "name": "__todolistRefetch_todoSet_connection",
-                "storageKey": "__todolistRefetch_todoSet_connection(orderBy:\"-created_at\")",
+                "name": "__todolist_todoSet_connection",
+                "storageKey": "__todolist_todoSet_connection(orderBy:\"-created_at\")",
                 "args": [
                     {
                         "kind": "Literal",
@@ -190,5 +190,5 @@ const node: ReaderFragment = (function () {
         ]
     } as any;
 })();
-(node as any).hash = '32c55937f13beeda0f5300fb685247a8';
+(node as any).hash = 'e96e2e57f9bce764102792849e12e349';
 export default node;

@@ -375,19 +375,31 @@ class TodoListUpdateMutation(graphene.relay.mutation.ClientIDMutation):
         return TodoListUpdateMutation(todolist=todolist)
 
 
+TodoEdge = TodoNode._meta.connection.Edge
+
+
 class TodoCreateMutation(graphene.relay.mutation.ClientIDMutation):
     class Input:
         todolist = graphene.ID(required=True)
         text = graphene.String()
 
     todo = graphene.Field(TodoNode)
+    todo_edge = graphene.Field(CustomDjangoFilterConnectionField(TodoNode).type.Edge)  # TodoEdge
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, todolist, text=""):
         todolist = models.TodoList.objects.get(pk=from_global_id(todolist)[1])
         print(info, todolist, text)
         todo = models.Todo.objects.create(parent=todolist, completed=False, text=text)
-        return TodoCreateMutation(todo=todo)
+
+        connection_type = CustomDjangoFilterConnectionField(TodoNode).type
+        edge_type = connection_type.Edge
+        print(connection_type, edge_type, todo)
+        # return TodoCreateMutation(todo=todo, todoEdge=connection_type([
+        #     edge_type(node=todo),
+        # ]))
+        # return TodoCreateMutation(todo=todo, todoSet=models.Todo.objects.filter(pk=todo.pk))
+        return TodoCreateMutation(todo=todo, todo_edge=edge_type(node=todo, cursor=""))
 
 
 class TodoUpdateMutation(graphene.relay.mutation.ClientIDMutation):
@@ -407,6 +419,19 @@ class TodoUpdateMutation(graphene.relay.mutation.ClientIDMutation):
             todo.text = text
         todo.save()
         return TodoUpdateMutation(todo)
+
+
+class TodoDeleteMutation(graphene.relay.mutation.ClientIDMutation):
+    class Input:
+        id = graphene.ID(required=True)
+
+    id = graphene.ID()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, id):
+        todo = models.Todo.objects.get(pk=from_global_id(id)[1])
+        todo.delete()
+        return TodoDeleteMutation(id=id)
 
 
 TodoListMutationValueObject = collections.namedtuple("TodoListMutation", ["operation", "todolist", "todo"])
@@ -438,6 +463,8 @@ class Mutation(object):
     todo_update = TodoUpdateMutation.Field()
     todo_update_form = TodoUpdateFormMutation.Field()
     single_file_upload = SingleFileUploadFormMutation.Field()
+
+    todo_delete = TodoDeleteMutation.Field()
 
 
 class AsyncIterable:
