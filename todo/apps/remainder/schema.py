@@ -521,35 +521,38 @@ async def await_many_dispatch(observer, channel_group, channel_layer_alias=DEFAU
 
     await channel_layer.group_add(channel_group, channel_name)
     logger.info('channel_layer.group_add(channel_group, channel_name) %s, %s', channel_group, channel_name)
-    consumer_callables = [channel_receive]
+    # consumer_callables = [channel_receive]
 
-    loop = asyncio.get_event_loop()
-    tasks = [
-        loop.create_task(consumer_callable())
-        for consumer_callable in consumer_callables
-    ]
+    # loop = asyncio.get_event_loop()
+    # tasks = [
+    #     loop.create_task(consumer_callable())
+    #     for consumer_callable in consumer_callables
+    # ]
     try:
         while True:
-            # Wait for any of them to complete
-            await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
-            # Find the completed one(s), yield results, and replace them
-            for i, task in enumerate(tasks):
-                if task.done():
-                    result = task.result()
-                    logger.info('task done -> %s', result)
-                    observer.on_next(result)
-                    tasks[i] = asyncio.ensure_future(consumer_callables[i]())
+            observer.on_next(await channel_receive())
+
+        # while True:
+        #     # Wait for any of them to complete
+        #     await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+        #     # Find the completed one(s), yield results, and replace them
+        #     for i, task in enumerate(tasks):
+        #         if task.done():
+        #             result = task.result()
+        #             logger.info('task done -> %s', result)
+        #             observer.on_next(result)
+        #             tasks[i] = asyncio.ensure_future(consumer_callables[i]())
         # never called observer.on_completed()
     except Exception as e:
         observer.on_error(e)
     finally:
         # Make sure we clean up tasks on exit
-        for task in tasks:
-            task.cancel()
-            try:
-                await task
-            except asyncio.CancelledError:
-                pass
+        # for task in tasks:
+        #     task.cancel()
+        #     try:
+        #         await task
+        #     except asyncio.CancelledError:
+        #         pass
         await channel_layer.group_discard(channel_group, channel_name)
         logger.info('channel_layer.group_discard(channel_group, channel_name) %s, %s', channel_group, channel_name)
 
@@ -714,7 +717,7 @@ class Subscription(object):
         # return AsyncIterable(up_to)
         # return async_to_observable(AsyncIterable(up_to))
         import time
-        return channelgroup_observable('subscriptions').map(lambda event: time.time())
+        return channelgroup_observable('custom-group').map(lambda event: time.time())
 
     # async def resolve_count_seconds(root, info, up_to):
     #     import asyncio
