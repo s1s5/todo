@@ -59,11 +59,15 @@ def asyncgen_to_observable(asyncgen, loop=None):
         logger.info('observer => %s', task)
 
         def dispose():
+            logger.info('dispose called!! => %s', task)
             async def await_task():
+                logger.info('dispose called awaiting task!! => %s', task)
                 await task
+                logger.info('dispose called await complete!! => %s', task)
 
             task.cancel()
             ensure_future(await_task(), loop=loop)
+            logger.info('ensure_future(await_task(), loop=loop) called!! => %s', task)
 
         return dispose
 

@@ -478,7 +478,11 @@ class AsyncIterable:
         self.counter = -1
 
     def __aiter__(self):
+        logger.debug('AsyncIterable.__aiter__ iteration started!!!!!')
         return self
+
+    def __del__(self):
+        logger.debug('AsyncIterable deleted!!!!!')
 
     async def __anext__(self):
         data = await self.fetch_data()
