@@ -1,0 +1,3 @@
+[submodule "s1s5_graphene-django"]
+	path = s1s5_graphene-django
+	url = git@github.com:s1s5/graphene-django.git
