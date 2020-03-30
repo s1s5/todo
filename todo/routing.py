@@ -111,7 +111,7 @@ class MyAsyncioExecutor(object):
             future = ensure_future(result, loop=self.loop)
             self.futures.append(future)
             return Promise.resolve(future)
-        elif isasyncgen(result):
+        elif isasyncgen(result) or hasattr(result, '__aiter__'):  # hasattr(result, '__aiter__')とかつけないとAsyncIterableがだめ
             return asyncgen_to_observable(result, loop=self.loop)
         return result
 

@@ -473,20 +473,20 @@ class Mutation(object):
 
 class AsyncIterable:
     def __init__(self, up_to):
-        print('AsyncIterable start!!')
+        logger.debug('AsyncIterable start!!')
         self.up_to = up_to
-        self.counter = 0
+        self.counter = -1
 
     def __aiter__(self):
         return self
 
     async def __anext__(self):
         data = await self.fetch_data()
-        print('AsyncIterable', data)
-        if data < self.up_to:
+        logger.debug('AsyncIterable %s', data)
+        if data <= self.up_to:
             return data
         else:
-            print('AsyncIterable end!!')
+            logger.debug('AsyncIterable end!!')
             raise StopAsyncIteration
 
     async def fetch_data(self):
@@ -588,18 +588,19 @@ class Subscription(object):
             todo=event.instance if isinstance(event.instance, models.Todo) else None)
         )
 
-    # def resolve_count_seconds(root, info, up_to):
-    #     # import asyncio
-    #     # return from_aiter(AsyncIterable(up_to), None)
-    #     from graphql.execution.executors.asyncio_utils import asyncgen_to_observable
-    #     return asyncgen_to_observable(AsyncIterable(up_to))
+    def resolve_count_seconds(root, info, up_to):
+        # import asyncio
+        # return from_aiter(AsyncIterable(up_to), None)
+        # from graphql.execution.executors.asyncio_utils import asyncgen_to_observable
+        # return asyncgen_to_observable(AsyncIterable(up_to))
+        return AsyncIterable(up_to)
 
-    async def resolve_count_seconds(root, info, up_to):
-        import asyncio
-        logger.info("!!! count_seconds start !!!")
-        for i in range(up_to):
-            logger.info("!!! count_seconds {} !!!".format(i))
-            yield i
-            await asyncio.sleep(1.)
-        yield up_to
-        logger.info("!!! count_seconds end !!!")
+    # async def resolve_count_seconds(root, info, up_to):
+    #     import asyncio
+    #     logger.info("!!! count_seconds start !!!")
+    #     for i in range(up_to):
+    #         logger.info("!!! count_seconds {} !!!".format(i))
+    #         yield i
+    #         await asyncio.sleep(1.)
+    #     yield up_to
+    #     logger.info("!!! count_seconds end !!!")
