@@ -166,7 +166,7 @@ const TodoListRefetch = createRefetchContainer(
                     last: $last
                     before: $before
                     after: $after
-                    orderBy: "-created_at"
+#                    orderBy: "-created_at"
                 ) @connection(key: "todolist_todoSet") {
                     pageInfo {
                         hasNextPage
