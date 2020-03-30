@@ -11,9 +11,10 @@ RUN pip freeze | sort
 
 COPY s1s5_graphene-django /opt/graphene-django
 WORKDIR /opt/graphene-django
+RUN pip uninstall -y graphene-django
 RUN python setup.py install
-RUN rm -rf /usr/local/lib/python3.7/site-packages/graphene_django
-RUN cp -r /opt/graphene-django/build/lib/graphene_django /usr/local/lib/python3.7/site-packages/graphene_django
+# RUN rm -rf /usr/local/lib/python3.7/site-packages/graphene_django
+# RUN cp -r /opt/graphene-django/build/lib/graphene_django /usr/local/lib/python3.7/site-packages/graphene_django
 
 WORKDIR /usr/src/app
 
