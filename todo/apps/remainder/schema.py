@@ -499,6 +499,54 @@ class AsyncIterable:
         self.counter += 1
         return self.counter
 
+    def start(self):
+        logger.debug('AsynIterable.start() called!!!')
+
+    def end(self):
+        logger.debug('AsynIterable.end() called!!!')
+
+
+from asyncio import ensure_future, CancelledError
+from rx import AnonymousObservable
+
+
+async def iterate_asyncgen(async_obj, observer):
+    try:
+        async_obj.start()
+        async for item in async_obj:
+            observer.on_next(item)
+        observer.on_completed()
+    except CancelledError:
+        pass
+    except Exception as e:
+        observer.on_error(e)
+    finally:
+        async_obj.end()
+
+
+def async_to_observable(async_obj, loop=None):
+
+    def emit(observer):
+        logger.info('observer => %s, %s', observer, loop)
+        task = ensure_future(iterate_asyncgen(async_obj, observer), loop=loop)
+        logger.info('observer => %s', task)
+
+        def dispose():
+            logger.info('dispose called!! => %s', task)
+            async def await_task():
+                logger.info('dispose called awaiting task!! => %s', task)
+                await task
+                logger.info('dispose called await complete!! => %s', task)
+
+            task.cancel()
+            ensure_future(await_task(), loop=loop)
+            logger.info('ensure_future(await_task(), loop=loop) called!! => %s', task)
+
+        return dispose
+
+    return AnonymousObservable(emit)
+
+
 
 def from_aiter(iter, loop):
     import asyncio
@@ -598,6 +646,7 @@ class Subscription(object):
         # from graphql.execution.executors.asyncio_utils import asyncgen_to_observable
         # return asyncgen_to_observable(AsyncIterable(up_to))
         return AsyncIterable(up_to)
+        # return async_to_observable(AsyncIterable(up_to))
 
     # async def resolve_count_seconds(root, info, up_to):
     #     import asyncio
