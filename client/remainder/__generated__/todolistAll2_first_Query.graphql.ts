@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 25e5962a839fd6e0a1df87a9e49db7f9 */
+/* @relayHash 750df17a5e27809f16a224f884bf318c */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
@@ -39,7 +39,7 @@ fragment todo_data on TodoNode {
 fragment todolistAll2_data_2aaGHd on TodoListNode {
   id
   title
-  todoSet(first: 100, orderBy: "created_at") {
+  todoSet(first: 100, orderBy: "-created_at") {
     pageInfo {
       hasNextPage
       hasPreviousPage
@@ -87,7 +87,7 @@ const node: ConcreteRequest = (function () {
         ({
             "kind": "Literal",
             "name": "orderBy",
-            "value": "created_at"
+            "value": "-created_at"
         } as any)
     ];
     return {
@@ -146,7 +146,7 @@ const node: ConcreteRequest = (function () {
                             "kind": "LinkedField",
                             "alias": null,
                             "name": "todoSet",
-                            "storageKey": "todoSet(first:100,orderBy:\"created_at\")",
+                            "storageKey": "todoSet(first:100,orderBy:\"-created_at\")",
                             "args": (v4 /*: any*/),
                             "concreteType": "TodoNodeConnection",
                             "plural": false,
@@ -262,7 +262,7 @@ const node: ConcreteRequest = (function () {
             "operationKind": "query",
             "name": "todolistAll2_first_Query",
             "id": null,
-            "text": "query todolistAll2_first_Query(\n  $todolist_id: ID!\n) {\n  todolist(id: $todolist_id) {\n    id\n    ...todolistAll2_data_2aaGHd\n  }\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolistAll2_data_2aaGHd on TodoListNode {\n  id\n  title\n  todoSet(first: 100, orderBy: \"created_at\") {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        ...todo_data\n        __typename\n      }\n    }\n  }\n}\n",
+            "text": "query todolistAll2_first_Query(\n  $todolist_id: ID!\n) {\n  todolist(id: $todolist_id) {\n    id\n    ...todolistAll2_data_2aaGHd\n  }\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolistAll2_data_2aaGHd on TodoListNode {\n  id\n  title\n  todoSet(first: 100, orderBy: \"-created_at\") {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        ...todo_data\n        __typename\n      }\n    }\n  }\n}\n",
             "metadata": {}
         }
     } as any;

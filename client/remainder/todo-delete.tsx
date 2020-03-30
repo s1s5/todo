@@ -42,7 +42,7 @@ const TodoDelete = (props: Props) => {
                         parentID: props.parent_id,
                         connectionKeys: [{
                             key: 'todolist_todoSet',
-                            filters: {'orderBy': 'created_at'},
+                            filters: {'orderBy': '-created_at'},
                         }, ],
                         pathToConnection: [props.parent_id, 'todoSet'],
                         deletedIDFieldName: 'deletedTodoId',

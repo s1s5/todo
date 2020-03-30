@@ -83,7 +83,7 @@ const TodoListFragment = createFragmentContainer(
                 last: $last
                 before: $before
                 after: $after
-                orderBy: "created_at"  # これがあるとだめだ
+                orderBy: "-created_at"  # filtersにいれて、commitMutationの方でも入れる必要がある
             ) @connection(key: "todolist_todoSet", filters: ["orderBy"] ) {
                 pageInfo {
                     hasNextPage

@@ -55,9 +55,9 @@ const AddTodoButton = (props:{todolist__id:string}) => {
                               parentID: props.todolist__id,
                               connectionInfo: [{
                                   key: 'todolist_todoSet',
-                                  rangeBehavior: 'append',
-                                  // rangeBehavior: 'prepend',
-                                  // filters: {'orderby': 'created_at'},
+                                  // rangeBehavior: 'append',
+                                  rangeBehavior: 'prepend',
+                                  filters: {'orderBy': '-created_at'},
                               }],
                               edgeName: 'todoEdge',
                           }],
