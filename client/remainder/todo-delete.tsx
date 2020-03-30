@@ -28,6 +28,14 @@ const TodoDelete = (props: Props) => {
                 configs: [{
                     type: 'NODE_DELETE',
                     deletedIDFieldName: 'id',
+                }, {
+                    type: 'RANGE_DELETE',
+                    parentID: props.id,
+                    connectionKeys: [{
+                        key: 'todolist_todoSet',
+                    }],
+                    // pathToConnection: ['todo', 'tags'],
+                    deletedIDFieldName: 'id',
                 }],
             }
         )
