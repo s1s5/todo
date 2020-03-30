@@ -19,14 +19,14 @@ from . import models
 from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter # , DjangoUpdateModelFormMutation, DjangoFormMutation
 from graphene_django.forms.mutation import DjangoUpdateModelFormMutation, DjangoFormMutation
 
-from graphene_file_upload.scalars import Upload
-from graphene_django.forms.converter import convert_form_field
+# from graphene_file_upload.scalars import Upload
+# from graphene_django.forms.converter import convert_form_field
 
 
-@convert_form_field.register(forms.FileField)
-@convert_form_field.register(forms.ImageField)
-def convert_form_field_to_upload(field):
-    return Upload(description=field.help_text, required=field.required)
+# @convert_form_field.register(forms.FileField)
+# @convert_form_field.register(forms.ImageField)
+# def convert_form_field_to_upload(field):
+#     return Upload(description=field.help_text, required=field.required)
 
 
 logger = logging.getLogger(__name__)
