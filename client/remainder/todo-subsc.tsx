@@ -56,7 +56,7 @@ const request_subscription = (environment:IEnvironment, observer: Observer<Data>
         variables: {},
         /* updater: (data:any) => {
          *     console.log(data)
-         * },*/
+         * }, */
         // updater?: SelectorStoreUpdater<TSubscriptionPayload>
         // updaterとonNextどっちも呼ばれる
         // updater: (data:any) => console.log("updater@request_hello_subscription", data),

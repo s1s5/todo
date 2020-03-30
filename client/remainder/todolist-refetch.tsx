@@ -100,7 +100,7 @@ class TodoList_ extends React.Component<Props, State> {
             (refetchVariables) => {
                 // console.log("refetch variables called", refetchVariables)
                 return {
-                    first: 100,
+                    first: 1,
                     after: self.props.data.todoSet?.pageInfo.endCursor
                 }
             },
@@ -127,7 +127,7 @@ class TodoList_ extends React.Component<Props, State> {
                 // { first : 1} だけだと今までの結果が消える
                 // { last : 1, before: ...} だと追加したあとで表示されるベキであっても無視される。
                 return {
-                    last: 100,
+                    last: 1,
                     before: self.props.data.todoSet?.pageInfo.startCursor,
                 }
             },
@@ -166,7 +166,7 @@ const TodoListRefetch = createRefetchContainer(
                     last: $last
                     before: $before
                     after: $after
-#                    orderBy: "-created_at"
+                    orderBy: "-created_at"
                 ) @connection(key: "todolist_todoSet") {
                     pageInfo {
                         hasNextPage
@@ -208,7 +208,7 @@ const TodoListQuery = (props: {id: string, environment: Environment}) => {
                query={graphql`
                    query todolistRefetch_first_Query($todolist_id: ID!) {
                        todolist(id: $todolist_id) {
-                           ...todolistRefetch_data @arguments(first: 100)
+                           ...todolistRefetch_data @arguments(first: 1)
                        }
                    }
                `}

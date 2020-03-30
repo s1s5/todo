@@ -7,6 +7,12 @@ from todo.apps.remainder import schema as remainder_schema
 
 class Query(remainder_schema.Query, accounts_schema.Query, graphene.ObjectType):
     debug = graphene.Field(DjangoDebug, name='_debug')
+    # _debug {
+    #        sql {
+    #                  rawSql
+    #                  duration
+    #                }
+    #      }
 
 
 class Mutation(remainder_schema.Mutation, accounts_schema.Mutation, graphene.ObjectType):
@@ -63,4 +69,5 @@ schema = graphene.Schema(
 # if __name__ == "__main__":
 #     result = schema.execute(query)
 #     print(result.data["patron"])
+
 

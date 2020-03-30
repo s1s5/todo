@@ -12,7 +12,7 @@ type Props = {
 }
 
 const TodoDelete = (props: Props) => {
-    console.log("todo delete ", props)
+    /* console.log("todo delete ", props) */
     const commit = React.useCallback(() => {
         commitMutation(
             props.environment,

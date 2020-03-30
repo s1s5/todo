@@ -1,11 +1,17 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash a4e94ad3ed53eddb9f86a059de691943 */
+/* @relayHash 74141973317f4eca48765e10ee5d3746 */
 
 import { ConcreteRequest } from "relay-runtime";
-export type todolistSubsc_SubscriptionVariables = {};
+export type todolistSubsc_SubscriptionVariables = {
+    id: string;
+};
 export type todolistSubsc_SubscriptionResponse = {
-    readonly countSeconds: number | null;
+    readonly todoCreated: {
+        readonly id: string;
+        readonly completed: boolean;
+        readonly text: string;
+    } | null;
 };
 export type todolistSubsc_Subscription = {
     readonly response: todolistSubsc_SubscriptionResponse;
@@ -15,25 +21,63 @@ export type todolistSubsc_Subscription = {
 
 
 /*
-subscription todolistSubsc_Subscription {
-  countSeconds(upTo: 10)
+subscription todolistSubsc_Subscription(
+  $id: ID!
+) {
+  todoCreated(parentId: $id) {
+    id
+    completed
+    text
+  }
 }
 */
 
 const node: ConcreteRequest = (function () {
     var v0 = [
         ({
-            "kind": "ScalarField",
+            "kind": "LocalArgument",
+            "name": "id",
+            "type": "ID!",
+            "defaultValue": null
+        } as any)
+    ], v1 = [
+        ({
+            "kind": "LinkedField",
             "alias": null,
-            "name": "countSeconds",
+            "name": "todoCreated",
+            "storageKey": null,
             "args": [
                 {
-                    "kind": "Literal",
-                    "name": "upTo",
-                    "value": 10
+                    "kind": "Variable",
+                    "name": "parentId",
+                    "variableName": "id"
                 }
             ],
-            "storageKey": "countSeconds(upTo:10)"
+            "concreteType": "TodoNode",
+            "plural": false,
+            "selections": [
+                {
+                    "kind": "ScalarField",
+                    "alias": null,
+                    "name": "id",
+                    "args": null,
+                    "storageKey": null
+                },
+                {
+                    "kind": "ScalarField",
+                    "alias": null,
+                    "name": "completed",
+                    "args": null,
+                    "storageKey": null
+                },
+                {
+                    "kind": "ScalarField",
+                    "alias": null,
+                    "name": "text",
+                    "args": null,
+                    "storageKey": null
+                }
+            ]
         } as any)
     ];
     return {
@@ -43,23 +87,23 @@ const node: ConcreteRequest = (function () {
             "name": "todolistSubsc_Subscription",
             "type": "Subscription",
             "metadata": null,
-            "argumentDefinitions": [],
-            "selections": (v0 /*: any*/)
+            "argumentDefinitions": (v0 /*: any*/),
+            "selections": (v1 /*: any*/)
         },
         "operation": {
             "kind": "Operation",
             "name": "todolistSubsc_Subscription",
-            "argumentDefinitions": [],
-            "selections": (v0 /*: any*/)
+            "argumentDefinitions": (v0 /*: any*/),
+            "selections": (v1 /*: any*/)
         },
         "params": {
             "operationKind": "subscription",
             "name": "todolistSubsc_Subscription",
             "id": null,
-            "text": "subscription todolistSubsc_Subscription {\n  countSeconds(upTo: 10)\n}\n",
+            "text": "subscription todolistSubsc_Subscription(\n  $id: ID!\n) {\n  todoCreated(parentId: $id) {\n    id\n    completed\n    text\n  }\n}\n",
             "metadata": {}
         }
     } as any;
 })();
-(node as any).hash = '0f18edeee0957a0476a4dce0bfb80d41';
+(node as any).hash = '2379351549145c3e6055167caf7e3b93';
 export default node;

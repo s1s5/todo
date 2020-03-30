@@ -7,6 +7,7 @@ import Todo from './todo'
 import AddTodoButton from './todolist-add-todo-button'
 import {todolistAll_query} from './__generated__/todolistAll_query.graphql'
 // import {todolistAll_TodoList_Query} from './__generated__/todolistAll_TodoList_Query.graphql'
+import TodoListSubsc from './todolist-subsc'
 
 type Props = {
     query: todolistAll_query,  // queryっていうプロパティ名じゃないとcreateQueryRendererは使えない
@@ -16,7 +17,15 @@ type Props = {
 const TodoList = (props: Props) => {
     const todolist = props.query!.todolist!
     console.log(todolist)
+    const observer2 = {
+        next: (data: any) => {
+            console.log('next2', data)
+        },
+        error: (error:Error) => console.log('error2', error),
+    }
+
     return (<div>
+      <TodoListSubsc variables={ {id: props.id} } observer={ observer2 } />
       <h3>todo list : id={ todolist.id }, { todolist.title }</h3>
       { todolist.todoSet!.edges.map((edge) => {
 //            console.log('edge -> ', edge)
