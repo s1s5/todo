@@ -440,6 +440,62 @@ class Mutation(object):
     single_file_upload = SingleFileUploadFormMutation.Field()
 
 
+class AsyncIterable:
+    def __init__(self, up_to):
+        print('AsyncIterable start!!')
+        self.up_to = up_to
+        self.counter = 0
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        data = await self.fetch_data()
+        print('AsyncIterable', data)
+        if data < self.up_to:
+            return data
+        else:
+            print('AsyncIterable end!!')
+            raise StopAsyncIteration
+
+    async def fetch_data(self):
+        import asyncio
+        await asyncio.sleep(1.)
+        self.counter += 1
+        return self.counter
+
+
+def from_aiter(iter, loop):
+    import asyncio
+    import rx
+    import functools
+    from rx.core import Disposable
+
+    def on_subscribe(observer, scheduler):
+        async def _aio_sub():
+            try:
+                async for i in iter:
+                    observer.on_next(i)
+                print("on_completed")
+                loop.call_soon(
+                    observer.on_completed)
+            except Exception as e:
+                print("on_error")
+                loop.call_soon(
+                    functools.partial(observer.on_error, e))
+
+        task = asyncio.ensure_future(_aio_sub(), loop=loop)
+        return Disposable(lambda: task.cancel())
+
+    return rx.create(on_subscribe)
+
+
+def from_aiter2(iter):
+    from rx.subjects import Subject
+    s = Subject()
+    return s
+
+
 class Subscription(object):
     todolist_created = graphene.Field(TodoListNode)
     todolist_updated = graphene.Field(TodoListNode)
@@ -449,6 +505,8 @@ class Subscription(object):
     # todo_updated = graphene.relay.Node.Field(TodoNode, parent_id=graphene.ID())
 
     todolist_mutation = graphene.Field(TodoListMutation, id=graphene.ID())
+
+    count_seconds = graphene.Float(up_to=graphene.Int())
 
     def resolve_todolist_created(root, info):
         from graphene_subscriptions.events import CREATED
@@ -498,3 +556,19 @@ class Subscription(object):
             todolist=event.instance if isinstance(event.instance, models.TodoList) else None,
             todo=event.instance if isinstance(event.instance, models.Todo) else None)
         )
+
+    def resolve_count_seconds(root, info, up_to):
+        # import asyncio
+        # return from_aiter(AsyncIterable(up_to), None)
+        from graphql.execution.executors.asyncio_utils import asyncgen_to_observable
+        return asyncgen_to_observable(AsyncIterable(up_to))
+
+    # async def resolve_count_seconds(root, info, up_to):
+    #     import asyncio
+    #     print("!!! count_seconds start !!!")
+    #     for i in range(up_to):
+    #         print("!!! count_seconds {} !!!".format(i))
+    #         yield i
+    #         await asyncio.sleep(1.)
+    #     yield up_to
+    #     print("!!! count_seconds end !!!")
