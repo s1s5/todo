@@ -43,14 +43,14 @@ const request_subscription = (environment:IEnvironment, observer: Observer<Data>
                 #     completed
                 #     text
                 # }
-                # todoUpdated(parentId: $id) {
-                #     id
-                #     completed
-                #     text
-                # }
-                todolistMutation(id: $id) {
-                    ... todoSubsc_data
+                todoUpdated(parentId: $id) {
+                    id
+                    completed
+                    text
                 }
+                # todolistMutation(id: $id) {
+                #     ... todoSubsc_data
+                # }
             }
         `,
         variables: {},

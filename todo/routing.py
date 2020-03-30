@@ -55,7 +55,9 @@ class CustomGraphqlSubscriptionConsumer(GraphqlSubscriptionConsumer):
             )
 
             if hasattr(result, "subscribe"):
+                logger.debug('subscribing result')
                 disposable = result.subscribe(functools.partial(self._send_result, _id))
+                logger.debug('subscribing disposable => %s', disposable)
                 self.disposable_list.append(disposable)
             else:
                 self._send_result(_id, result)

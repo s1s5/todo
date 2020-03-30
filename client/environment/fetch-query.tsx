@@ -21,11 +21,34 @@ function getRequestBodyWithUploadables(request: RequestParameters, variables: Va
     formData.append('query', request.text!);
     formData.append('variables', JSON.stringify(variables));
 
+    // console.log(uploadables)
+    const m:any = {}
     Object.keys(uploadables).forEach(key => {
         if (Object.prototype.hasOwnProperty.call(uploadables, key)) {
-            formData.append(key, uploadables[key]);
+            const nk = key.substring(0, key.lastIndexOf('['))
+            const ind = parseInt(key.slice(key.lastIndexOf('[') + 1, -1), 10)
+            if (!(nk in m)) {
+                m[nk] = []
+            }
+            m[nk].push([ind, uploadables[key]])
         }
     });
+
+    Object.keys(m).forEach(key => {
+        // console.log(m[key])
+        m[key].sort()
+        m[key].map((e:any) => {
+            const [ind, file] = e
+            // console.log(key, ind, file)
+            formData.append(key, file)
+        })
+    })
+
+    // Object.keys(uploadables).forEach(key => {
+    //     if (Object.prototype.hasOwnProperty.call(uploadables, key)) {
+    //         formData.append(key, uploadables[key]);
+    //     }
+    // });
 
     return formData;
 }

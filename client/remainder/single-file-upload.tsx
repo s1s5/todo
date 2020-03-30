@@ -61,21 +61,21 @@ const SingleFileUpload = (props: Props) => {
     }
     return (
         <Form id="hoge" initialVariables={ value } mutation={ single_file_upload_mutation }>
-        <FormGroup name="singleFileUpload">
-        <InputFile name="file" />
-        </FormGroup>
-        <CommitTrigger
-        onSuccess={ () => console.log('success!!') }
-        onFailure={ () => console.log('failed...') }
-        >
-        { (commit) => (
-            <Button onClick={ () => commit() } >commit</Button>
-        )}
-        </CommitTrigger>
+          <FormGroup name="singleFileUpload">
+            <InputFile name="file" />
+          </FormGroup>
+          <CommitTrigger
+              onSuccess={ () => console.log('success!!') }
+              onFailure={ () => console.log('failed...') }
+          >
+            { (commit) => (
+                <Button onClick={ () => commit() } >commit</Button>
+            )}
+          </CommitTrigger>
         </Form>
     )
-//    const [file, set_file] = React.useState<File | Blob | null>(null)
-//    
+    //    const [file, set_file] = React.useState<File | Blob | null>(null)
+    //    
 //    const commit = () => {
 //        commitMutation(
 //            props.environment,

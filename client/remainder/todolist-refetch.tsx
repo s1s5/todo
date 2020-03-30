@@ -16,6 +16,7 @@ import {withEnvironment} from '../environment'
 import Todo from './todo'
 import AddTodoButton from './todolist-add-todo-button'
 import TodoSubsc from './todo-subsc'
+import TodoListSubsc from './todolist-subsc'
 
 import {todolistRefetch_data} from './__generated__/todolistRefetch_data.graphql'
 import {todoSubsc_data as TodoSubscData} from './__generated__/todoSubsc_data.graphql'
@@ -52,21 +53,28 @@ class TodoList_ extends React.Component<Props, State> {
     render() {
         // console.log("@todolist refetch render")
         // console.log(this.props.data)
-        const observer = {
+        const observer1 = {
             next: (data:TodoSubscData) => {
-                console.log('next', data)
+                console.log('next1', data)
 //                console.log(data.operation)
 //                console.log(data.todolist)
 //                console.log(data.todo)
             },
-            error: (error:Error) => console.log('error', error),
+            error: (error:Error) => console.log('error1', error),
+        }
+        const observer2 = {
+            next: (data: any) => {
+                console.log('next2', data)
+            },
+            error: (error:Error) => console.log('error2', error),
         }
         // console.log(observer)
         /* console.log(this.props.data.todoSet.pageInfo)
          * console.log(this.props.data.todoSet.edges) */
         return (<div>
           <TodoUpdateForm id={ this.props.data.todoSet!.edges[0]!.node!.id } />
-          <TodoSubsc variables={ {id: this.props.id} } observer={ observer } />
+          <TodoSubsc variables={ {id: this.props.id} } observer={ observer1 } />
+          <TodoListSubsc variables={ {id: this.props.id} } observer={ observer2 } />
           <h3>{ this.props.data.title }</h3>
           <Container maxWidth="sm" >
             <List className={this.props.classes.root}>

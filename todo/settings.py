@@ -230,7 +230,7 @@ DEBUG_TOOLBAR_PANELS = [
 GRAPHENE = {
     # firstかlastが有効なときにしか聞かない・・・バグだろこれ
     # これを超えてリクエストしてもなんのエラーもでない・・・？
-    'RELAY_CONNECTION_MAX_LIMIT': 100,
+    # 'RELAY_CONNECTION_MAX_LIMIT': 100,
 
     # # DjangoFilterConnectionField用、大量のデータを一気にフェッチするのを防ぐ
     # # 下のような感じでfirstのデフォルト値を指定しておく

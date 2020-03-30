@@ -50,34 +50,3 @@ services:
       bash -c "
       while [ true ]; do python manage.py graphql_schema --watch ; sleep 10; done
       "
-
-# following services must be off in macbook. This consumes much energy
-  # relay-builder:
-  #   image: s1s5/watchnode
-  #   # command: |
-  #   #   bash -c "
-  #   #   cd /app; watchman; while [ true ]; do npm run relay -- --watch ; sleep 10; done
-  #   #   "
-  #   command: |
-  #     bash -c "
-  #     echo ================================================================================;
-  #     groupadd -g ${GROUP_ID} app;
-  #     adduser --uid ${USER_ID} app;
-  #     echo 'app:x:1000:1000:app,,,:/home/app:/bin/bash' >> /etc/passwd
-  #     gosu app touch /tmp/foo;
-  #     cd /app; watchman; while [ true ]; do gosu app npm run relay -- --watch ; sleep 10; done
-  #     "
-  #   volumes:
-  #     - .:/app
-  #   # user: ${USER_ID}:${GROUP_ID}
-
-  # js-builder:
-  #   image: node
-  #   command: |
-  #     bash -c "
-  #     cd /app; npm run start
-  #     "
-  #   volumes:
-  #     - .:/app
-  #   user: ${USER_ID}:${GROUP_ID}
-  
