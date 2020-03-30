@@ -46,7 +46,7 @@ const TodoList = (props: Props) => {
 //             last: $last
 //             before: $before
 //             after: $after
-//             orderBy: "-created_at"
+//             orderBy: "-created_at"o
 //         ) @connection(key: "todolist_todoSet") {
 //             pageInfo {
 //                 hasNextPage
@@ -72,12 +72,19 @@ const TodoListFragment = createFragmentContainer(
         fragment todolistAll2_data on TodoListNode
         @argumentDefinitions(
             first: { type: "Int" },
+            last: { type: "Int" },
+            before: { type: "String" },
+            after: { type: "String" }
         ) {
             id
             title
             todoSet(
                 first: $first
-            ) @connection(key: "todolist_todoSet") {
+                last: $last
+                before: $before
+                after: $after
+#                 orderBy: "created_at"  # これがあるとだめだ
+            ) @connection(key: "todolist_todoSet" ) {
                 pageInfo {
                     hasNextPage
                     hasPreviousPage

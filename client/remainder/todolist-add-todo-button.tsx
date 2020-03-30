@@ -57,6 +57,7 @@ const AddTodoButton = (props:{todolist__id:string}) => {
                                   key: 'todolist_todoSet',
                                   rangeBehavior: 'append',
                                   // rangeBehavior: 'prepend',
+                                  // filters: {'orderby': 'created_at'},
                               }],
                               edgeName: 'todoEdge',
                           }],

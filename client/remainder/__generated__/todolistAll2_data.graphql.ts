@@ -46,9 +46,9 @@ const node: ReaderFragment = (function () {
         "metadata": {
             "connection": [
                 {
-                    "count": "first",
+                    "count": null,
                     "cursor": null,
-                    "direction": "forward",
+                    "direction": "bidirectional",
                     "path": [
                         "todoSet"
                     ]
@@ -60,6 +60,24 @@ const node: ReaderFragment = (function () {
                 "kind": "LocalArgument",
                 "name": "first",
                 "type": "Int",
+                "defaultValue": null
+            },
+            {
+                "kind": "LocalArgument",
+                "name": "last",
+                "type": "Int",
+                "defaultValue": null
+            },
+            {
+                "kind": "LocalArgument",
+                "name": "before",
+                "type": "String",
+                "defaultValue": null
+            },
+            {
+                "kind": "LocalArgument",
+                "name": "after",
+                "type": "String",
                 "defaultValue": null
             }
         ],
@@ -167,5 +185,5 @@ const node: ReaderFragment = (function () {
         ]
     } as any;
 })();
-(node as any).hash = 'ab2b718802dc5f1382dac05963b6a8ea';
+(node as any).hash = '95db1261eaeaeaded6ccc126b6823f82';
 export default node;
