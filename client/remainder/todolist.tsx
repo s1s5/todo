@@ -10,6 +10,7 @@ import {useRouteMatch, Switch, Route} from "react-router-dom";
 const TodoListPaginated = React.lazy(() => import('./todolist-paginated'))
 const TodoListRefetch = React.lazy(() => import('./todolist-refetch'))
 const TodoListAll = React.lazy(() => import('./todolist-all'))
+const TodoListAll2 = React.lazy(() => import('./todolist-all-2'))
 const TodoListFetchQuery = React.lazy(() => import('./todolist-fetch-query'))
 
 //          <Link to={`${match.url}/recommend`}>some text</Link>
@@ -31,6 +32,9 @@ const TodoList = (props: { id: string }) => {
               </Route>
               <Route path={`${match.path}all/`}>
                 <TodoListAll id={ props.id }/>
+              </Route>
+              <Route path={`${match.path}all2/`}>
+                <TodoListAll2 id={ props.id }/>
               </Route>
               <Route path={`${match.path}hoge/`}>
                 <h2>hello hoge</h2>
