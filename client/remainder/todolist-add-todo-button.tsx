@@ -21,7 +21,7 @@ const addTodoMutation = graphql`
                 completed
                 text
             }
-            todoEdge {
+            edge {
                 cursor
                 node {
                     id
@@ -59,7 +59,7 @@ const AddTodoButton = (props:{todolist__id:string}) => {
                                   rangeBehavior: 'prepend',
                                   filters: {'orderBy': '-created_at'},
                               }],
-                              edgeName: 'todoEdge',
+                              edgeName: 'edge',
                           }],
                       }
                   ))

@@ -87,3 +87,5 @@ npm install --save-dev webpack-bundle-tracker
 pip install django-webpack-loader
 ```
 
+
+asyncio.run(channel_layer.flush())

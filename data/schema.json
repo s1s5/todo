@@ -1753,7 +1753,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "todoEdge",
+              "name": "edge",
               "type": {
                 "kind": "OBJECT",
                 "name": "TodoNodeEdge",

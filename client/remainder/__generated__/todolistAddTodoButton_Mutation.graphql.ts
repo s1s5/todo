@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 3eb40890f40c3b408728921bc2b7a559 */
+/* @relayHash 1e37345b0fc27e38d086d5831117af3f */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
@@ -19,7 +19,7 @@ export type todolistAddTodoButton_MutationResponse = {
             readonly completed: boolean;
             readonly text: string;
         } | null;
-        readonly todoEdge: {
+        readonly edge: {
             readonly cursor: string;
             readonly node: {
                 readonly id: string;
@@ -45,7 +45,7 @@ mutation todolistAddTodoButton_Mutation(
       completed
       text
     }
-    todoEdge {
+    edge {
       cursor
       node {
         id
@@ -136,7 +136,7 @@ const node: ConcreteRequest = (function () {
                         {
                             "kind": "LinkedField",
                             "alias": null,
-                            "name": "todoEdge",
+                            "name": "edge",
                             "storageKey": null,
                             "args": null,
                             "concreteType": "TodoNodeEdge",
@@ -184,7 +184,7 @@ const node: ConcreteRequest = (function () {
                         {
                             "kind": "LinkedField",
                             "alias": null,
-                            "name": "todoEdge",
+                            "name": "edge",
                             "storageKey": null,
                             "args": null,
                             "concreteType": "TodoNodeEdge",
@@ -211,10 +211,10 @@ const node: ConcreteRequest = (function () {
             "operationKind": "mutation",
             "name": "todolistAddTodoButton_Mutation",
             "id": null,
-            "text": "mutation todolistAddTodoButton_Mutation(\n  $input: TodoCreateMutationInput!\n) {\n  todoCreate(input: $input) {\n    todo {\n      id\n      completed\n      text\n    }\n    todoEdge {\n      cursor\n      node {\n        id\n        ...todo_data\n      }\n    }\n  }\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n",
+            "text": "mutation todolistAddTodoButton_Mutation(\n  $input: TodoCreateMutationInput!\n) {\n  todoCreate(input: $input) {\n    todo {\n      id\n      completed\n      text\n    }\n    edge {\n      cursor\n      node {\n        id\n        ...todo_data\n      }\n    }\n  }\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n",
             "metadata": {}
         }
     } as any;
 })();
-(node as any).hash = '87831f5508bb99b8d694a68b7e0d4fe1';
+(node as any).hash = 'c8981e12081c39a6410784c88e24a568';
 export default node;

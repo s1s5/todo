@@ -2,12 +2,13 @@ import logging
 import collections
 import graphene
 from natsort import natsorted
+import asyncio
 
 from django import forms
 
-
 from graphql_relay import from_global_id
 from graphene_django import DjangoObjectType, DjangoConnectionField
+from graphene_django.consumers import ChannelGroupObservable
 # from graphene_django.forms.mutation import DjangoModelFormMutation
 from graphene_django.filter import DjangoFilterConnectionField
 import django_filters
@@ -384,7 +385,7 @@ class TodoCreateMutation(graphene.relay.mutation.ClientIDMutation):
         text = graphene.String()
 
     todo = graphene.Field(TodoNode)
-    todo_edge = graphene.Field(CustomDjangoFilterConnectionField(TodoNode).type.Edge)  # TodoEdge
+    edge = graphene.Field(CustomDjangoFilterConnectionField(TodoNode).type.Edge)  # TodoEdge
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, todolist, text=""):
@@ -402,7 +403,7 @@ class TodoCreateMutation(graphene.relay.mutation.ClientIDMutation):
         #     edge_type(node=todo),
         # ]))
         # return TodoCreateMutation(todo=todo, todoSet=models.Todo.objects.filter(pk=todo.pk))
-        return TodoCreateMutation(todo=todo, todo_edge=edge_type(node=todo, cursor=""))
+        return TodoCreateMutation(todo=todo, edge=edge_type(node=todo, cursor=""))
 
 
 class TodoUpdateMutation(graphene.relay.mutation.ClientIDMutation):
@@ -494,7 +495,6 @@ class AsyncIterable:
             raise StopAsyncIteration
 
     async def fetch_data(self):
-        import asyncio
         await asyncio.sleep(10)
         self.counter += 1
         return self.counter
@@ -504,148 +504,6 @@ class AsyncIterable:
 
     def end(self):
         logger.debug('AsynIterable.end() called!!!')
-
-
-from asyncio import ensure_future, CancelledError
-from rx import AnonymousObservable
-import asyncio
-import functools
-from channels import DEFAULT_CHANNEL_LAYER
-from channels.layers import get_channel_layer
-
-
-async def await_many_dispatch(observer, channel_group, channel_layer_alias=DEFAULT_CHANNEL_LAYER):
-    channel_layer = get_channel_layer(channel_layer_alias)
-    channel_name = await channel_layer.new_channel()
-    channel_receive = functools.partial(channel_layer.receive, channel_name)
-
-    await channel_layer.group_add(channel_group, channel_name)
-    logger.info('channel_layer.group_add(channel_group, channel_name) %s, %s', channel_group, channel_name)
-    # consumer_callables = [channel_receive]
-
-    # loop = asyncio.get_event_loop()
-    # tasks = [
-    #     loop.create_task(consumer_callable())
-    #     for consumer_callable in consumer_callables
-    # ]
-    try:
-        while True:
-            observer.on_next(await channel_receive())
-
-        # while True:
-        #     # Wait for any of them to complete
-        #     await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
-        #     # Find the completed one(s), yield results, and replace them
-        #     for i, task in enumerate(tasks):
-        #         if task.done():
-        #             result = task.result()
-        #             logger.info('task done -> %s', result)
-        #             observer.on_next(result)
-        #             tasks[i] = asyncio.ensure_future(consumer_callables[i]())
-        # never called observer.on_completed()
-    except Exception as e:
-        observer.on_error(e)
-    finally:
-        # Make sure we clean up tasks on exit
-        # for task in tasks:
-        #     task.cancel()
-        #     try:
-        #         await task
-        #     except asyncio.CancelledError:
-        #         pass
-        await channel_layer.group_discard(channel_group, channel_name)
-        logger.info('channel_layer.group_discard(channel_group, channel_name) %s, %s', channel_group, channel_name)
-
-
-def channelgroup_observable(channel_group, channel_layer=DEFAULT_CHANNEL_LAYER, loop=None):
-    def emit(observer):
-        logger.info('observer => %s, %s', observer, loop)
-        task = ensure_future(await_many_dispatch(observer, channel_group, channel_layer), loop=loop)
-        logger.info('observer => %s', task)
-
-        def dispose():
-            logger.info('dispose called!! => %s', task)
-            async def await_task():
-                logger.info('dispose called awaiting task!! => %s', task)
-                await task
-                logger.info('dispose called await complete!! => %s', task)
-
-            task.cancel()
-            ensure_future(await_task(), loop=loop)
-            logger.info('ensure_future(await_task(), loop=loop) called!! => %s', task)
-
-        return dispose
-
-    return AnonymousObservable(emit)
-
-
-async def iterate_asyncgen(async_obj, observer):
-    try:
-        async_obj.start()
-        async for item in async_obj:
-            observer.on_next(item)
-        observer.on_completed()
-    except CancelledError:
-        pass
-    except Exception as e:
-        observer.on_error(e)
-    finally:
-        async_obj.end()
-
-
-def async_to_observable(async_obj, loop=None):
-
-    def emit(observer):
-        logger.info('observer => %s, %s', observer, loop)
-        task = ensure_future(iterate_asyncgen(async_obj, observer), loop=loop)
-        logger.info('observer => %s', task)
-
-        def dispose():
-            logger.info('dispose called!! => %s', task)
-            async def await_task():
-                logger.info('dispose called awaiting task!! => %s', task)
-                await task
-                logger.info('dispose called await complete!! => %s', task)
-
-            task.cancel()
-            ensure_future(await_task(), loop=loop)
-            logger.info('ensure_future(await_task(), loop=loop) called!! => %s', task)
-
-        return dispose
-
-    return AnonymousObservable(emit)
-
-
-
-def from_aiter(iter, loop):
-    import asyncio
-    import rx
-    import functools
-    from rx.core import Disposable
-
-    def on_subscribe(observer, scheduler):
-        async def _aio_sub():
-            try:
-                async for i in iter:
-                    observer.on_next(i)
-                print("on_completed")
-                loop.call_soon(
-                    observer.on_completed)
-            except Exception as e:
-                print("on_error")
-                loop.call_soon(
-                    functools.partial(observer.on_error, e))
-
-        task = asyncio.ensure_future(_aio_sub(), loop=loop)
-        return Disposable(lambda: task.cancel())
-
-    return rx.create(on_subscribe)
-
-
-def from_aiter2(iter):
-    from rx.subjects import Subject
-    s = Subject()
-    return s
 
 
 class Subscription(object):
@@ -717,7 +575,7 @@ class Subscription(object):
         # return AsyncIterable(up_to)
         # return async_to_observable(AsyncIterable(up_to))
         import time
-        return channelgroup_observable('custom-group').map(lambda event: time.time())
+        return ChannelGroupObservable('custom-group').map(lambda event: time.time())
 
     # async def resolve_count_seconds(root, info, up_to):
     #     import asyncio
