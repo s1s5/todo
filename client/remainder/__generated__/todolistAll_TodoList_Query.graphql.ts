@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 1481b4756031b1d3e160fd754940db5d */
+/* @relayHash ae709ed8cd4cc1e286800fbcc2a4b222 */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
@@ -227,7 +227,7 @@ const node: ConcreteRequest = (function () {
                             "args": (v3 /*: any*/),
                             "handle": "connection",
                             "key": "todolist_todoSet",
-                            "filters": []
+                            "filters": null
                         }
                     ]
                 }

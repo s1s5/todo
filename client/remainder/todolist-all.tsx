@@ -39,7 +39,7 @@ const TodoListFragment = createFragmentContainer(
                 todolist(id: $id) {
                     id
                     title
-                    todoSet(first: 10) @connection(key: "todolist_todoSet", filters: []) {
+                    todoSet(first: 10) @connection(key: "todolist_todoSet") {
                         pageInfo {
                             hasNextPage
                             hasPreviousPage

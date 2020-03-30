@@ -52,7 +52,8 @@ class TodoList_ extends React.Component<Props, State> {
     
     render() {
         // console.log("@todolist refetch render")
-        // console.log(this.props.data)
+        console.log(this.props.data)
+
         const observer1 = {
             next: (data:TodoSubscData) => {
                 console.log('next1', data)
@@ -80,7 +81,7 @@ class TodoList_ extends React.Component<Props, State> {
             <List className={this.props.classes.root}>
           {
               this.props.data.todoSet!.edges.map((edge) => (
-                  <li key={ edge!.node!.id }><div><Todo parent_id={ this.props.id } data={ edge!.node! }/></div></li>
+                  <div key={ edge!.node!.id }><div><Todo parent_id={ this.props.id } data={ edge!.node! }/></div></div>
               ))
           }
           </List>
@@ -99,7 +100,7 @@ class TodoList_ extends React.Component<Props, State> {
             (refetchVariables) => {
                 // console.log("refetch variables called", refetchVariables)
                 return {
-                    first: 1,
+                    first: 100,
                     after: self.props.data.todoSet?.pageInfo.endCursor
                 }
             },
@@ -126,7 +127,7 @@ class TodoList_ extends React.Component<Props, State> {
                 // { first : 1} だけだと今までの結果が消える
                 // { last : 1, before: ...} だと追加したあとで表示されるベキであっても無視される。
                 return {
-                    last: 1,
+                    last: 100,
                     before: self.props.data.todoSet?.pageInfo.startCursor,
                 }
             },
@@ -174,6 +175,7 @@ const TodoListRefetch = createRefetchContainer(
                         endCursor
                     }
                     edges {
+                        cursor
                         node {
                             id
                             ...todo_data
@@ -206,7 +208,7 @@ const TodoListQuery = (props: {id: string, environment: Environment}) => {
                query={graphql`
                    query todolistRefetch_first_Query($todolist_id: ID!) {
                        todolist(id: $todolist_id) {
-                           ...todolistRefetch_data @arguments(first: 1)
+                           ...todolistRefetch_data @arguments(first: 100)
                        }
                    }
                `}

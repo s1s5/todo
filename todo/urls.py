@@ -28,9 +28,18 @@ urlpatterns = [
 
 
 if settings.DEBUG:
+    import logging
+    logger = logging.getLogger(__name__)
+
+    class LoggingGraphQLView(GraphQLView):
+        def get_response(self, request, data, show_graphiql=False):
+            logger.debug('query=%s, variables=%s, operation_name=%s, id=%s',
+                         *self.get_graphql_params(request, data))
+            return super().get_response(request, data, show_graphiql)
+
     from django.views.decorators.csrf import csrf_exempt
     urlpatterns += [
-        path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=settings.DEBUG))),
+        path('graphql/', csrf_exempt(LoggingGraphQLView.as_view(graphiql=settings.DEBUG))),
     ]
 else:
     # TODO: どうするのがいいのか・・・

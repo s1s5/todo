@@ -14,6 +14,7 @@ export type todolistRefetch_data = {
             readonly endCursor: string | null;
         };
         readonly edges: ReadonlyArray<{
+            readonly cursor: string;
             readonly node: {
                 readonly id: string;
                 readonly " $fragmentRefs": FragmentRefs<"todo_data">;
@@ -153,6 +154,13 @@ const node: ReaderFragment = (function () {
                         "plural": true,
                         "selections": [
                             {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "name": "cursor",
+                                "args": null,
+                                "storageKey": null
+                            },
+                            {
                                 "kind": "LinkedField",
                                 "alias": null,
                                 "name": "node",
@@ -175,13 +183,6 @@ const node: ReaderFragment = (function () {
                                         "args": null
                                     }
                                 ]
-                            },
-                            {
-                                "kind": "ScalarField",
-                                "alias": null,
-                                "name": "cursor",
-                                "args": null,
-                                "storageKey": null
                             }
                         ]
                     }
@@ -190,5 +191,5 @@ const node: ReaderFragment = (function () {
         ]
     } as any;
 })();
-(node as any).hash = 'e96e2e57f9bce764102792849e12e349';
+(node as any).hash = 'a13cb548eb4989e6d541b35b8761bd50';
 export default node;

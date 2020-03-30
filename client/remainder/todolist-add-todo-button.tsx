@@ -56,6 +56,7 @@ const AddTodoButton = (props:{todolist__id:string}) => {
                               connectionInfo: [{
                                   key: 'todolist_todoSet',
                                   rangeBehavior: 'append',
+                                  // rangeBehavior: 'prepend',
                               }],
                               edgeName: 'todoEdge',
                           }],

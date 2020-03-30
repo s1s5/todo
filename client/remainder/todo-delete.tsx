@@ -12,6 +12,7 @@ type Props = {
 }
 
 const TodoDelete = (props: Props) => {
+    console.log("todo delete ", props)
     const commit = React.useCallback(() => {
         commitMutation(
             props.environment,
@@ -28,6 +29,7 @@ const TodoDelete = (props: Props) => {
                 },
                 onCompleted: (response: any, errors: any) => {
                     console.log(response)
+                    console.log('delete on complete', props)
                 },
                 configs: [
                     {
@@ -36,12 +38,12 @@ const TodoDelete = (props: Props) => {
                     },
                     {
                         type: 'RANGE_DELETE',
-                        parentName: 'todolist',
+                        // parentName: 'todolist',
                         parentID: props.parent_id,
                         connectionKeys: [{
                             key: 'todolist_todoSet',
                         }, ],
-                        pathToConnection: ['todolist', 'todoSet'],
+                        pathToConnection: [props.parent_id, 'todoSet'],
                         deletedIDFieldName: 'deletedTodoId',
                     },
                 ]

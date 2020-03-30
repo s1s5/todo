@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash ebdfb2ea550ffcdf79827482f38af6cb */
+/* @relayHash be94301096b3c2070cec97205ebcadeb */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
@@ -54,12 +54,12 @@ fragment todolistRefetch_data_pbnwq on TodoListNode {
       endCursor
     }
     edges {
+      cursor
       node {
         id
         ...todo_data
         __typename
       }
-      cursor
     }
   }
 }
@@ -248,6 +248,13 @@ const node: ConcreteRequest = (function () {
                                     "plural": true,
                                     "selections": [
                                         {
+                                            "kind": "ScalarField",
+                                            "alias": null,
+                                            "name": "cursor",
+                                            "args": null,
+                                            "storageKey": null
+                                        },
+                                        {
                                             "kind": "LinkedField",
                                             "alias": null,
                                             "name": "node",
@@ -279,13 +286,6 @@ const node: ConcreteRequest = (function () {
                                                     "storageKey": null
                                                 }
                                             ]
-                                        },
-                                        {
-                                            "kind": "ScalarField",
-                                            "alias": null,
-                                            "name": "cursor",
-                                            "args": null,
-                                            "storageKey": null
                                         }
                                     ]
                                 }
@@ -310,7 +310,7 @@ const node: ConcreteRequest = (function () {
             "operationKind": "query",
             "name": "todolistRefetchQuery",
             "id": null,
-            "text": "query todolistRefetchQuery(\n  $first: Int\n  $last: Int\n  $before: String\n  $after: String\n  $todolist_id: ID!\n) {\n  todolist(id: $todolist_id) {\n    ...todolistRefetch_data_pbnwq\n    id\n  }\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolistRefetch_data_pbnwq on TodoListNode {\n  id\n  title\n  todoSet(first: $first, last: $last, before: $before, after: $after, orderBy: \"-created_at\") {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      node {\n        id\n        ...todo_data\n        __typename\n      }\n      cursor\n    }\n  }\n}\n",
+            "text": "query todolistRefetchQuery(\n  $first: Int\n  $last: Int\n  $before: String\n  $after: String\n  $todolist_id: ID!\n) {\n  todolist(id: $todolist_id) {\n    ...todolistRefetch_data_pbnwq\n    id\n  }\n}\n\nfragment todo_data on TodoNode {\n  id\n  completed\n  text\n}\n\nfragment todolistRefetch_data_pbnwq on TodoListNode {\n  id\n  title\n  todoSet(first: $first, last: $last, before: $before, after: $after, orderBy: \"-created_at\") {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        ...todo_data\n        __typename\n      }\n    }\n  }\n}\n",
             "metadata": {}
         }
     } as any;
