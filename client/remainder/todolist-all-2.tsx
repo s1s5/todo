@@ -83,8 +83,8 @@ const TodoListFragment = createFragmentContainer(
                 last: $last
                 before: $before
                 after: $after
-#                 orderBy: "created_at"  # これがあるとだめだ
-            ) @connection(key: "todolist_todoSet" ) {
+                orderBy: "created_at"  # これがあるとだめだ
+            ) @connection(key: "todolist_todoSet", filters: ["orderBy"] ) {
                 pageInfo {
                     hasNextPage
                     hasPreviousPage
