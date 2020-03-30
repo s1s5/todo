@@ -588,18 +588,18 @@ class Subscription(object):
             todo=event.instance if isinstance(event.instance, models.Todo) else None)
         )
 
-    def resolve_count_seconds(root, info, up_to):
-        # import asyncio
-        # return from_aiter(AsyncIterable(up_to), None)
-        from graphql.execution.executors.asyncio_utils import asyncgen_to_observable
-        return asyncgen_to_observable(AsyncIterable(up_to))
+    # def resolve_count_seconds(root, info, up_to):
+    #     # import asyncio
+    #     # return from_aiter(AsyncIterable(up_to), None)
+    #     from graphql.execution.executors.asyncio_utils import asyncgen_to_observable
+    #     return asyncgen_to_observable(AsyncIterable(up_to))
 
-    # async def resolve_count_seconds(root, info, up_to):
-    #     import asyncio
-    #     print("!!! count_seconds start !!!")
-    #     for i in range(up_to):
-    #         print("!!! count_seconds {} !!!".format(i))
-    #         yield i
-    #         await asyncio.sleep(1.)
-    #     yield up_to
-    #     print("!!! count_seconds end !!!")
+    async def resolve_count_seconds(root, info, up_to):
+        import asyncio
+        logger.info("!!! count_seconds start !!!")
+        for i in range(up_to):
+            logger.info("!!! count_seconds {} !!!".format(i))
+            yield i
+            await asyncio.sleep(1.)
+        yield up_to
+        logger.info("!!! count_seconds end !!!")
