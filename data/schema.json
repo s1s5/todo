@@ -1404,7 +1404,7 @@
                 }
               ],
               "deprecationReason": null,
-              "description": null,
+              "description": "mutation{\ntodolistCreate(input: {title: \"hello\"}) {\n  edge{\n      node{\n        id\n        title\n        author {\n          id\n          username\n        }\n      }\n    }\n  }\n}",
               "isDeprecated": false,
               "name": "todolistCreate",
               "type": {
@@ -1431,7 +1431,7 @@
                 }
               ],
               "deprecationReason": null,
-              "description": null,
+              "description": "mutation{\n  todolistUpdate(input: {id: \"VG9kb0xpc3ROb2RlOjc=\", title: \"hello2\"}){\n    node {\n      id\n      title\n      author{\n        id\n        username\n      }\n    }\n  }\n}",
               "isDeprecated": false,
               "name": "todolistUpdate",
               "type": {
@@ -1458,7 +1458,7 @@
                 }
               ],
               "deprecationReason": null,
-              "description": null,
+              "description": "mutation{\n  todolistDelete(input: {id: \"VG9kb0xpc3ROb2RlOjc=\"}) {\n    deletedId\n  }\n}",
               "isDeprecated": false,
               "name": "todolistDelete",
               "type": {
@@ -1610,7 +1610,7 @@
           "possibleTypes": null
         },
         {
-          "description": null,
+          "description": "mutation{\ntodolistCreate(input: {title: \"hello\"}) {\n  edge{\n      node{\n        id\n        title\n        author {\n          id\n          username\n        }\n      }\n    }\n  }\n}",
           "enumValues": null,
           "fields": [
             {
@@ -1747,7 +1747,7 @@
           "possibleTypes": null
         },
         {
-          "description": null,
+          "description": "mutation{\n  todolistUpdate(input: {id: \"VG9kb0xpc3ROb2RlOjc=\", title: \"hello2\"}){\n    node {\n      id\n      title\n      author{\n        id\n        username\n      }\n    }\n  }\n}",
           "enumValues": null,
           "fields": [
             {
@@ -1847,7 +1847,7 @@
           "possibleTypes": null
         },
         {
-          "description": null,
+          "description": "mutation{\n  todolistDelete(input: {id: \"VG9kb0xpc3ROb2RlOjc=\"}) {\n    deletedId\n  }\n}",
           "enumValues": null,
           "fields": [
             {
@@ -2107,7 +2107,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "todo",
+              "name": "node",
               "type": {
                 "kind": "OBJECT",
                 "name": "TodoNode",

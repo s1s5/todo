@@ -10,6 +10,10 @@ class UserNode(DjangoObjectType):
         filter_fields = ['username']
         interfaces = (graphene.relay.Node, )
 
+    @classmethod
+    def resolve(cls, parent, info, resolved):
+        return resolved
+
 
 class Query(object):
     user = graphene.Field(UserNode)  # look upさせない

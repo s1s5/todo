@@ -20,8 +20,11 @@ import django_filters
 from . import models
 from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter # , DjangoUpdateModelFormMutation, DjangoFormMutation
 from graphene_django.forms.mutation import DjangoUpdateModelFormMutation, DjangoFormMutation
+from graphene_django.forms.mutation import DjangoCreateModelFormMutation, DjangoDeleteModelFormMutation
 
 from .mutation import CustomDjangoCreateModelFormMutation, CustomDjangoUpdateModelFormMutation, CustomDjangoDeleteModelFormMutation
+
+from ..accounts.schema import UserNode
 
 # from graphene_file_upload.scalars import Upload
 # from graphene_django.forms.converter import convert_form_field
@@ -334,6 +337,39 @@ class SingleFileUploadFormMutation(DjangoFormMutation):
     #     return SingleFileUploadFormMutation(success=True)
 
 
+# def _resolver(parent, info):
+#     print(dir(info))
+#     print(info.field_name, info.path)
+#     author = getattr(parent, info.field_name)
+#     print("_resolver", parent, info)
+#     resolve = getattr(info.return_type, 'resolve', None)
+#     print("resolve", info.return_type.graphene_type)
+#     print(dir(info.return_type.graphene_type))
+
+#     from graphene_django.registry import Registry, get_global_registry
+#     registry = get_global_registry()
+#     _type = registry.get_type_for_model(model)
+#     if resolve:
+#         author = resolve(parent, info, author)
+#     return author
+
+# from graphene_django.registry import Registry, get_global_registry
+# class _DefaultDjangoField(graphene.Field):
+#     def __init__(self, _type, *args, **kwargs):
+#         self._model = _type._meta.model
+#         registry = get_global_registry()
+#         self._type = registry.get_type_for_model(self._model)
+#         self.__resolve = getattr(self._type, 'resolve', None)
+#         super().__init__(_type, *args, resolver=self._resolve, **kwargs)
+
+#     def _resolve(self, parent, info):
+#         resolved = getattr(parent, info.field_name, None)
+#         if self._resolve:
+#             resolved = self.__resolve(parent, info, resolved)
+#         return resolved
+
+
+
 class TodoListNode(DjangoObjectType):
     class Meta:
         model = models.TodoList
@@ -346,13 +382,32 @@ class TodoListNode(DjangoObjectType):
         ]
         interfaces = (graphene.relay.Node, )
 
+    # author = _DefaultDjangoField(UserNode)
+
     # fieldsには書いてもかかなくてもいい
     # ForeignKeyとかで参照されている場合にはこうやって指定しないと駄目
     # なんでかちゃんとリンクしているやつだけfilterされている。。不思議！
     todo_set = CustomDjangoFilterConnectionField(TodoNode)
 
 
-class TodoListCreateMutation(CustomDjangoCreateModelFormMutation):
+class TodoListCreateMutation(DjangoCreateModelFormMutation):
+    """
+mutation{
+todolistCreate(input: {title: "hello"}) {
+  edge{
+      node{
+        id
+        title
+        author {
+          id
+          username
+        }
+      }
+    }
+  }
+}
+"""
+
     class Meta:
         model = models.TodoList
         fields = ['title']
@@ -368,13 +423,34 @@ class TodoListCreateMutation(CustomDjangoCreateModelFormMutation):
         return super().perform_mutate(form, info)
 
 
-class TodoListUpdateMutation(CustomDjangoUpdateModelFormMutation):
+class TodoListUpdateMutation(DjangoUpdateModelFormMutation):
+    """
+mutation{
+  todolistUpdate(input: {id: "VG9kb0xpc3ROb2RlOjc=", title: "hello2"}){
+    node {
+      id
+      title
+      author{
+        id
+        username
+      }
+    }
+  }
+}
+"""
     class Meta:
         model = models.TodoList
         fields = ['title']
 
 
-class TodoListDeleteMutation(CustomDjangoDeleteModelFormMutation):
+class TodoListDeleteMutation(DjangoDeleteModelFormMutation):
+    """
+mutation{
+  todolistDelete(input: {id: "VG9kb0xpc3ROb2RlOjc="}) {
+    deletedId
+  }
+}
+"""
     class Meta:
         model = models.TodoList
 
