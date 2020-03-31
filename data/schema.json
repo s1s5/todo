@@ -1618,6 +1618,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "todoList",
+              "type": {
+                "kind": "OBJECT",
+                "name": "TodoListNode",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "edge",
               "type": {
                 "kind": "OBJECT",
@@ -1755,10 +1767,22 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "node",
+              "name": "todoList",
               "type": {
                 "kind": "OBJECT",
                 "name": "TodoListNode",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "edge",
+              "type": {
+                "kind": "OBJECT",
+                "name": "TodoListNodeEdge",
                 "ofType": null
               }
             },
@@ -2107,10 +2131,22 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "node",
+              "name": "todo",
               "type": {
                 "kind": "OBJECT",
                 "name": "TodoNode",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "edge",
+              "type": {
+                "kind": "OBJECT",
+                "name": "TodoNodeEdge",
                 "ofType": null
               }
             },

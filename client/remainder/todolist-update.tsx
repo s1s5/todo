@@ -20,7 +20,7 @@ const TodoListUpdate = (props: Props) => {
                 mutation: graphql`
                     mutation todolistUpdate_Mutation($input: TodoListUpdateMutationInput!) {
                         todolistUpdate(input: $input) {
-                            node {
+                            todoList {
                                 id
                                 title
                                 author {

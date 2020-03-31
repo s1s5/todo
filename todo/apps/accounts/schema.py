@@ -11,7 +11,13 @@ class UserNode(DjangoObjectType):
         interfaces = (graphene.relay.Node, )
 
     @classmethod
-    def resolve(cls, parent, info, resolved):
+    def get_queryset(cls, queryset, info):
+        # ここで権限チェックか？
+        return queryset
+
+    @classmethod
+    def resolve(cls, resolved, parent, info):
+        # ここで権限チェックか？
         return resolved
 
 

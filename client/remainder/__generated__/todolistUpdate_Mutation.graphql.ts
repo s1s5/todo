@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 76d09519df63ea61b0b2cb05725dd889 */
+/* @relayHash b82ba73b6144ec2f9a6bf414af45b847 */
 
 import { ConcreteRequest } from "relay-runtime";
 export type TodoListUpdateMutationInput = {
@@ -13,7 +13,7 @@ export type todolistUpdate_MutationVariables = {
 };
 export type todolistUpdate_MutationResponse = {
     readonly todolistUpdate: {
-        readonly node: {
+        readonly todoList: {
             readonly id: string;
             readonly title: string;
             readonly author: {
@@ -35,7 +35,7 @@ mutation todolistUpdate_Mutation(
   $input: TodoListUpdateMutationInput!
 ) {
   todolistUpdate(input: $input) {
-    node {
+    todoList {
       id
       title
       author {
@@ -80,7 +80,7 @@ const node: ConcreteRequest = (function () {
                 {
                     "kind": "LinkedField",
                     "alias": null,
-                    "name": "node",
+                    "name": "todoList",
                     "storageKey": null,
                     "args": null,
                     "concreteType": "TodoListNode",
@@ -138,10 +138,10 @@ const node: ConcreteRequest = (function () {
             "operationKind": "mutation",
             "name": "todolistUpdate_Mutation",
             "id": null,
-            "text": "mutation todolistUpdate_Mutation(\n  $input: TodoListUpdateMutationInput!\n) {\n  todolistUpdate(input: $input) {\n    node {\n      id\n      title\n      author {\n        id\n        username\n      }\n    }\n  }\n}\n",
+            "text": "mutation todolistUpdate_Mutation(\n  $input: TodoListUpdateMutationInput!\n) {\n  todolistUpdate(input: $input) {\n    todoList {\n      id\n      title\n      author {\n        id\n        username\n      }\n    }\n  }\n}\n",
             "metadata": {}
         }
     } as any;
 })();
-(node as any).hash = '433e2af905985a4fa71b685500f1a6aa';
+(node as any).hash = '3c463bdf702ba941c630fda9e63afb74';
 export default node;

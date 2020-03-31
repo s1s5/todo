@@ -214,17 +214,17 @@ class TodoUpdateForm(forms.ModelForm):
         # completed = forms.BooleanField(required=False)
         # text = forms.CharField(help_text='ここにtodoの詳細')
 
-    # def clean_completed(self):
-    #     completed = self.cleaned_data.get('completed')
-    #     if completed:
-    #         raise forms.ValidationError('そんな簡単に達成できません！')
-    #     return completed
+    def clean_completed(self):
+        completed = self.cleaned_data.get('completed')
+        if completed:
+            raise forms.ValidationError('そんな簡単に達成できません！')
+        return completed
 
-    # def clean_text(self):
-    #     text = self.cleaned_data.get('text')
-    #     if text:
-    #         raise forms.ValidationError('修正したくありません！')
-    #     return text
+    def clean_text(self):
+        text = self.cleaned_data.get('text')
+        if text:
+            raise forms.ValidationError('修正したくありません！')
+        return text
 
     def save(self):
         print('TodoUpdateForm >> files => ', self.files)
@@ -415,7 +415,7 @@ todolistCreate(input: {title: "hello"}) {
     @classmethod
     def perform_mutate(cls, form, info):
         if info.context.user.is_anonymous:
-            # raise forms.ValidationError('not logged in')
+            raise forms.ValidationError('not logged in')
             user = get_user_model().objects.all()[0]
         else:
             user = info.context.user

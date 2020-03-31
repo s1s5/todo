@@ -73,8 +73,8 @@ class TodoList_ extends React.Component<Props, State> {
         /* console.log(this.props.data.todoSet.pageInfo)
          * console.log(this.props.data.todoSet.edges) */
         return (<div>
-          {/* <TodoUpdateForm id={ this.props.data.todoSet!.edges[0]!.node!.id } />
-              <TodoSubsc variables={ {id: this.props.id} } observer={ observer1 } /> */}
+          <TodoUpdateForm id={ this.props.data.todoSet!.edges[0]!.node!.id } />
+          <TodoSubsc variables={ {id: this.props.id} } observer={ observer1 } />
           <TodoListSubsc variables={ {id: this.props.id} } observer={ observer2 } />
           <h3>{ this.props.data.title }</h3>
           <Container maxWidth="sm" >
