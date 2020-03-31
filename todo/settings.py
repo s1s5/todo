@@ -262,7 +262,7 @@ CHANNEL_LAYERS = {
 INSTALLED_APPS += [
     'graphene_django',
     'channels',
-    'graphene_subscriptions',
+    # 'graphene_subscriptions',
 ]
 
 ############################################
