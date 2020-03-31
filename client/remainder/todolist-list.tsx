@@ -15,6 +15,10 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import {createQueryRenderer} from '../environment'
 import {todolistList_query} from './__generated__/todolistList_query.graphql'
 
+import TodoListAdd from './todolist-add'
+import TodoListUpdate from './todolist-update'
+import TodoListDelete from './todolist-delete'
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -35,9 +39,18 @@ const TodoList = (props: Props) => {
     const [open, setOpen] = React.useState(true);
 
     return <div>
+      <TodoListAdd>{
+          (commit) => <button onClick={commit}>add todolist</button>
+      }</TodoListAdd>
       {
           props.query.todolists!.edges.map((edge:any) => (
               <div key={ edge.node.id }>
+                <TodoListUpdate id={ edge.node.id }>{
+                    (commit) => <button onClick={commit}>update todolist</button>
+                }</TodoListUpdate>
+                <TodoListDelete id={ edge.node.id }>{
+                    (commit) => <button onClick={commit}>delete todolist</button>
+                }</TodoListDelete>
                 <ListItem button onClick={ () => { setOpen(!open) } }>
                   <ListItemText primary={ `${edge.node.title}` } />
                   {open ? <ExpandLess /> : <ExpandMore />}

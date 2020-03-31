@@ -5,6 +5,7 @@ from natsort import natsorted
 import asyncio
 
 from django import forms
+from django.contrib.auth import get_user_model
 
 from graphql_relay import from_global_id
 from graphene_django import DjangoObjectType, DjangoConnectionField
@@ -19,6 +20,8 @@ import django_filters
 from . import models
 from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter # , DjangoUpdateModelFormMutation, DjangoFormMutation
 from graphene_django.forms.mutation import DjangoUpdateModelFormMutation, DjangoFormMutation
+
+from .mutation import CustomDjangoCreateModelFormMutation, CustomDjangoUpdateModelFormMutation, CustomDjangoDeleteModelFormMutation
 
 # from graphene_file_upload.scalars import Upload
 # from graphene_django.forms.converter import convert_form_field
@@ -349,31 +352,31 @@ class TodoListNode(DjangoObjectType):
     todo_set = CustomDjangoFilterConnectionField(TodoNode)
 
 
-class TodoListCreateMutation(graphene.relay.mutation.ClientIDMutation):
-    class Input:
-        title = graphene.String(required=True)
-
-    todolist = graphene.Field(TodoListNode)
-
-    @classmethod
-    def mutate_and_get_payload(cls, root, info, title):
-        todolist = models.TodoList.objects.create(title=title, author=info.context.user)
-        return TodoListCreateMutation(todolist=todolist)
-
-
-class TodoListUpdateMutation(graphene.relay.mutation.ClientIDMutation):
-    class Input:
-        id = graphene.ID(required=True)
-        title = graphene.String()
-
-    todolist = graphene.Field(TodoListNode)
+class TodoListCreateMutation(CustomDjangoCreateModelFormMutation):
+    class Meta:
+        model = models.TodoList
+        fields = ['title']
 
     @classmethod
-    def mutate_and_get_payload(cls, root, info, id, title):
-        todolist = models.TodoList.objects.get(pk=from_global_id(id)[1])
-        todolist.title = title
-        todolist.save()
-        return TodoListUpdateMutation(todolist=todolist)
+    def perform_mutate(cls, form, info):
+        if info.context.user.is_anonymous:
+            # raise forms.ValidationError('not logged in')
+            user = get_user_model().objects.all()[0]
+        else:
+            user = info.context.user
+        form.instance.author = user
+        return super().perform_mutate(form, info)
+
+
+class TodoListUpdateMutation(CustomDjangoUpdateModelFormMutation):
+    class Meta:
+        model = models.TodoList
+        fields = ['title']
+
+
+class TodoListDeleteMutation(CustomDjangoDeleteModelFormMutation):
+    class Meta:
+        model = models.TodoList
 
 
 TodoEdge = TodoNode._meta.connection.Edge
@@ -464,6 +467,7 @@ class Query(object):
 class Mutation(object):
     todolist_create = TodoListCreateMutation.Field()
     todolist_update = TodoListUpdateMutation.Field()
+    todolist_delete = TodoListDeleteMutation.Field()
     todo_create = TodoCreateMutation.Field()
     todo_update = TodoUpdateMutation.Field()
     todo_update_form = TodoUpdateFormMutation.Field()
