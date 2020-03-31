@@ -11,6 +11,7 @@ x-app-base:
     - PYTHONUNBUFFERED=1
     - STATIC_ROOT=/data/static
     - MEDIA_ROOT=/data/media
+    - ALLOWED_HOSTS=*,localhost
   volumes:
     - .:/usr/src/app
     - media_root:/data/media
