@@ -37,6 +37,31 @@ if settings.DEBUG:
                          *self.get_graphql_params(request, data))
             return super().get_response(request, data, show_graphiql)
 
+        # @staticmethod
+        # def format_error(error):
+
+        #     import six
+        #     from graphql.error import format_error as format_graphql_error
+        #     from graphql.error import GraphQLError
+
+        #     if isinstance(error, GraphQLError):
+        #         base = format_graphql_error(error)
+        #         if getattr(error, 'original_error', None):
+        #             oe = error.original_error
+
+        #             def get_error_dict(m):
+        #                 d = dict(**base)
+        #                 d['message'] = six.text_type(m)
+        #                 return d
+
+        #             if hasattr(oe, '__iter__'):
+        #                 return [get_error_dict(x) for x in oe]
+        #             if getattr(oe, 'error_list', None):
+        #                 logger.debug("BAR")
+        #                 return [get_error_dict(x) for x in oe.error_list]
+        #         return [base]
+        #     return [{"message": six.text_type(error)}]
+
     from django.views.decorators.csrf import csrf_exempt
     urlpatterns += [
         path('graphql/', csrf_exempt(LoggingGraphQLView.as_view(graphiql=settings.DEBUG))),
