@@ -8,7 +8,7 @@ services:
       groupadd -g ${GROUP_ID} app;
       adduser --uid ${USER_ID} app;
       echo 'app:x:1000:1000:app,,,:/home/app:/bin/bash' >> /etc/passwd
-      cd /app; watchman; while [ true ]; do gosu app npm run relay -- --watch ; sleep 10; done
+      cd /app; watchman; while [ true ]; do gosu app watchmedo auto-restart -d /app/data -p '*schema*.json' -- bash -c 'npm run relay; npm run relay -- --watch' ; sleep 10; done
       "
     volumes:
       - .:/app
