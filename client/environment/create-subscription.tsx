@@ -83,7 +83,6 @@ const SubscriptionWrapper2 = <T extends object>(props: Props<T>) => {
     let [value, setValue] = React.useState(() => ( props.value) )
     React.useEffect(() => {
         const observer = {
-            start: (subscription: Subscription) => {console.log("@create-subscription start called!!!", subscription)},
             next: (value: any) => {
                 if (value.errors !== undefined && value.errors !== null && value.errors.length > 0) {
                     console.error('subscribe Some Error occurred!!', value.errors)
@@ -93,26 +92,17 @@ const SubscriptionWrapper2 = <T extends object>(props: Props<T>) => {
             },
             error: (error: Error) => (props.observer && props.observer.error && props.observer.error(error)),
             complete: () => (props.observer && props.observer.complete && props.observer.complete()),
-            unsubscribe: (subscription: Subscription) => {
-                console.log("@create-subscription unsubscribe called!! calling unsubscribe", subscription)
-                subscription.unsubscribe()
-                console.log("@create-subscription subscription.unsubscribe called!!", subscription)
-            },
+            unsubscribe: (subscription: Subscription) => { subscription.unsubscribe() },
         }
-        
-        const current_counter = getId()
-        console.log("get counter => ", current_counter)
-        const d = props.subscribe(props.environment, observer, props.variables);
-        const u = _globals[current_counter]
-        delete _globals[current_counter]
-        console.log("globals -> ", _globals[current_counter])
-        return () => {
-            console.log("start dispose called @create-subscription", d)
-            d()
-            u.result.unsubscribe()
-            console.log(u.observable)
 
-            console.log("end dispose called @create-subscription")
+        const current_counter = getId()
+        const dispose = props.subscribe(props.environment, observer, props.variables);
+        const unsubscribe = _globals[current_counter]
+        delete _globals[current_counter]
+
+        return () => {
+            dispose()
+            unsubscribe()
         }
     }, [props.environment, props.subscribe, props.observer, props.variables])
     if (value === undefined) {

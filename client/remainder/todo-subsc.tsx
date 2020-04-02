@@ -70,21 +70,21 @@ const request_subscription = (environment:IEnvironment, observer: Observer<Data>
     }
     
     // console.log(subscriptionConfig)
-    const result = requestSubscription(
+    const {dispose} = requestSubscription(
         environment,
         subscriptionConfig
     )
-    console.log("@todo-subsc requestSubscription result : ", result.dispose)
+    /* console.log("@todo-subsc requestSubscription result : ", result.dispose)*/
     // result.dispose()
     // console.log("@todo-subsc requestSubscription dispose called!!! : ")
 
-    const subsc = {unsubscribe: result.dispose, closed: false}
+    const subsc = {unsubscribe: dispose, closed: false}
     observer.start && observer.start(subsc) 
     return () => {
-        console.log("@todo-subsc dispose!!!!!! observer=>", observer)
+        /* console.log("@todo-subsc dispose!!!!!! observer=>", observer)*/
         observer.unsubscribe && observer.unsubscribe(subsc)
-        result.dispose()
-        console.log("@todo-subsc dispose!!!!!! called !!!observer=>", observer)
+        dispose()
+        /* console.log("@todo-subsc dispose!!!!!! called !!!observer=>", observer)*/
     }
 }
 

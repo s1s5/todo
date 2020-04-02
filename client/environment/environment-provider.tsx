@@ -46,7 +46,6 @@ const EnvironmentProvider = (props: Props) => {
 
         let network
         if (props.ws_url) {
-            console.log("creating subscription client")
             const c = new SubscriptionClient(props.ws_url!, {
                 lazy: true,  // これがないとhot-reloadで二重で接続されたりする？
                 reconnect: true,
@@ -63,52 +62,17 @@ const EnvironmentProvider = (props: Props) => {
                  cacheConfig: CacheConfig) => {
                      const query = request.text!
                      const observable = c.request({query, variables})
-                     const d = {
-                         observable: observable,
-                         subscribe: observable.subscribe,
-                         dispose: () => {}
-                     }
-                     d.dispose = () => {
-                         console.log("start dispose called @environment-provider")
-                         /* delete d.subscribe*/
-                         console.log("end dispose called @environment-provider")
-                     }
-                     console.log("network return => ", d)
                      return {
                          subscribe: (observer: any) => {
-                             
-                             console.log("@environment-provider set hook", observer)
-                             const org_on_complete = observer.complete
-                             observer.complete = () => {
-                                 console.log("@environment-provider complete hook!!!!")
-                                 org_on_complete()
-                             }
-                             const org_on_start = observer.start
-                             observer.start = (subscription:any) => {
-                                 console.log("@environment-provider subscription.start !!! hook ")
-                                 org_on_start(subscription)
-                             }
-                             console.log("@environment-provider observable.subscribe()", observer, _global_counter)
-                             /* const result = observable.subscribe(observer)*/
-                             const result = observable.subscribe(observer)
-                             _globals[_global_counter] = {
-                                 result, observable,
-                             }
-                             console.log("@environment-provider observable.subscribe() -> result=", result, observer)
+                             const {unsubscribe} = observable.subscribe(observer)
+                             _globals[_global_counter] = unsubscribe
                              return {
-                                 unsubscribe: () => {
-                                     console.log("@environment-provider dispose called")
-                                 },
+                                 unsubscribe: () => {},
                                  closed: false,
-                                 foo: "@environment-provider",
                              }
                          },
-                         dispose: () => {console.log("@environment-provider dispose called!!!")},
-                         unsubscribe: () => {console.log("@environment-provider unsubscribe called!!!")},
-                         unsubscribed: () => {console.log("@environment-provider unsubscribed called!!!")},
-                         foo: "@environment-provider root returned value",
-                         
-                         }
+                         dispose: () => {},
+                     }
                  })
         } else {
             network = Network.create(fetch_query)
