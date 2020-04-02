@@ -28,8 +28,7 @@ let _global_counter = 0
 let _globals:any = {}
 const getId = () => {
     _global_counter += 1
-    const v = _global_counter
-    return v
+    return _global_counter
 }
 
 const EnvironmentProvider = (props: Props) => {

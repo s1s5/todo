@@ -85,7 +85,11 @@ const SubscriptionWrapper2 = <T extends object>(props: Props<T>) => {
         const observer = {
             next: (value: any) => {
                 if (value.errors !== undefined && value.errors !== null && value.errors.length > 0) {
-                    console.error('subscribe Some Error occurred!!', value.errors)
+                    if (props.observer && props.observer.error) {
+                        props.observer.error(value.errors)
+                    } else {
+                        console.error('subscribe Some Error occurred!!', value.errors)
+                    }
                 }
                 setValue(value as T)
                 props.observer && props.observer.next && props.observer.next(value)
