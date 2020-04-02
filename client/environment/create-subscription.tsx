@@ -110,9 +110,9 @@ const SubscriptionWrapper2 = <T extends object>(props: Props<T>) => {
         }
     }, [props.environment, props.subscribe, props.observer, props.variables])
     if (value === undefined) {
-        return (props.loading ? <>props.loading()</> : <span style={ {visibility: "hidden", width: "0px", height: "0px"} }>subscribing ...</span>)
+        return (props.loading ? <>props.loading()</> : <span style={ {visibility: "hidden", width: "0px", height: "0px", float: "left"} }>subscribing ...</span>)
     }
-    return (props.children ? <>props.children(value)</> : <span style={ {visibility: "hidden", width: "0px", height: "0px"} }>{ value.toString() }</span>)
+    return (props.children ? <>props.children(value)</> : <span style={ {visibility: "hidden", width: "0px", height: "0px", float: "left"} }>{ value.toString() }</span>)
 }
 
 const createSubscription = <T extends object>(subscribe: (environment: IEnvironment, observer: Observer<T>, variables: Variables | undefined) => (() => unknown)) => (
