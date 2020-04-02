@@ -5,5 +5,5 @@ class RemainderConfig(AppConfig):
     name = 'todo.apps.remainder'
 
     def ready(self):
-        from . import signals
-        from . import schema
+        from . import signals  # NOQA
+        from . import schema  # NOQA

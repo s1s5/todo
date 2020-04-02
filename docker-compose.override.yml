@@ -12,6 +12,7 @@ x-app-base:
     - STATIC_ROOT=/data/static
     - MEDIA_ROOT=/data/media
     - ALLOWED_HOSTS=*,localhost
+    - PYTHONASYNCIODEBUG=1
   volumes:
     - .:/usr/src/app
     - media_root:/data/media

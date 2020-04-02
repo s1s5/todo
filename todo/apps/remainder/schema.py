@@ -12,9 +12,12 @@ from graphene_django import DjangoObjectType, DjangoConnectionField
 from graphene_django.consumers import ChannelGroupObservable
 # from graphene_django.forms.mutation import DjangoModelFormMutation
 from graphene_django.filter import DjangoFilterConnectionField
+from graphene_django.events import SubscriptionEvent
+
 import django_filters
 # from django_filters import FilterSet, OrderingFilter
 # from graphene_django.forms.mutation import DjangoFormMutation
+from rx import Observable
 
 
 from . import models
@@ -214,17 +217,17 @@ class TodoUpdateForm(forms.ModelForm):
         # completed = forms.BooleanField(required=False)
         # text = forms.CharField(help_text='ここにtodoの詳細')
 
-    def clean_completed(self):
-        completed = self.cleaned_data.get('completed')
-        if completed:
-            raise forms.ValidationError('そんな簡単に達成できません！')
-        return completed
+    # def clean_completed(self):
+    #     completed = self.cleaned_data.get('completed')
+    #     if completed:
+    #         raise forms.ValidationError('そんな簡単に達成できません！')
+    #     return completed
 
-    def clean_text(self):
-        text = self.cleaned_data.get('text')
-        if text:
-            raise forms.ValidationError('修正したくありません！')
-        return text
+    # def clean_text(self):
+    #     text = self.cleaned_data.get('text')
+    #     if text:
+    #         raise forms.ValidationError('修正したくありません！')
+    #     return text
 
     def save(self):
         print('TodoUpdateForm >> files => ', self.files)
@@ -599,45 +602,53 @@ class Subscription(object):
     count_seconds = graphene.Float(up_to=graphene.Int())
 
     def resolve_todolist_created(root, info):
-        from graphene_subscriptions.events import CREATED
-        return root.filter(
+        return ChannelGroupObservable('todolist').map(
+            lambda event: SubscriptionEvent.from_dict(event)
+        ).filter(
             lambda event:
-                event.operation == CREATED and
-                isinstance(event.instance, models.TodoList)
+            event.created and
+            isinstance(event.instance, models.TodoList)
         ).map(lambda event: event.instance)
 
     def resolve_todolist_updated(root, info):
-        from graphene_subscriptions.events import UPDATED
-        return root.filter(
+        return ChannelGroupObservable('todolist').map(
+            lambda event: SubscriptionEvent.from_dict(event)
+        ).filter(
             lambda event:
-                event.operation == UPDATED and
+                (not event.created) and
                 isinstance(event.instance, models.TodoList)
         ).map(lambda event: event.instance)
 
     def resolve_todo_created(root, info, parent_id):
-        from graphene_subscriptions.events import CREATED
         parent_id = int(from_global_id(parent_id)[1])
-        return root.filter(
+        return ChannelGroupObservable('todo').map(
+            lambda event: SubscriptionEvent.from_dict(event)
+        ).filter(
             lambda event: (
-                event.operation == CREATED and
+                event.created and
                 isinstance(event.instance, models.Todo) and
                 event.instance.parent_id == parent_id)
         ).map(lambda event: event.instance)
 
     def resolve_todo_updated(root, info, parent_id):
-        from graphene_subscriptions.events import UPDATED
         parent_id = int(from_global_id(parent_id)[1])
-        return root.filter(
+        return ChannelGroupObservable('todo').map(
+            lambda event: SubscriptionEvent.from_dict(event)
+        ).filter(
             lambda event: (
-                event.operation == UPDATED and
+                (not event.created) and
                 isinstance(event.instance, models.Todo) and
                 event.instance.parent_id == parent_id)
         ).map(lambda event: event.instance)
 
     def resolve_todolist_mutation(root, info, id):
         _id = int(from_global_id(id)[1])
-
-        return root.filter(
+        observable = Observable.merge(
+            ChannelGroupObservable('todolist'),
+            ChannelGroupObservable('todo'))
+        return observable.map(
+            lambda event: SubscriptionEvent.from_dict(event)
+        ).filter(
             lambda event: (
                 (isinstance(event.instance, models.TodoList) and event.instance.id == _id) or
                 (isinstance(event.instance, models.Todo) and event.instance.parent_id == _id))

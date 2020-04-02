@@ -28,3 +28,16 @@ class Todo(models.Model):
 class TodoExtra(models.Model):
     todo = models.OneToOneField(Todo, on_delete=models.CASCADE, related_name="extra")
     description = models.TextField()
+
+
+# from django.db.models.signals import post_save
+# post_save.connect(lambda *args, **kwargs: print("FOO", args, kwargs), sender=TodoList, dispatch_uid="remainder_todolist_post_save")
+# post_save.connect(lambda *args, **kwargs: print("HOGE", args, kwargs), sender=Todo, dispatch_uid="remainder_todo_post_save")
+
+
+# from django.db.models.signals import post_save
+# from django.dispatch import receiver
+
+# @receiver(post_save, sender=Todo)
+# def my_handler(sender, **kwargs):
+#     print("FOO", sender, kwargs)
