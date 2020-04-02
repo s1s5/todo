@@ -92,3 +92,49 @@ const request_subscription = (environment:IEnvironment, observer: Observer<Data>
 }
 
 export default createSubscription(request_subscription)
+
+
+// function insertEdgeAfter(record, newEdge, cursor) {
+//   var _ConnectionInterface$2 = ConnectionInterface.get(),
+//       CURSOR = _ConnectionInterface$2.CURSOR,
+//       EDGES = _ConnectionInterface$2.EDGES;
+// 
+//   var edges = record.getLinkedRecords(EDGES);
+// 
+//   if (!edges) {
+//     record.setLinkedRecords([newEdge], EDGES);
+//     return;
+//   }
+// 
+//   var nextEdges;
+// 
+//   if (cursor == null) {
+//     nextEdges = edges.concat(newEdge);
+//   } else {
+//     nextEdges = [];
+//     var foundCursor = false;
+// 
+//     for (var ii = 0; ii < edges.length; ii++) {
+//       var edge = edges[ii];
+//       nextEdges.push(edge);
+// 
+//       if (edge == null) {
+//         continue;
+//       }
+// 
+//       var edgeCursor = edge.getValue(CURSOR);
+// 
+//       if (cursor === edgeCursor) {
+//         nextEdges.push(newEdge);
+//         foundCursor = true;
+//       }
+//     }
+// 
+//     if (!foundCursor) {
+//       nextEdges.push(newEdge);
+//     }
+//   }
+// 
+//   record.setLinkedRecords(nextEdges, EDGES);
+// }
+
