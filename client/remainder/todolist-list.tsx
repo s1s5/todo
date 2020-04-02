@@ -77,6 +77,11 @@ const TodoList = (props: Props) => {
                         <ListItemText primary="fetchQueryサンプル"/>
                       </ListItem>
                     </Link>
+                    <Link to={ `/${edge.node.id}/subsc/` }>
+                      <ListItem button className={classes.nested}>
+                        <ListItemText primary="subsc"/>
+                      </ListItem>
+                    </Link>
                   </List>
                 </Collapse>
               </div>
