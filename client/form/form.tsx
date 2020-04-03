@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import {IEnvironment, PayloadError, GraphQLTaggedNode, UploadableMap} from 'relay-runtime'
+import {IEnvironment, PayloadError, GraphQLTaggedNode, UploadableMap, DeclarativeMutationConfig} from 'relay-runtime'
 import {ReactRelayContext, commitMutation} from 'react-relay'
 
 import {withEnvironment} from '../environment'
@@ -13,6 +13,7 @@ type Props<T> = {
     mutation: GraphQLTaggedNode,
     children: React.ReactNode,
     environment: IEnvironment,
+    configs?: DeclarativeMutationConfig[],
 }
 
 // !!! mutationは以下のような感じで
@@ -34,6 +35,69 @@ type Props<T> = {
 //         }
 //     }
 // `
+
+
+// mutationで新しく追加する時には以下のconfigsを追加する
+// -- graphqlはこんな感じ
+//    mutation todolistAddTodoButton_Mutation($input: TodoCreateMutationInput!) {
+//        todoCreate(input: $input) {
+//            todo {
+//                id
+//                completed
+//                text
+//            }
+//            edge {
+//                cursor
+//                node {
+//                    id
+//                    ...todo_data
+//                }
+//            }
+//        }
+//    }
+// 
+// -- 指定するconfigs
+// configs: [{
+//     type: 'RANGE_ADD',
+//     parentID: props.todolist__id,  // 親となる要素のglobal_id
+//     connectionInfo: [{
+//         key: 'todolist_todoSet',   // 下記参照
+//         // rangeBehavior: 'append',   // 最後に追加
+//         rangeBehavior: 'prepend',  // appendの逆で一番前に追加
+//         filters: {'orderBy': '-created_at'},  // 下記参照
+//     }],
+//     edgeName: 'edge',  // 作成されたエッジの名前
+// }],
+// 
+// 特定の位置に追加するとかっていうのは別のAPIを使わないと難しそう
+// updaterを使うのかな？
+// insertEdgeAfterとか（帰ってきたcursorがあった場合にはそのcursorの要素の直後に追加される）
+// 
+//
+// connectionInfoのKeyは
+//    todolist(id: $id) {
+//        id
+//        title
+//        todoSet(first: 10) @connection(key: "todolist_todoSet") { ... }
+// みたいな感じでkeyに指定したものを指定する
+// 
+// filtersを利用する場合は下記のようにorderByとか追加した場合に指定する必要がある。
+// 多分同じじゃないと動かない
+//  todoSet(
+//      first: $first
+//      last: $last
+//      before: $before
+//      after: $after
+//      orderBy: "-created_at"
+//  ) @connection(key: "todolist_todoSet") {
+//      pageInfo {
+//          hasNextPage
+//          hasPreviousPage
+//          startCursor
+//          endCursor
+//      }
+
+
 
 const Form = <T extends Object>(props: Props<T>) => {
     const [value, set_value] = React.useState(props.initialVariables)
