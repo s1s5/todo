@@ -18,9 +18,9 @@ type Props<T> = {
     observer?: Observer<T>,
     updater?: SelectorStoreUpdater<T>,
     variables: Variables,
-    loading?: () => React.ReactNode,
-    children?: (value: T | undefined) => React.ReactNode,
-    value?: T | undefined,
+    loading?: () => React.ReactNode | null,
+    children?: (value: T | undefined) => React.ReactNode | null,
+    value?: T,
     environment: IEnvironment,
 }
 
@@ -70,9 +70,9 @@ const SubscriptionRenderer = <T extends object>(props: Props<T>) => {
         }
     }, [props.environment, props.subscription, props.observer, props.variables])
     if (value === undefined) {
-        return (props.loading ? <>props.loading()</> : <span style={ {visibility: "hidden", width: "0px", height: "0px", float: "left"} }>subscribing ...</span>)
+        return (props.loading ? <>props.loading()</> : null)
     }
-    return (props.children ? <>props.children(value)</> : <span style={ {visibility: "hidden", width: "0px", height: "0px", float: "left"} }>{ value.toString() }</span>)
+    return (props.children ? <>props.children(value)</> : null)
 }
 
 export default withEnvironment(SubscriptionRenderer)
