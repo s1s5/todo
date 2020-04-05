@@ -81,7 +81,7 @@ const TodoUpdateForm = (props:{ id: string }) => {
     // console.log('TodoUpdateForm', value)
     // console.log('TodoUpdateForm', errors)
     return (
-        <Form<todoUpdate_Mutation["variables"]> id="hoge" initialVariables={ value } mutation={ updateTodoMutation }>
+        <Form<todoUpdate_Mutation> id="hoge" initialVariables={ value } mutation={ updateTodoMutation }>
           <FormGroup name="todoUpdateForm">
             {/* { form_errors.map((e) => (<p>Error: {e}</p>)) } */}
             <MyCheckBox name="completed" />
@@ -96,9 +96,10 @@ const TodoUpdateForm = (props:{ id: string }) => {
               onSuccess={ () => console.log('success!!') }
               onFailure={ () => console.log('failed...') }
           >
-            { (commit) => (
+            {/* { (commit) => (
                 <Button onClick={ () => commit() } >commit</Button>
-            )}
+                )} */}
+            <Button>commit</Button>
           </CommitTrigger>
         </Form>
     )

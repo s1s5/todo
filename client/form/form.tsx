@@ -1,19 +1,20 @@
 import * as React from 'react'
 
-import {IEnvironment, PayloadError, GraphQLTaggedNode, UploadableMap, DeclarativeMutationConfig} from 'relay-runtime'
+import {IEnvironment, PayloadError, GraphQLTaggedNode, UploadableMap, DeclarativeMutationConfig, MutationParameters, SelectorStoreUpdater} from 'relay-runtime'
 import {ReactRelayContext, commitMutation} from 'react-relay'
 
 import {withEnvironment} from '../environment'
 import FormContext from './form-context'
 
 
-type Props<T> = {
+type Props<TOperation extends MutationParameters> = {
     id: string,
-    initialVariables: T,
+    initialVariables: TOperation['variables'],
     mutation: GraphQLTaggedNode,
     children: React.ReactNode,
     environment: IEnvironment,
     configs?: DeclarativeMutationConfig[],
+    updater?: SelectorStoreUpdater<TOperation['response']> | null;
 }
 
 // !!! mutationは以下のような感じで
@@ -99,7 +100,7 @@ type Props<T> = {
 
 
 
-const Form = <T extends Object>(props: Props<T>) => {
+const Form = <TOperation extends MutationParameters>(props: Props<TOperation>) => {
     const [value, set_value] = React.useState(props.initialVariables)
     const [form_errors, set_form_errors] = React.useState<any[]>([])
     const [errors, set_errors] = React.useState<any>([])
@@ -142,7 +143,7 @@ const Form = <T extends Object>(props: Props<T>) => {
             {
                 mutation: props.mutation,
                 variables: value_,
-                onCompleted: (response: any | null, errors: ReadonlyArray<PayloadError> | null | undefined) => {
+                onCompleted: (response: TOperation['response'] | null, errors: ReadonlyArray<PayloadError> | null | undefined) => {
                     if (response === null) {
                         return 
                     }
@@ -153,7 +154,8 @@ const Form = <T extends Object>(props: Props<T>) => {
 
                     let has_error = false
                     for (let form in response) {
-                        if ('errors' in response[form] && (!(response[form].errors == null)) && response[form].errors.length > 0) {
+                        const _f: any = form
+                        if ('errors' in _f && (!(_f.errors == null)) && _f.errors.length > 0) {
                             has_error = true
                         }
                     }
@@ -188,6 +190,8 @@ const Form = <T extends Object>(props: Props<T>) => {
                     // console.log('error = ', error)
                 },
                 uploadables: u,
+                updater: props.updater,
+                configs: props.configs,
             }
         )
     }, [props.environment, props.mutation])
@@ -213,10 +217,10 @@ const Form = <T extends Object>(props: Props<T>) => {
 // export default withEnvironment(Form)
 
 
-const FormWithEnv = <T extends Object>(props: Omit<Props<T>, 'environment'>) => (
+const FormWithEnv = <TOperation extends MutationParameters>(props: Omit<Props<TOperation>, 'environment'>) => (
     <ReactRelayContext.Consumer>
       {(context) =>
-          <Form<T> environment={ context!.environment } {...props} />
+          <Form<TOperation> environment={ context!.environment } {...props} />
       }
     </ReactRelayContext.Consumer>
 )
