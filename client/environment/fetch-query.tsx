@@ -25,12 +25,17 @@ function getRequestBodyWithUploadables(request: RequestParameters, variables: Va
     const m:any = {}
     Object.keys(uploadables).forEach(key => {
         if (Object.prototype.hasOwnProperty.call(uploadables, key)) {
-            const nk = key.substring(0, key.lastIndexOf('['))
-            const ind = parseInt(key.slice(key.lastIndexOf('[') + 1, -1), 10)
-            if (!(nk in m)) {
-                m[nk] = []
+            const li = key.lastIndexOf('[')
+            if (li < 0) {
+                m[key] = [[0, uploadables[key]]]
+            } else {
+                const nk = key.substring(0, li)
+                const ind = parseInt(key.slice(key.lastIndexOf('[') + 1, -1), 10)
+                if (!(nk in m)) {
+                    m[nk] = []
+                }
+                m[nk].push([ind, uploadables[key]])
             }
-            m[nk].push([ind, uploadables[key]])
         }
     });
 
