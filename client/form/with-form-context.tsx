@@ -2,14 +2,7 @@ import * as React from 'react'
 import _ from 'lodash'
 
 import FormContext from './form-context'
-
-type Props<T> = {
-    formId: string,
-    value: T,
-    errors?: readonly string [],
-    onChange: (value: T) => void,
-    onUpload: (event: any) => void,
-}
+import Props from './form-props'
 
 type CWProps<P, T> = {
     formId: string,
@@ -50,7 +43,7 @@ const ContextWrapper = <P, T>(props: CWProps<P, T>) => {
 //            return next
         //        })
         const files = event.target.files
-        console.log("_on_upload => ", files)
+        // console.log("_on_upload => ", files)
         const ll: File [] = []
         for (let i = 0; i < files.length; i++) {
             ll.push(files.item(i))
@@ -77,7 +70,7 @@ const ContextWrapper = <P, T>(props: CWProps<P, T>) => {
         return e
     }, [context.errors])
 
-    const Component_ = Component as any  // TODO: なんでかうまく行かない。。
+    const Component_ = Component as any  // TODO: なんでかうまく行かない。。どういうタイプを指定すれば？
     return <Component_
                formId={ formId }
                value={ value }
@@ -105,7 +98,4 @@ const withFormContext = <P, T>(
           </FormContext.Consumer>
       })
 
-export {
-    Props,
-}
 export default withFormContext
