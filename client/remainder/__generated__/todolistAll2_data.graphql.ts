@@ -20,7 +20,7 @@ export type todolistAll2_data = {
                 readonly " $fragmentRefs": FragmentRefs<"todo_data">;
             } | null;
         } | null>;
-    } | null;
+    };
     readonly " $refType": "todolistAll2_data";
 };
 export type todolistAll2_data$data = todolistAll2_data;

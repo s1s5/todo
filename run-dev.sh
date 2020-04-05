@@ -6,7 +6,7 @@ set -eu  # <= 0以外が返るものがあったら止まる, 未定義の変数
 export USER_ID=`id -u`
 export GROUP_ID=`id -g`
 
-npm install
+# npm install
 if [ `uname` = "Darwin" ]; then
     trap 'kill $(jobs -p)' INT
 

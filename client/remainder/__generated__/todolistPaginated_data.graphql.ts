@@ -13,7 +13,7 @@ export type todolistPaginated_data = {
                 readonly " $fragmentRefs": FragmentRefs<"todo_data">;
             } | null;
         } | null>;
-    } | null;
+    };
     readonly " $refType": "todolistPaginated_data";
 };
 export type todolistPaginated_data$data = todolistPaginated_data;

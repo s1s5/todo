@@ -133,6 +133,22 @@ class TodoFilterSet(django_filters.FilterSet):
 #             super().__init__(*args, **kwargs)
 #         other = graphene.String()
 
+from promise import Promise
+from promise.dataloader import DataLoader
+
+
+def article_batch_load_fn(keys):
+    queryset = models.TodoExtra.objects.filter(pk__in=keys)
+    return Promise.resolve(
+        [
+            [article for article in queryset if article.reporter_id == id]
+            for id in keys
+        ]
+    )
+
+article_loader = DataLoader(article_batch_load_fn)
+
+
 @test_dec2
 class TodoExtraNode(DjangoObjectType):
     class Meta:
@@ -148,6 +164,11 @@ class TodoExtraNode(DjangoObjectType):
         # manyの場合にしかconnectionは張られない・・・
         print("HOGE TodoExtra get_queryset called!!!", queryset, info)
         return super().get_queryset(queryset, info)
+
+    @classmethod
+    def get_from_parent(cls, parent, info):
+        print("HOGE", parent, info.field_name, dir(parent))
+        return getattr(parent, info.field_name, None)
 
 
 @test_dec2
@@ -190,7 +211,8 @@ class TodoNode(DjangoObjectType):
         print(info.field_asts[0], type(info.field_asts[0]))
         print(dir(info.field_asts[0]))
         # print(queryset.values('id', 'text'))
-        return queryset.select_related('extra')
+        # return queryset.select_related('extra')
+        return queryset # .select_related('extra')
     # extra = DjangoConnectionField(TodoExtraNode)
     #    extra = DjangoFilterConnectionField(TodoExtraNode)
 
@@ -381,7 +403,7 @@ class TodoListNode(DjangoObjectType):
         }
         fields = [
             'title', 'author', 'created_at', 'modified_at',
-            # 'todo_set',
+            'todo_set',
         ]
         interfaces = (graphene.relay.Node, )
 
@@ -390,7 +412,7 @@ class TodoListNode(DjangoObjectType):
     # fieldsには書いてもかかなくてもいい
     # ForeignKeyとかで参照されている場合にはこうやって指定しないと駄目
     # なんでかちゃんとリンクしているやつだけfilterされている。。不思議！
-    todo_set = CustomDjangoFilterConnectionField(TodoNode)
+    # todo_set = CustomDjangoFilterConnectionField(TodoNode)
 
 
 class TodoListCreateMutation(DjangoCreateModelFormMutation):
@@ -531,7 +553,7 @@ class TodoListMutation(graphene.ObjectType):
 
 
 class Query(object):
-    todo = graphene.Field(TodoNode)  # こっちはアクセスできない
+    todo = graphene.Field(TodoNode)  # こっちはアクセスできない、そもそもいれなければいいだけ？
     todo2 = graphene.relay.Node.Field(TodoNode)  # こっちはglobal_idで引ける
     # todoextra = graphene.Field(TodoExtraNode)
     todolist = graphene.relay.Node.Field(TodoListNode)
@@ -620,6 +642,7 @@ class Subscription(object):
         ).map(lambda event: event.instance)
 
     def resolve_todo_created(root, info, parent_id):
+        logger.info("resolve_todo_created called")
         parent_id = int(from_global_id(parent_id)[1])
         return ChannelGroupObservable('todo').map(
             lambda event: SubscriptionEvent.from_dict(event)
@@ -631,6 +654,7 @@ class Subscription(object):
         ).map(lambda event: event.instance)
 
     def resolve_todo_updated(root, info, parent_id):
+        logger.info("resolve_todo_updated called")
         parent_id = int(from_global_id(parent_id)[1])
         return ChannelGroupObservable('todo').map(
             lambda event: SubscriptionEvent.from_dict(event)

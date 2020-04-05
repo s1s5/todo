@@ -21,7 +21,7 @@ export type todolistAll_query = {
                     readonly " $fragmentRefs": FragmentRefs<"todo_data">;
                 } | null;
             } | null>;
-        } | null;
+        };
     } | null;
     readonly " $refType": "todolistAll_query";
 };

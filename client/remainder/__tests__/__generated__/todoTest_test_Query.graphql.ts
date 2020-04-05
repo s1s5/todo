@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash e391cdae34c928064eed9eb30f4f8071 */
+/* @relayHash 9dbb56f53a70af649a8af0695bb96383 */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
@@ -14,7 +14,7 @@ export type todoTest_test_QueryResponse = {
                     readonly " $fragmentRefs": FragmentRefs<"todo_data">;
                 } | null;
             } | null>;
-        } | null;
+        };
     } | null;
 };
 export type todoTest_test_Query = {
@@ -211,7 +211,7 @@ const node: ConcreteRequest = (function () {
                         "type": "TodoNodeConnection",
                         "enumValues": null,
                         "plural": false,
-                        "nullable": true
+                        "nullable": false
                     },
                     "todolist.todoSet.edges": {
                         "type": "TodoNodeEdge",
