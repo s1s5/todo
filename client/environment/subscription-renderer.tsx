@@ -70,9 +70,9 @@ const SubscriptionRenderer = <T extends object>(props: Props<T>) => {
         }
     }, [props.environment, props.subscription, props.observer, props.variables])
     if (value === undefined) {
-        return (props.loading ? <>props.loading()</> : null)
+        return (props.loading ? <>{ props.loading() }</> : null)
     }
-    return (props.children ? <>props.children(value)</> : null)
+    return (props.children ? <>{ props.children(value) }</> : null)
 }
 
 export default withEnvironment(SubscriptionRenderer)
