@@ -318,4 +318,5 @@ MIDDLEWARE += [
 INSTALLED_APPS = [
     'todo.apps.remainder',
     'todo.apps.hello',
+    'todo.apps.shelf',
 ] + INSTALLED_APPS
