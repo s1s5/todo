@@ -2,24 +2,28 @@ import graphene
 from graphene_django.debug import DjangoDebug
 
 from todo.apps.accounts import schema as accounts_schema
+from todo.apps.hello import schema as hello_schema
 from todo.apps.remainder import schema as remainder_schema
 
 
-class Query(remainder_schema.Query, accounts_schema.Query, graphene.ObjectType):
+class Query(remainder_schema.Query, hello_schema.Query, accounts_schema.Query, graphene.ObjectType):
+    '''
+    _debug {
+        sql {
+            rawSql
+            duration
+        }
+    }
+    '''
     debug = graphene.Field(DjangoDebug, name='_debug')
-    # _debug {
-    #        sql {
-    #                  rawSql
-    #                  duration
-    #                }
-    #      }
 
 
-class Mutation(remainder_schema.Mutation, accounts_schema.Mutation, graphene.ObjectType):
+class Mutation(remainder_schema.Mutation, hello_schema.Mutation, accounts_schema.Mutation, graphene.ObjectType):
     pass
 
 
-class Subscription(remainder_schema.Subscription, accounts_schema.Subscription, graphene.ObjectType):
+class Subscription(remainder_schema.Subscription, hello_schema.Subscription,
+                   accounts_schema.Subscription, graphene.ObjectType):
     pass
 
 
@@ -28,46 +32,3 @@ schema = graphene.Schema(
     mutation=Mutation,
     subscription=Subscription
 )
-
-
-
-# import graphene
-# 
-# 
-# class Patron(graphene.ObjectType):
-#     id = graphene.ID()
-#     name = graphene.String()
-#     age = graphene.Int()
-# 
-# 
-# class Query(graphene.ObjectType):
-# 
-#     patron = graphene.Field(Patron)
-# 
-#     def resolve_patron(self, info):
-#         return Patron(id=1, name="Syrus", age=27)
-# 
-# 
-# schema = graphene.Schema(query=Query)
-# query = """
-#     query something{
-#       patron {
-#         id
-#         name
-#         age
-#       }
-#     }
-# """
-# 
-# 
-# def test_query():
-#     result = schema.execute(query)
-#     assert not result.errors
-#     assert result.data == {"patron": {"id": "1", "name": "Syrus", "age": 27}}
-# 
-# 
-# if __name__ == "__main__":
-#     result = schema.execute(query)
-#     print(result.data["patron"])
-
-
