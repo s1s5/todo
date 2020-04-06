@@ -13,10 +13,12 @@ import { makeStyles, ThemeProvider, createMuiTheme } from '@material-ui/core/sty
 import {EnvironmentProvider} from './environment/index'
 // const environment = createEnvironment('http://127.0.0.1:42100/graphql/', 'ws://localhost:42100/graphql/')
 
+import Urls from './urls'
+
 import TodoList from './remainder/todolist'
 import TodoListList from './remainder/todolist-list'
 
-import {BrowserRouter as Router, Route} from "react-router-dom";
+import {BrowserRouter, Route, useHistory} from "react-router-dom";
 
 const theme = createMuiTheme({
     palette: {
@@ -50,33 +52,37 @@ const useStyles = makeStyles(theme => ({
 // [^-A-Za-z0-9+/=]|=[^=]|={3,}$
 //        <Route path='/:id([^-A-Za-z0-9+/=]|=[^=]|={3,}/' exact component={ ({match}:any) => {
 
+const AppSub = () => {
+    const classes = useStyles();
+    const history = useHistory();  // BrowserRouterの下じゃないとだめ？
+    return (
+        <div className={classes.root}>
+          <ThemeProvider theme={theme}>
+            <AppBar position="static">
+              <Toolbar>
+                <button onClick={() => history.goBack()}>Back</button>
+                <Typography variant="h6" className={classes.title}>
+                  graphqlサンプル
+                </Typography>
+              </Toolbar>
+            </AppBar>
+            <Container>
+              <Urls />
+            </Container>
+          </ThemeProvider>
+        </div>    
+    )
+}
+
 
 const App = () => {
-    const classes = useStyles();
-
     return (
         <EnvironmentProvider
             post_url='http://127.0.0.1:42100/graphql/'
             ws_url='ws://localhost:42100/graphql/'>
-          <div className={classes.root}>
-            <ThemeProvider theme={theme}>
-              <AppBar position="static">
-                <Toolbar>
-                  <Typography variant="h6" className={classes.title}>
-                    Todoサンプル
-                  </Typography>
-                </Toolbar>
-              </AppBar>
-              <Container>
-                <Router>
-                  <Route path='/:id([A-Za-z0-9_=]+)/' component={ ({match}:any) => {
-                      return <TodoList id={ match.params.id }/>
-                  }} />
-                  <Route path='/' exact component={ () => <TodoListList/> }/>
-                </Router>
-              </Container>
-            </ThemeProvider>
-          </div>
+          <BrowserRouter>
+            <AppSub />
+          </BrowserRouter>
         </EnvironmentProvider>
     )
 }
