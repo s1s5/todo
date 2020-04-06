@@ -22,10 +22,10 @@ from rx import Observable
 
 from . import models
 from .connection import CustomDjangoFilterConnectionField, CustomOrderingFilter # , DjangoUpdateModelFormMutation, DjangoFormMutation
-from graphene_django.forms.mutation import DjangoUpdateModelFormMutation, DjangoFormMutation
-from graphene_django.forms.mutation import DjangoCreateModelFormMutation, DjangoDeleteModelFormMutation
+from graphene_django.forms import DjangoUpdateModelMutation, DjangoFormMutation
+from graphene_django.forms import DjangoCreateModelMutation, DjangoDeleteModelMutation
 
-from .mutation import CustomDjangoCreateModelFormMutation, CustomDjangoUpdateModelFormMutation, CustomDjangoDeleteModelFormMutation
+# from .mutation import CustomDjangoCreateModelFormMutation, CustomDjangoUpdateModelFormMutation, CustomDjangoDeleteModelFormMutation
 
 from ..accounts.schema import UserNode
 
@@ -256,7 +256,7 @@ class TodoUpdateForm(forms.ModelForm):
         super().save()
 
 
-class TodoUpdateFormMutation(DjangoUpdateModelFormMutation):
+class TodoUpdateFormMutation(DjangoUpdateModelMutation):
     '''
     mutation($input: TodoUpdateFormMutationInput!) {
   todoUpdateForm(input: $input){
@@ -415,7 +415,7 @@ class TodoListNode(DjangoObjectType):
     # todo_set = CustomDjangoFilterConnectionField(TodoNode)
 
 
-class TodoListCreateMutation(DjangoCreateModelFormMutation):
+class TodoListCreateMutation(DjangoCreateModelMutation):
     """
 mutation{
 todolistCreate(input: {title: "hello"}) {
@@ -448,7 +448,7 @@ todolistCreate(input: {title: "hello"}) {
         return super().perform_mutate(form, info)
 
 
-class TodoListUpdateMutation(DjangoUpdateModelFormMutation):
+class TodoListUpdateMutation(DjangoUpdateModelMutation):
     """
 mutation{
   todolistUpdate(input: {id: "VG9kb0xpc3ROb2RlOjc=", title: "hello2"}){
@@ -468,7 +468,7 @@ mutation{
         fields = ['title']
 
 
-class TodoListDeleteMutation(DjangoDeleteModelFormMutation):
+class TodoListDeleteMutation(DjangoDeleteModelMutation):
     """
 mutation{
   todolistDelete(input: {id: "VG9kb0xpc3ROb2RlOjc="}) {
@@ -575,40 +575,6 @@ class Mutation(object):
     single_file_upload = SingleFileUploadFormMutation.Field()
 
     todo_delete = TodoDeleteMutation.Field()
-
-
-class AsyncIterable:
-    def __init__(self, up_to):
-        logger.debug('AsyncIterable start!!')
-        self.up_to = up_to
-        self.counter = -1
-
-    def __aiter__(self):
-        logger.debug('AsyncIterable.__aiter__ iteration started!!!!!')
-        return self
-
-    def __del__(self):
-        logger.debug('AsyncIterable deleted!!!!!')
-
-    async def __anext__(self):
-        data = await self.fetch_data()
-        logger.debug('AsyncIterable %s', data)
-        if data <= self.up_to:
-            return data
-        else:
-            logger.debug('AsyncIterable end!!')
-            raise StopAsyncIteration
-
-    async def fetch_data(self):
-        await asyncio.sleep(10)
-        self.counter += 1
-        return self.counter
-
-    def start(self):
-        logger.debug('AsynIterable.start() called!!!')
-
-    def end(self):
-        logger.debug('AsynIterable.end() called!!!')
 
 
 class Subscription(object):
