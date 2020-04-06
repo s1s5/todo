@@ -70,18 +70,14 @@ class Subscription(object):
                 logger.debug('AsyncIterable deleted!!!!!')
 
             async def __anext__(self):
-                data = await self.fetch_data()
-                logger.debug('AsyncIterable %s', data)
-                if data < self.up_to:
-                    return data
+                await asyncio.sleep(1)
+                self.counter += 1
+                logger.debug('AsyncIterable %s', self.counter)
+                if self.counter < self.up_to:
+                    return self.counter
                 else:
                     logger.debug('AsyncIterable end!!')
                     raise StopAsyncIteration
-
-            async def fetch_data(self):
-                await asyncio.sleep(1)
-                self.counter += 1
-                return self.counter
 
             def start(self):
                 logger.debug('AsynIterable.start() called!!!')

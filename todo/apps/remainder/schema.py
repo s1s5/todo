@@ -587,7 +587,7 @@ class Subscription(object):
 
     todolist_mutation = graphene.Field(TodoListMutation, id=graphene.ID())
 
-    count_seconds = graphene.Float(up_to=graphene.Int())
+    # count_seconds = graphene.Float(up_to=graphene.Int())
 
     def resolve_todolist_created(root, info):
         return ChannelGroupObservable('todolist').map(
@@ -648,15 +648,15 @@ class Subscription(object):
             todo=event.instance if isinstance(event.instance, models.Todo) else None)
         )
 
-    def resolve_count_seconds(root, info, up_to):
-        # import asyncio
-        # return from_aiter(AsyncIterable(up_to), None)
-        # from graphql.execution.executors.asyncio_utils import asyncgen_to_observable
-        # return asyncgen_to_observable(AsyncIterable(up_to))
-        # return AsyncIterable(up_to)
-        # return async_to_observable(AsyncIterable(up_to))
-        import time
-        return ChannelGroupObservable('custom-group').map(lambda event: time.time())
+    # def resolve_count_seconds(root, info, up_to):
+    #     # import asyncio
+    #     # return from_aiter(AsyncIterable(up_to), None)
+    #     # from graphql.execution.executors.asyncio_utils import asyncgen_to_observable
+    #     # return asyncgen_to_observable(AsyncIterable(up_to))
+    #     # return AsyncIterable(up_to)
+    #     # return async_to_observable(AsyncIterable(up_to))
+    #     import time
+    #     return ChannelGroupObservable('custom-group').map(lambda event: time.time())
 
     # async def resolve_count_seconds(root, info, up_to):
     #     import asyncio

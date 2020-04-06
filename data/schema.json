@@ -2606,7 +2606,7 @@
               "name": "countSeconds",
               "type": {
                 "kind": "SCALAR",
-                "name": "Float",
+                "name": "Int",
                 "ofType": null
               }
             },
