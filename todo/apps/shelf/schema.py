@@ -88,10 +88,10 @@ class BookDelete(DjangoDeleteModelMutation):
 
 
 class Query(object):
-    authors = AuthorNode._meta.connection_field_class(AuthorNode)
-    books = BookNode._meta.connection_field_class(BookNode)
-    author = graphene.relay.Node.Field(AuthorNode)
-    book = graphene.relay.Node.Field(BookNode)
+    authors = AuthorNode.Connection()
+    books = BookNode.Connection()
+    author = AuthorNode.Field()
+    book = BookNode.Field()
 
 
 class Mutation(object):
