@@ -16,6 +16,7 @@ class InfoType(graphene.ObjectType):
 
 
 class StaticDataType(graphene.ObjectType):
+    id = graphene.ID()
     name = graphene.String()
     bytes = graphene.Int()
 
@@ -29,8 +30,8 @@ class Query(object):
 
     def resolve_some_static_datas(root, info):
         return [
-            StaticDataType(name="data1", bytes=1),
-            StaticDataType(name="data2", bytes=2),
+            StaticDataType(id="id-1", name="data1", bytes=1),
+            StaticDataType(id="id-2", name="data2", bytes=2),
         ]
 
 
