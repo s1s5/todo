@@ -28,27 +28,32 @@ function createQueryRenderer<TOperation extends OperationType, Props>(
                 <ReactRelayContext.Consumer>
                   {(context:RelayContext | null) => (
                       <QueryRenderer<TOperation>
-                          environment={ context!.environment }
-                          query={ query }
-                          variables={ variables }
-                          render={ (r_props: {
-                                  error: Error | null
-                                  props: TOperation['response'] | null
-                                  retry: (() => void) | null
-                          }) => {
-                                  if (r_props.error) {
-                                      return <span>{r_props.error.toString()}</span>
-                                  }
-                                  console.log(r_props.props)
-                                  if (r_props.props) {
-                                      return <FragmentComponent {...this.props } query={ r_props.props } />
-                                  }
+                        environment={ context!.environment }
+                        query={ query }
+                        variables={ variables }
+                        render={ (r_props: {
+                                error: Error | null
+                                props: TOperation['response'] | null
+                                retry: (() => void) | null
+                        }) => {
+                                if (r_props.error) {
+                                    return <span>{r_props.error.toString()}</span>
+                                }
+                                console.log(r_props.props)
+                                if (r_props.props) {
+                                    return <FragmentComponent {...this.props } query={ r_props.props } />
+                                }
 
-                                  return <span>loading</span>
-                          }}
-                      />
+                                return <span>loading</span>
+                        }}
+                        fetchPolicy='store-and-network'
+                        cacheConfig={ {
+                                force: false, // causes a query to be issued unconditionally, irrespective of the state of any configured response cache.
+                                poll: 5 * 60 * 1000, // causes a query to live update by polling at the specified interval in milliseconds
+                        } }
+                        />
                   )}
-                  </ReactRelayContext.Consumer>
+                </ReactRelayContext.Consumer>
             )
         }
     }

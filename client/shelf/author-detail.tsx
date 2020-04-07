@@ -20,6 +20,12 @@ const AuthorDetail = (props: Props) => {
           <h1>author detail</h1>
           <h3>id : { props.id }</h3>
           <h3>name: { props.data.name }</h3>
+          <h3>released books</h3>
+          {
+              props.data.bookSet.edges.map(edge => edge && edge.node && (
+                  <p key={ edge.node.id } >title: {edge.node.title}</p>
+              ))
+          }
         </>
     )
 }
@@ -50,17 +56,17 @@ const AuthorDetailQuery = (props: {id: string, environment: Environment}) => {
     console.log(store)
     const author = store.getSource().get(props.id)  // RecordSource -> Record
     console.log('author : ', author)
-    const fragment = store.lookup({
-//    readonly kind: string;
-//    readonly dataID: DataID;
-//    readonly node: ReaderFragment;
-//    readonly owner: RequestDescriptor;
-//    readonly variables: Variables;
-        kind: "ScalarField",
-        dataID: "",
-        node: authorDetail_node,
-    })
-    console.log('fragment : ', fragment)
+//     const fragment = store.lookup({
+// //    readonly kind: string;
+// //    readonly dataID: DataID;
+// //    readonly node: ReaderFragment;
+// //    readonly owner: RequestDescriptor;
+// //    readonly variables: Variables;
+//         kind: "ScalarField",
+//         dataID: "",
+//         node: authorDetail_node,
+//     })
+//     console.log('fragment : ', fragment)
     return <QueryRenderer
                environment={ props_.environment }
                query={graphql`
@@ -79,12 +85,35 @@ const AuthorDetailQuery = (props: {id: string, environment: Environment}) => {
                    // console.log(props);
                        if (props && props.author) {
                            console.log("show fragment", props.author)
-                           console.log("show fragment", getDataIDsFromFragment(props.author, []))
-                           return <AuthorDetailFragment id={ props_.id } data={ props.author } />
+                           console.log("show fragment", props.author.__fragmentOwner)
+                           console.log("show fragment", props.author.__fragments)
+                           const a: any = {}
+                           // a.__fragmentOwner = props.author.__fragmentOwner
+                           a.__fragmentOwner = {
+                               // node: {},
+                               // variables: {},
+                           }
+                           a.__fragments = {authorDetail_data: {}}
+                           a.__id = props.author.__id
+                           // console.log("show fragment", getDataIDsFromFragment(props.author, []))
+                           return <AuthorDetailFragment id={ props_.id } data={ a } />
                        }
                        console.log("show loading")
-                       return <span>loading</span>
+                   if (author) {
+                           const a: any = {}
+                           a.__fragmentOwner = {}
+                       a.__fragments = {authorDetail_data: {}}
+                       a.__id = props_.id
+                       return <AuthorDetailFragment id={ props_.id } data={ a } />
+                   } else {
+                       return <span>loading author information</span>
+}
                } }
+    fetchPolicy='store-and-network'
+    cacheConfig={ {
+                                force: false, // causes a query to be issued unconditionally, irrespective of the state of any configured response cache.
+        // poll: 5 * 60 * 1000, // causes a query to live update by polling at the specified interval in milliseconds
+                        } }
     />
 }
 

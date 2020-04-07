@@ -25,7 +25,6 @@ const Authors = (props: Props) => {
         }
         return m
     }, [props.query])
-    console.log(`${match.path} , ${match.url}`)
     //  data={ author_map[match.params.id] 
     return (
         <Switch>
@@ -42,7 +41,7 @@ const Authors = (props: Props) => {
                           <li key={ edge.node.id }>
                             { edge.node.name } ({
                                 edge.node.bookSet.edges.map(edge => edge && edge.node && (
-                                    <>{edge.node.title}, </>
+                                    <span key={ edge.node.id } >{edge.node.title}, </span>
                                 ))
                             })
                             <Link to={ `${match.path}/${ edge.node.id }/` }>
