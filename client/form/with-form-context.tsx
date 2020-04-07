@@ -1,5 +1,7 @@
 import * as React from 'react'
-import _ from 'lodash'
+// import _ from 'lodash'
+import _cloneDeep from 'lodash/cloneDeep'
+import _clone from 'lodash/clone'
 
 import FormContext from './form-context'
 import Props from './form-props'
@@ -21,7 +23,7 @@ const ContextWrapper = <P, T>(props: CWProps<P, T>) => {
     const key = `${context.formGroupId!}Input`
     const _on_change = React.useCallback((new_value: T) => {
         context.setValue( (prev:any) => {
-            const next = _.cloneDeep(prev)
+            const next = _cloneDeep(prev)
             // next[props.name] = !prev[props.name]
             // nameのチェックを入れたい, Component作成時に初期値が必ずundefinedじゃないことを保証すればいい？
             if (onChange === undefined) {
@@ -49,7 +51,7 @@ const ContextWrapper = <P, T>(props: CWProps<P, T>) => {
             ll.push(files.item(i))
         }
         context.setUploadables( (prev:any) => {
-            const next = _.clone(prev)
+            const next = _clone(prev)
             next[`${context.formGroupId!}-${props.name}`] = ll
             return next
         })
