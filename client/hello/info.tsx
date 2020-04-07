@@ -3,16 +3,18 @@ import * as React from 'react'
 import {graphql, createFragmentContainer} from 'react-relay'
 import {createQueryRenderer} from '../environment'
 
+import {info_query} from './__generated__/info_query.graphql'
+
 type Props = {
-    query: any,
+    query: info_query,
 }
     
 
 const Info = (props: Props) => (
     <>
     <h1>information</h1>
-    <h2>version : { props.query.info.version }</h2>
-    <h2>module_name : { props.query.info.moduleName }</h2>
+    <h2>version : { props.query.info!.version }</h2>
+    <h2>module_name : { props.query.info!.moduleName }</h2>
     </>
 )
 
