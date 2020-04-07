@@ -2,6 +2,7 @@ import * as React from 'react'
 
 import {graphql, Environment, getDataIDsFromFragment, } from 'relay-runtime'
 import {QueryRenderer, createFragmentContainer} from 'react-relay'
+import { useParams } from "react-router-dom";
 
 import {withEnvironment} from '../environment'
 
@@ -10,7 +11,6 @@ import authorDetail_node from './__generated__/authorDetail_data.graphql'
 
 
 type Props = {
-    id: string,
     data: DataType,
 }
 
@@ -18,7 +18,7 @@ const AuthorDetail = (props: Props) => {
     return (
         <>
           <h1>author detail</h1>
-          <h3>id : { props.id }</h3>
+          <h3>id : { props.data.id }</h3>
           <h3>name: { props.data.name }</h3>
           <h3>released books</h3>
           {
@@ -50,11 +50,20 @@ const AuthorDetailFragment = createFragmentContainer(
     }
 )
 
-const AuthorDetailQuery = (props: {id: string, environment: Environment}) => {
+const AuthorDetailQuery = (props: {id?: string, environment: Environment}) => {
+    let id:string
+    if (props.id == null) {
+        const params:any = useParams();
+        console.log(params)
+        id = params.id
+    } else {
+        id = props.id
+    }
+    console.log(id)
     const props_ = props
     const store = props.environment.getStore() // Store
     console.log(store)
-    const author = store.getSource().get(props.id)  // RecordSource -> Record
+    const author = store.getSource().get(id)  // RecordSource -> Record
     console.log('author : ', author)
 //     const fragment = store.lookup({
 // //    readonly kind: string;
@@ -76,7 +85,7 @@ const AuthorDetailQuery = (props: {id: string, environment: Environment}) => {
                        }
                    }
                `}
-               variables={ {author_id: props_.id} }  // TODO: make type safe
+               variables={ {author_id: id} }  // TODO: make type safe
                render={ ({error, props, retry}: any) => {
                        if (error) {
                            console.log("error: ", error)
@@ -96,18 +105,18 @@ const AuthorDetailQuery = (props: {id: string, environment: Environment}) => {
                            a.__fragments = {authorDetail_data: {}}
                            a.__id = props.author.__id
                            // console.log("show fragment", getDataIDsFromFragment(props.author, []))
-                           return <AuthorDetailFragment id={ props_.id } data={ a } />
+                           return <AuthorDetailFragment data={ a } />
                        }
                        console.log("show loading")
-                   if (author) {
-                           const a: any = {}
-                           a.__fragmentOwner = {}
-                       a.__fragments = {authorDetail_data: {}}
-                       a.__id = props_.id
-                       return <AuthorDetailFragment id={ props_.id } data={ a } />
-                   } else {
+                   //if (author) {
+                   //        const a: any = {}
+                   //        a.__fragmentOwner = {}
+                   //    a.__fragments = {authorDetail_data: {}}
+                   //    a.__id = props_.id
+                   //    return <AuthorDetailFragment data={ a } />
+                   //} else {
                        return <span>loading author information</span>
-}
+                   //}
                } }
     fetchPolicy='store-and-network'
     cacheConfig={ {
