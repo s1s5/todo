@@ -8,6 +8,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 // common設定とマージする
 module.exports = merge(common, {
     mode: 'development', // 本番モード
+    resolve: {
+        alias: {
+            'react-dom': '@hot-loader/react-dom',
+        },
+    },
     output: {
         path: path.join(__dirname, 'dist', 'dev'),
         filename: 'bundle.js',

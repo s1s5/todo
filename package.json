@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build:prod": "webpack --config webpack.prod.js",
+    "build:profile": "webpack --config webpack.profile.js",
     "build:dev": "webpack --config webpack.dev.js",
     "relay": "relay-compiler --src ./client --schema ./data/schema.json --language typescript --extensions tsx",
     "start": "webpack-dev-server --host 0.0.0.0 --port 42101 --disable-host-check --hot --history-api-fallback=true --config webpack.dev.js",
@@ -46,6 +47,7 @@
     "babel-jest": "^25.1.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-relay": "^9.0.0",
+    "clean-webpack-plugin": "^3.0.0",
     "fork-ts-checker-webpack-plugin": "^4.0.5",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^25.1.0",
@@ -54,6 +56,7 @@
     "relay-compiler-language-typescript": "^12.0.0",
     "relay-modern-typescript-transformer": "0.0.3",
     "relay-test-utils": "^9.0.0",
+    "scheduler": "^0.19.1",
     "terser-webpack-plugin": "^2.3.5",
     "typescript": "^3.8.3",
     "webpack": "^4.42.0",

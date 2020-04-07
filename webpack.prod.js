@@ -4,20 +4,47 @@ const common = require('./webpack.common.js') // 汎用設定をインポート
 const TerserPlugin = require('terser-webpack-plugin')
 const BundleTracker = require('webpack-bundle-tracker')
 
+const webpack = require('webpack')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+
 // common設定とマージする
 module.exports = merge(common, {
     mode: 'production', // 本番モード
     output: {
-        path: path.resolve(__dirname, 'dist', 'prod'),
-        publicPath: '/static/prod/',  // Djangoでどうserveするかに関わる
-        filename: '[name].[hash].js',
-        chunkFilename: '[name].[hash].js',
+        path: path.resolve(__dirname, 'dist', 'prod', 'js'),
+        publicPath: '/static/js/',  // Djangoでどうserveするかに関わる
+//        filename: '[name].[hash].js',
+//        chunkFilename: '[name].[hash].js',
+        filename: '[name].js',
+        chunkFilename: '[name].js',
     },
     optimization: {
         splitChunks: {
             chunks: 'initial',
             // maxSize: 244000,  // これ入れるとdjango-webpack-loaderがうまく動かない
             // minSize: 100000,  // 効果あるかよくわからなかったので一旦OFF
+            cacheGroups: {
+//                react: {
+//                    test: /[\\/]node_modules[\\/](react|subscriptions)/,
+//                    name: 'react',
+//                    priority: -1
+//                },
+//                react: {
+//                    test: /[\\/]node_modules[\\/]@material-ui/,
+//                    name: 'material-ui',
+//                    priority: -2
+//                },
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    priority: -10
+                },
+                default: {
+                    minChunks: 2,
+                    priority: -20,
+                    reuseExistingChunk: true
+                }
+            },
         },
         minimize: true,
         minimizer: [
@@ -35,6 +62,7 @@ module.exports = merge(common, {
         ],
     },
     plugins: [
-        new BundleTracker({filename: './dist/prod/webpack-stats.json'})
+        new webpack.ProgressPlugin(),
+        new CleanWebpackPlugin(),
     ],
 })
