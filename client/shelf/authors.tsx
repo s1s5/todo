@@ -3,7 +3,7 @@
 import {graphql, createFragmentContainer} from 'react-relay'
 import {createQueryRenderer} from '../environment'
 
-import {Route, Link, useRouteMatch, match as Match} from "react-router-dom";
+import {Route, Link, useRouteMatch, Switch} from "react-router-dom";
 
 import {authors_query as QueryType} from "./__generated__/authors_query.graphql"
 
@@ -28,9 +28,7 @@ const Authors = (props: Props) => {
     console.log(`${match.path} , ${match.url}`)
     //  data={ author_map[match.params.id] 
     return (
-        <>
-          <Route exact path={ `${match.path}/create/` } component={ () => <AuthorCreate /> }/>
-          <Route path={ `${match.path}/:id` } component={ ({match}:any) => <AuthorDetail id={match.params.id} />} />
+        <Switch>
           <Route exact path={ `${match.path}/` } component={ () => (
               <>
                 <h1>authors</h1>
@@ -56,7 +54,9 @@ const Authors = (props: Props) => {
                 </ul>
               </>
           ) }/>
-        </>
+          <Route exact path={ `${match.path}/create/` } component={ () => <AuthorCreate /> }/>
+          <Route path={ `${match.path}/:id` } component={ ({match}:any) => <AuthorDetail id={match.params.id} />} />
+        </Switch>
     )
 }
 

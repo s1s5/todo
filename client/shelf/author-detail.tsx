@@ -5,10 +5,12 @@ import {QueryRenderer, createFragmentContainer} from 'react-relay'
 
 import {withEnvironment} from '../environment'
 
+import {authorDetail_data as DataType} from './__generated__/authorDetail_data.graphql'
+
 
 type Props = {
     id: string,
-    data: any,
+    data: DataType,
 }
 
 const AuthorDetail = (props: Props) => {
@@ -55,13 +57,15 @@ const AuthorDetailQuery = (props: {id: string, environment: Environment}) => {
                variables={ {author_id: props_.id} }  // TODO: make type safe
                render={ ({error, props, retry}: any) => {
                        if (error) {
-                           console.log(error)
-                           return <span>{error.toString()}</span>;
+                           console.log("error: ", error)
+                           return <span>{error.map((e:any) => e.message)}</span>;
                        }
                    // console.log(props);
                        if (props && props.author) {
+                           console.log("show fragment")
                            return <AuthorDetailFragment id={ props_.id } data={ props.author } />
                        }
+                       console.log("show loading")
                        return <span>loading</span>
                } }
     />

@@ -1,18 +1,19 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 882f57df07d3dfb3b42b677ca2c96a9d */
+/* @relayHash 42bcca894aadcdc4aa744110bc3dafb9 */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
-export type AuthorCreateInput = {
+export type AuthorUpdateInput = {
     name: string;
+    id: string;
     clientMutationId?: string | null;
 };
-export type authorCreate_MutationVariables = {
-    authorCreateInput: AuthorCreateInput;
+export type authorUpdate_MutationVariables = {
+    authorUpdateInput: AuthorUpdateInput;
 };
-export type authorCreate_MutationResponse = {
-    readonly authorCreate: {
+export type authorUpdate_MutationResponse = {
+    readonly authorUpdate: {
         readonly errors: ReadonlyArray<{
             readonly field: string;
             readonly messages: ReadonlyArray<string>;
@@ -22,18 +23,18 @@ export type authorCreate_MutationResponse = {
         } | null;
     } | null;
 };
-export type authorCreate_Mutation = {
-    readonly response: authorCreate_MutationResponse;
-    readonly variables: authorCreate_MutationVariables;
+export type authorUpdate_Mutation = {
+    readonly response: authorUpdate_MutationResponse;
+    readonly variables: authorUpdate_MutationVariables;
 };
 
 
 
 /*
-mutation authorCreate_Mutation(
-  $authorCreateInput: AuthorCreateInput!
+mutation authorUpdate_Mutation(
+  $authorUpdateInput: AuthorUpdateInput!
 ) {
-  authorCreate(input: $authorCreateInput) {
+  authorUpdate(input: $authorUpdateInput) {
     errors {
       field
       messages
@@ -63,15 +64,15 @@ const node: ConcreteRequest = (function () {
     var v0 = [
         ({
             "kind": "LocalArgument",
-            "name": "authorCreateInput",
-            "type": "AuthorCreateInput!",
+            "name": "authorUpdateInput",
+            "type": "AuthorUpdateInput!",
             "defaultValue": null
         } as any)
     ], v1 = [
         ({
             "kind": "Variable",
             "name": "input",
-            "variableName": "authorCreateInput"
+            "variableName": "authorUpdateInput"
         } as any)
     ], v2 = ({
         "kind": "LinkedField",
@@ -108,7 +109,7 @@ const node: ConcreteRequest = (function () {
         "kind": "Request",
         "fragment": {
             "kind": "Fragment",
-            "name": "authorCreate_Mutation",
+            "name": "authorUpdate_Mutation",
             "type": "Mutation",
             "metadata": null,
             "argumentDefinitions": (v0 /*: any*/),
@@ -116,10 +117,10 @@ const node: ConcreteRequest = (function () {
                 {
                     "kind": "LinkedField",
                     "alias": null,
-                    "name": "authorCreate",
+                    "name": "authorUpdate",
                     "storageKey": null,
                     "args": (v1 /*: any*/),
-                    "concreteType": "AuthorCreatePayload",
+                    "concreteType": "AuthorUpdatePayload",
                     "plural": false,
                     "selections": [
                         (v2 /*: any*/),
@@ -145,16 +146,16 @@ const node: ConcreteRequest = (function () {
         },
         "operation": {
             "kind": "Operation",
-            "name": "authorCreate_Mutation",
+            "name": "authorUpdate_Mutation",
             "argumentDefinitions": (v0 /*: any*/),
             "selections": [
                 {
                     "kind": "LinkedField",
                     "alias": null,
-                    "name": "authorCreate",
+                    "name": "authorUpdate",
                     "storageKey": null,
                     "args": (v1 /*: any*/),
-                    "concreteType": "AuthorCreatePayload",
+                    "concreteType": "AuthorUpdatePayload",
                     "plural": false,
                     "selections": [
                         (v2 /*: any*/),
@@ -224,12 +225,12 @@ const node: ConcreteRequest = (function () {
         },
         "params": {
             "operationKind": "mutation",
-            "name": "authorCreate_Mutation",
+            "name": "authorUpdate_Mutation",
             "id": null,
-            "text": "mutation authorCreate_Mutation(\n  $authorCreateInput: AuthorCreateInput!\n) {\n  authorCreate(input: $authorCreateInput) {\n    errors {\n      field\n      messages\n    }\n    author {\n      ...authorDetail_data\n      id\n    }\n  }\n}\n\nfragment authorDetail_data on AuthorNode {\n  id\n  name\n  bookSet {\n    edges {\n      node {\n        id\n        title\n      }\n    }\n  }\n}\n",
+            "text": "mutation authorUpdate_Mutation(\n  $authorUpdateInput: AuthorUpdateInput!\n) {\n  authorUpdate(input: $authorUpdateInput) {\n    errors {\n      field\n      messages\n    }\n    author {\n      ...authorDetail_data\n      id\n    }\n  }\n}\n\nfragment authorDetail_data on AuthorNode {\n  id\n  name\n  bookSet {\n    edges {\n      node {\n        id\n        title\n      }\n    }\n  }\n}\n",
             "metadata": {}
         }
     } as any;
 })();
-(node as any).hash = '35ce0ff17f4bf43a255cd5f5ed50d4c5';
+(node as any).hash = 'aa860007a31c5eb2f3d26af611bcb151';
 export default node;

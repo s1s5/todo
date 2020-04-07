@@ -33,8 +33,8 @@ if settings.DEBUG:
 
     class LoggingGraphQLView(GraphQLView):
         def get_response(self, request, data, show_graphiql=False):
-            # logger.debug('query=%s, variables=%s, operation_name=%s, id=%s',
-            #              *self.get_graphql_params(request, data))
+            logger.debug('query=%s, variables=%s, operation_name=%s, id=%s',
+                         *self.get_graphql_params(request, data))
             return super().get_response(request, data, show_graphiql)
 
         # @staticmethod

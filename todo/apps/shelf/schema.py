@@ -68,6 +68,11 @@ class BookNode(DjangoObjectType):
         model = models.Book
         fields = ('title', 'abstract', 'author')
 
+    @classmethod
+    def resolve(cls, resolved, parent, info, *args, **kwargs):
+        print(cls, resolved, parent, info, *args, **kwargs)
+        return resolved
+
 
 class BookCreate(DjangoCreateModelMutation):
     class Meta:
