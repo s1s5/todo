@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import {graphql, Environment, getDataIDsFromFragment, } from 'relay-runtime'
 import {QueryRenderer, createFragmentContainer} from 'react-relay'
-import { useParams } from "react-router-dom";
+import { Link, useRouteMatch, useParams } from "react-router-dom";
 
 import {withEnvironment} from '../environment'
 
@@ -15,9 +15,10 @@ type Props = {
 }
 
 const AuthorDetail = (props: Props) => {
+    const match = useRouteMatch()
     return (
         <>
-          <h1>author detail</h1>
+          <h1>author detail (<Link to={ `/shelf/author/${ props.data.id }/update/` }>edit</Link>)</h1>
           <h3>id : { props.data.id }</h3>
           <h3>name: { props.data.name }</h3>
           <h3>released books</h3>

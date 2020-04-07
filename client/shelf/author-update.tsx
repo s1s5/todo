@@ -15,8 +15,8 @@ import {
     Form, FormGroup, withFormContext, FormProps, CommitTrigger,
 } from '../form'
 
-import {authorDetail_data as DataType} from './__generated__/authorDetail_data.graphql'
-
+import {authorDetailFragment_data as DataType} from './__generated__/authorDetailFragment_data.graphql'
+import createAuthorDetailQuery from './author-detail-fragment'
 
 const MyTextInput_ = React.memo((props: FormProps<string>) => (
     <FormControl error={ props.errors !== undefined }>
@@ -36,7 +36,8 @@ const author_update_mutation = graphql`
                 messages
             }
             author {
-                ...authorDetail_data
+                id
+                name
             }
         }
     }`
@@ -49,11 +50,12 @@ const AuthorUpdate = (props: Props) => {
     const history = useHistory()
     const variables = {
         authorUpdateInput : {
-            name: "",
+            id: props.data.id,
+            name: props.data.name,
         }
     }
     return (
-        <Form id="hoge" initialVariables={ variables } mutation={ author_update_mutation }>
+        <Form id={ props.data.id } initialVariables={ variables } mutation={ author_update_mutation }>
           <h3>update author</h3>
           <FormGroup name="authorUpdate">
             <MyTextInput name="name" />
@@ -70,4 +72,4 @@ const AuthorUpdate = (props: Props) => {
     )
 }
 
-export default AuthorUpdate
+export default createAuthorDetailQuery(AuthorUpdate)

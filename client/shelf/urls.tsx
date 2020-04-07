@@ -4,6 +4,7 @@ import {Route, Link, useRouteMatch, Switch} from "react-router-dom";
 import Authors from './authors'
 import AuthorCreate from './author-create'
 import AuthorDetail from './author-detail'
+import AuthorUpdate from './author-update'
 
 const Index = () => {
     const match = useRouteMatch()
@@ -31,7 +32,8 @@ const Urls = () => {
         <Switch>
           <Route exact path={ `${match.path}/author/` } component={ () => <Authors/> }/>
           <Route exact path={ `${match.path}/author/create/` } component={ () => <AuthorCreate /> }/>
-          <Route exact path={ `${match.path}/author/:id/` } component={ () => <AuthorDetail />} />
+          <Route exact path={ `${match.path}/author/:id/` } component={ () => <AuthorDetail /> } />
+          <Route exact path={ `${match.path}/author/:id/update/` } component={ () => <AuthorUpdate /> } />
           {/* <Route exact path={ `${match.path}/book` } component={ () => <BookUrls/> }/> */}
           <Route exact path={ `${match.path}/` } component={ () => <Index/> }/>
         </Switch>
