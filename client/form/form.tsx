@@ -154,8 +154,8 @@ const Form = <TOperation extends MutationParameters>(props: Props<TOperation>) =
 
                     let has_error = false
                     for (let form in response) {
-                        const _f: any = form
-                        if ('errors' in _f && (!(_f.errors == null)) && _f.errors.length > 0) {
+                        const _f: any = response[form]
+                        if ((!(_f.errors == null)) && _f.errors.length > 0) {
                             has_error = true
                         }
                     }
