@@ -87,5 +87,15 @@ npm install --save-dev webpack-bundle-tracker
 pip install django-webpack-loader
 ```
 
+``` shell
+# profiling
+npm install --save-dev clean-webpack-plugin
+npm install --save-dev stats-webpack-plugin
+npm install --save-dev webpack-bundle-analyzer
+# add webpack.profile.js
+npm run build:profile -- --stats
+npm run analyze
+```
+
 
 asyncio.run(channel_layer.flush())

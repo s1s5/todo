@@ -21,29 +21,35 @@ module.exports = merge(common, {
     optimization: {
         splitChunks: {
             chunks: 'initial',
+            maxInitialRequests: 100,
             // maxSize: 244000,  // これ入れるとdjango-webpack-loaderがうまく動かない
             // minSize: 100000,  // 効果あるかよくわからなかったので一旦OFF
             cacheGroups: {
-//                react: {
-//                    test: /[\\/]node_modules[\\/](react|subscriptions)/,
-//                    name: 'react',
-//                    priority: -1
-//                },
-//                react: {
-//                    test: /[\\/]node_modules[\\/]@material-ui/,
-//                    name: 'material-ui',
-//                    priority: -2
-//                },
+                react: {
+                    test: /[\\/]node_modules[\\/](react|subscriptions)/,
+                    name: 'react',
+                    priority: -2,
+                },
+                materialui: {
+                    test: /[\\/]node_modules[\\/]@material-ui/,
+                    name: 'material-ui',
+                    priority: -4,
+                },
+                relayruntime: {
+                    test: /[\\/]node_modules[\\/]relay-runtime/,
+                    name: 'relay-runtime',
+                    priority: -1,
+                },
                 vendors: {
                     test: /[\\/]node_modules[\\/]/,
                     name: 'vendors',
-                    priority: -10
+                    priority: -10,
                 },
-                default: {
-                    minChunks: 2,
-                    priority: -20,
-                    reuseExistingChunk: true
-                }
+//                default: {
+//                    minChunks: 2,
+//                    priority: -20,
+//                    reuseExistingChunk: true
+//                }
             },
         },
         minimize: true,

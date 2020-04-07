@@ -9,6 +9,7 @@
     "build:dev": "webpack --config webpack.dev.js",
     "relay": "relay-compiler --src ./client --schema ./data/schema.json --language typescript --extensions tsx",
     "start": "webpack-dev-server --host 0.0.0.0 --port 42101 --disable-host-check --hot --history-api-fallback=true --config webpack.dev.js",
+    "analyze": "webpack-bundle-analyzer dist/prod/js/stats.json",
     "test": "jest --coverage"
   },
   "babel": {
@@ -57,9 +58,11 @@
     "relay-modern-typescript-transformer": "0.0.3",
     "relay-test-utils": "^9.0.0",
     "scheduler": "^0.19.1",
+    "stats-webpack-plugin": "^0.7.0",
     "terser-webpack-plugin": "^2.3.5",
     "typescript": "^3.8.3",
     "webpack": "^4.42.0",
+    "webpack-bundle-analyzer": "^3.6.1",
     "webpack-bundle-tracker": "^0.4.3",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3",
