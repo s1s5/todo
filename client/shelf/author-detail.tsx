@@ -1,11 +1,12 @@
 import * as React from 'react'
 
-import {graphql, Environment} from 'relay-runtime'
+import {graphql, Environment, getDataIDsFromFragment, } from 'relay-runtime'
 import {QueryRenderer, createFragmentContainer} from 'react-relay'
 
 import {withEnvironment} from '../environment'
 
 import {authorDetail_data as DataType} from './__generated__/authorDetail_data.graphql'
+import authorDetail_node from './__generated__/authorDetail_data.graphql'
 
 
 type Props = {
@@ -45,6 +46,21 @@ const AuthorDetailFragment = createFragmentContainer(
 
 const AuthorDetailQuery = (props: {id: string, environment: Environment}) => {
     const props_ = props
+    const store = props.environment.getStore() // Store
+    console.log(store)
+    const author = store.getSource().get(props.id)  // RecordSource -> Record
+    console.log('author : ', author)
+    const fragment = store.lookup({
+//    readonly kind: string;
+//    readonly dataID: DataID;
+//    readonly node: ReaderFragment;
+//    readonly owner: RequestDescriptor;
+//    readonly variables: Variables;
+        kind: "ScalarField",
+        dataID: "",
+        node: authorDetail_node,
+    })
+    console.log('fragment : ', fragment)
     return <QueryRenderer
                environment={ props_.environment }
                query={graphql`
@@ -62,7 +78,8 @@ const AuthorDetailQuery = (props: {id: string, environment: Environment}) => {
                        }
                    // console.log(props);
                        if (props && props.author) {
-                           console.log("show fragment")
+                           console.log("show fragment", props.author)
+                           console.log("show fragment", getDataIDsFromFragment(props.author, []))
                            return <AuthorDetailFragment id={ props_.id } data={ props.author } />
                        }
                        console.log("show loading")
