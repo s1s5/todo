@@ -64,7 +64,7 @@
       },
       "types": [
         {
-          "description": "_debug {\n    sql {\n        rawSql\n        duration\n    }\n}",
+          "description": null,
           "enumValues": null,
           "fields": [
             {
