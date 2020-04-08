@@ -34,7 +34,8 @@ const author_create_mutation = graphql`
                 messages
             }
             author {
-                ...authorDetail_data
+                id
+                name
             }
         }
     }`

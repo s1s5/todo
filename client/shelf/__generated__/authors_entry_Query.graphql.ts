@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 2d7d7963a691a6c5c02f6f8d083d67b6 */
+/* @relayHash 5f0d6b92ed1fe2f30ae97266ca565235 */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
@@ -20,19 +20,6 @@ query authors_entry_Query {
   ...authors_query
 }
 
-fragment authorDetail_data on AuthorNode {
-  id
-  name
-  bookSet {
-    edges {
-      node {
-        id
-        title
-      }
-    }
-  }
-}
-
 fragment authors_query on Query {
   authors {
     edges {
@@ -47,7 +34,6 @@ fragment authors_query on Query {
             }
           }
         }
-        ...authorDetail_data
       }
     }
   }
@@ -171,7 +157,7 @@ const node: ConcreteRequest = (function () {
             "operationKind": "query",
             "name": "authors_entry_Query",
             "id": null,
-            "text": "query authors_entry_Query {\n  ...authors_query\n}\n\nfragment authorDetail_data on AuthorNode {\n  id\n  name\n  bookSet {\n    edges {\n      node {\n        id\n        title\n      }\n    }\n  }\n}\n\nfragment authors_query on Query {\n  authors {\n    edges {\n      node {\n        id\n        name\n        bookSet {\n          edges {\n            node {\n              id\n              title\n            }\n          }\n        }\n        ...authorDetail_data\n      }\n    }\n  }\n}\n",
+            "text": "query authors_entry_Query {\n  ...authors_query\n}\n\nfragment authors_query on Query {\n  authors {\n    edges {\n      node {\n        id\n        name\n        bookSet {\n          edges {\n            node {\n              id\n              title\n            }\n          }\n        }\n      }\n    }\n  }\n}\n",
             "metadata": {}
         }
     } as any;

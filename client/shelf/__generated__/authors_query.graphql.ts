@@ -17,7 +17,6 @@ export type authors_query = {
                         } | null;
                     } | null>;
                 };
-                readonly " $fragmentRefs": FragmentRefs<"authorDetail_data">;
             } | null;
         } | null>;
     } | null;
@@ -121,11 +120,6 @@ const node: ReaderFragment = (function () {
                                                 ]
                                             }
                                         ]
-                                    },
-                                    {
-                                        "kind": "FragmentSpread",
-                                        "name": "authorDetail_data",
-                                        "args": null
                                     }
                                 ]
                             }
@@ -136,5 +130,5 @@ const node: ReaderFragment = (function () {
         ]
     } as any;
 })();
-(node as any).hash = '5ea1edae246cc573328a39dce549113b';
+(node as any).hash = '43722b2eedd463a0b89cbe84e7b22b44';
 export default node;

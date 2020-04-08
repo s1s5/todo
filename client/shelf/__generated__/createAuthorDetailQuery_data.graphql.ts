@@ -3,7 +3,7 @@
 
 import { ReaderFragment } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
-export type authorDetailFragment_data = {
+export type createAuthorDetailQuery_data = {
     readonly id: string;
     readonly name: string;
     readonly bookSet: {
@@ -14,12 +14,12 @@ export type authorDetailFragment_data = {
             } | null;
         } | null>;
     };
-    readonly " $refType": "authorDetailFragment_data";
+    readonly " $refType": "createAuthorDetailQuery_data";
 };
-export type authorDetailFragment_data$data = authorDetailFragment_data;
-export type authorDetailFragment_data$key = {
-    readonly " $data"?: authorDetailFragment_data$data;
-    readonly " $fragmentRefs": FragmentRefs<"authorDetailFragment_data">;
+export type createAuthorDetailQuery_data$data = createAuthorDetailQuery_data;
+export type createAuthorDetailQuery_data$key = {
+    readonly " $data"?: createAuthorDetailQuery_data$data;
+    readonly " $fragmentRefs": FragmentRefs<"createAuthorDetailQuery_data">;
 };
 
 
@@ -34,7 +34,7 @@ const node: ReaderFragment = (function () {
     } as any);
     return {
         "kind": "Fragment",
-        "name": "authorDetailFragment_data",
+        "name": "createAuthorDetailQuery_data",
         "type": "AuthorNode",
         "metadata": null,
         "argumentDefinitions": [],
@@ -91,5 +91,5 @@ const node: ReaderFragment = (function () {
         ]
     } as any;
 })();
-(node as any).hash = 'de2788a6a54a9306a09b35d41a8445b8';
+(node as any).hash = '3eab4590cf8db3e26f391d79ee1e330e';
 export default node;

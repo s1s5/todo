@@ -15,8 +15,8 @@ import {
     Form, FormGroup, withFormContext, FormProps, CommitTrigger,
 } from '../form'
 
-import {authorDetailFragment_data as DataType} from './__generated__/authorDetailFragment_data.graphql'
-import createAuthorDetailQuery from './author-detail-fragment'
+import {createAuthorDetailQuery_data as DataType} from './__generated__/createAuthorDetailQuery_data.graphql'
+import createAuthorDetailQuery from './create-author-detail-query'
 
 const MyTextInput_ = React.memo((props: FormProps<string>) => (
     <FormControl error={ props.errors !== undefined }>

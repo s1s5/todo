@@ -14,26 +14,12 @@ import {
 import { useParams } from "react-router-dom";
 
 
-//const fragment:GraphQLTaggedNode = graphql`
-//            fragment authorDetailFragment_data on AuthorNode {
-//                id
-//                name
-//                bookSet {
-//                    edges {
-//                        node {
-//                            id
-//                            title
-//                        }
-//                    }
-//                }
-//            }
-//        `
-
 const AuthorDetailQuery = <P extends object>(Component: React.ComponentType<P>): React.FC<Omit<P, "data"> & {id?: string}> => {
 
     const FragmentContainer:any = createFragmentContainer(Component, {
+        // フラグメントの定義だけ外に出すとかできない。。。
         data: graphql`
-            fragment authorDetailFragment_data on AuthorNode {
+            fragment createAuthorDetailQuery_data on AuthorNode {
                 id
                 name
                 bookSet {
@@ -60,9 +46,9 @@ const AuthorDetailQuery = <P extends object>(Component: React.ComponentType<P>):
                   <QueryRenderer
                       environment={ context!.environment }
                       query={graphql`
-                          query authorDetailFragment_entry_Query($author_id: ID!) {
+                          query createAuthorDetailQuery_entry_Query($author_id: ID!) {
                               author(id: $author_id) {
-                                  ...authorDetailFragment_data
+                                  ...createAuthorDetailQuery_data
                               }
                           }
                           `}

@@ -60,7 +60,6 @@ const AuthorsFragment = createFragmentContainer(
                                     }
                                 }
                             }
-                            ...authorDetail_data
                         }
                     }
                 }

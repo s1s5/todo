@@ -1,35 +1,35 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash b4fe9d0cd45a40ece0dfa3f18d7576b7 */
+/* @relayHash 5ab74f2e74f4da8e1c5838f26f100e56 */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
-export type authorDetailFragment_entry_QueryVariables = {
+export type createAuthorDetailQuery_entry_QueryVariables = {
     author_id: string;
 };
-export type authorDetailFragment_entry_QueryResponse = {
+export type createAuthorDetailQuery_entry_QueryResponse = {
     readonly author: {
-        readonly " $fragmentRefs": FragmentRefs<"authorDetailFragment_data">;
+        readonly " $fragmentRefs": FragmentRefs<"createAuthorDetailQuery_data">;
     } | null;
 };
-export type authorDetailFragment_entry_Query = {
-    readonly response: authorDetailFragment_entry_QueryResponse;
-    readonly variables: authorDetailFragment_entry_QueryVariables;
+export type createAuthorDetailQuery_entry_Query = {
+    readonly response: createAuthorDetailQuery_entry_QueryResponse;
+    readonly variables: createAuthorDetailQuery_entry_QueryVariables;
 };
 
 
 
 /*
-query authorDetailFragment_entry_Query(
+query createAuthorDetailQuery_entry_Query(
   $author_id: ID!
 ) {
   author(id: $author_id) {
-    ...authorDetailFragment_data
+    ...createAuthorDetailQuery_data
     id
   }
 }
 
-fragment authorDetailFragment_data on AuthorNode {
+fragment createAuthorDetailQuery_data on AuthorNode {
   id
   name
   bookSet {
@@ -68,7 +68,7 @@ const node: ConcreteRequest = (function () {
         "kind": "Request",
         "fragment": {
             "kind": "Fragment",
-            "name": "authorDetailFragment_entry_Query",
+            "name": "createAuthorDetailQuery_entry_Query",
             "type": "Query",
             "metadata": null,
             "argumentDefinitions": (v0 /*: any*/),
@@ -84,7 +84,7 @@ const node: ConcreteRequest = (function () {
                     "selections": [
                         {
                             "kind": "FragmentSpread",
-                            "name": "authorDetailFragment_data",
+                            "name": "createAuthorDetailQuery_data",
                             "args": null
                         }
                     ]
@@ -93,7 +93,7 @@ const node: ConcreteRequest = (function () {
         },
         "operation": {
             "kind": "Operation",
-            "name": "authorDetailFragment_entry_Query",
+            "name": "createAuthorDetailQuery_entry_Query",
             "argumentDefinitions": (v0 /*: any*/),
             "selections": [
                 {
@@ -160,12 +160,12 @@ const node: ConcreteRequest = (function () {
         },
         "params": {
             "operationKind": "query",
-            "name": "authorDetailFragment_entry_Query",
+            "name": "createAuthorDetailQuery_entry_Query",
             "id": null,
-            "text": "query authorDetailFragment_entry_Query(\n  $author_id: ID!\n) {\n  author(id: $author_id) {\n    ...authorDetailFragment_data\n    id\n  }\n}\n\nfragment authorDetailFragment_data on AuthorNode {\n  id\n  name\n  bookSet {\n    edges {\n      node {\n        id\n        title\n      }\n    }\n  }\n}\n",
+            "text": "query createAuthorDetailQuery_entry_Query(\n  $author_id: ID!\n) {\n  author(id: $author_id) {\n    ...createAuthorDetailQuery_data\n    id\n  }\n}\n\nfragment createAuthorDetailQuery_data on AuthorNode {\n  id\n  name\n  bookSet {\n    edges {\n      node {\n        id\n        title\n      }\n    }\n  }\n}\n",
             "metadata": {}
         }
     } as any;
 })();
-(node as any).hash = '915090dd312e85e4c73ac7da59b1fb70';
+(node as any).hash = 'e191fc3acc603c7b16de1e4f91c64179';
 export default node;
