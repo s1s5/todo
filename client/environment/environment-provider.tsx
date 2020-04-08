@@ -35,7 +35,7 @@ const EnvironmentProvider = (props: Props) => {
     const [client, setClient] = React.useState<SubscriptionClient>()
     const [environment, setEnvironment] = React.useState<Environment>()
 
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         const fetch_query = (
             request: RequestParameters,
             variables: Variables,

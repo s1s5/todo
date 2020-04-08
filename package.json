@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build:prod": "webpack --config webpack.prod.js",
-    "build:profile": "webpack --config webpack.profile.js",
+    "build:profile": "webpack --config webpack.profile.js --stats",
     "build:dev": "webpack --config webpack.dev.js",
     "relay": "relay-compiler --src ./client --schema ./data/schema.json --language typescript --extensions tsx",
     "start": "webpack-dev-server --host 0.0.0.0 --port 42101 --disable-host-check --hot --history-api-fallback=true --config webpack.dev.js",

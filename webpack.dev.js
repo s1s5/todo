@@ -24,4 +24,5 @@ module.exports = merge(common, {
             template: path.join(__dirname, 'client/dev-index.html'),
         }),
     ],
+    devtool: 'source-map',
 })

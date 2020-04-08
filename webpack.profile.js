@@ -14,5 +14,6 @@ module.exports = merge(prod, {
             chunkModules: true,
             exclude: [/node_modules[\\\/]react/]
         })
-    ]
+    ],
+    devtool: 'source-map',
 })
