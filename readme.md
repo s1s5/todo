@@ -47,6 +47,7 @@ npm install --save-dev @types/jest jest # ts-jestは入れない、jestでbabel-
 
 # reactをテストするためのツール類をインストール
 npm install --save-dev react-test-renderer @types/react-test-renderer
+npm install @babel/polyfill --save-dev
 
 # graphqlを使うためのライブラリ群をインストール
 npm install --save-dev @types/react-relay @types/ws @types/relay-compiler @types/relay-config @types/relay-runtime babel-plugin-relay relay-compiler relay-compiler-language-typescript relay-modern-typescript-transformer @types/create-subscription @types/graphql

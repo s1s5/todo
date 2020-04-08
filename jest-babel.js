@@ -1,10 +1,13 @@
-
-module.exports = {
+const babelJest = require("babel-jest");
+const babelOptions = {
     presets: [
         [
             '@babel/preset-env',
             {
-                targets: "> 0.25%, not dead",
+                targets: {
+                    node: "current",
+//                    browsers: 'last 2 versions',  // <- テストのときはだめ
+                },
             }, // or whatever your project requires
         ],
         '@babel/preset-typescript',
@@ -17,5 +20,7 @@ module.exports = {
         ['@babel/plugin-proposal-class-properties', { loose: true }],
         'react-hot-loader/babel',
     ],
+    babelrc: false,
 };
 
+module.exports = babelJest.createTransformer(babelOptions);

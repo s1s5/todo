@@ -27,6 +27,7 @@
     "@babel/core": "^7.8.7",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-proposal-decorators": "^7.8.3",
+    "@babel/polyfill": "^7.8.7",
     "@babel/preset-env": "^7.8.7",
     "@babel/preset-react": "^7.8.3",
     "@babel/preset-typescript": "^7.8.3",
@@ -53,6 +54,7 @@
     "html-webpack-plugin": "^3.2.0",
     "jest": "^25.1.0",
     "react-test-renderer": "^16.13.0",
+    "regenerator-runtime": "^0.13.5",
     "relay-compiler": "^9.0.0",
     "relay-compiler-language-typescript": "^12.0.0",
     "relay-modern-typescript-transformer": "0.0.3",
@@ -81,7 +83,6 @@
     "react-hot-loader": "^4.12.19",
     "react-relay": "^9.0.0",
     "react-router-dom": "^5.1.2",
-    "regenerator-runtime": "^0.13.3",
     "subscriptions-transport-ws": "^0.9.16"
   }
 }
