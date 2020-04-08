@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import {BrowserRouter, Route, Link} from "react-router-dom";
+import {Switch, Route, Link, Redirect} from "react-router-dom";
 
 import HelloUrls from './hello/urls'
 import ShelfUrls from './shelf/urls'
@@ -29,12 +29,15 @@ const EntryPoint = () => (
 )
 
 const Urls = () => (
-    <>
+    <Switch>
       <Route path='/remainder' component={ () => <RemainderUrls/> }/>
       <Route path='/shelf' component={ () => <ShelfUrls/> }/>
       <Route path='/hello' component={ () => <HelloUrls/> }/>
-      <Route path='/' exact component={ EntryPoint }/>
-    </>
+      <Route exact path='/' component={ EntryPoint }/>
+      <Route>
+        <h1>404 not found</h1>
+      </Route>
+    </Switch>
 )
 
 export default Urls
