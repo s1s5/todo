@@ -13,7 +13,7 @@ import {
 
 import {
     Form, FormGroup, withFormContext, FormProps, CommitTrigger,
-} from '../form'
+} from '../gql-utils'
 
 
 const MyTextInput_ = React.memo((props: FormProps<string>) => (

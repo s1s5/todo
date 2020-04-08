@@ -1,8 +1,7 @@
 import * as React from 'react'
 
 import {graphql, createFragmentContainer} from 'react-relay'
-import {createQueryRenderer} from '../environment'
-
+import {DefaultQueryRenderer} from '../gql-utils'
 import {info_query} from './__generated__/info_query.graphql'
 
 type Props = {
@@ -33,11 +32,25 @@ const InfoFragment = createFragmentContainer(
     }
 )
 
-export default createQueryRenderer(InfoFragment, Info, {
-    query: graphql`
+const InfoQuery = () => (
+    <DefaultQueryRenderer
+    query={graphql`
         query info_entry_Query {
             ...info_query
         }
-    `,
-    variables: {},
-})
+    `}
+    variables={ {} }
+    render={ ({error, props, retry}: any) => {
+        if (error) {
+            console.log("error: ", error)
+            return <span>{error.map((e:any) => e.message)}</span>;
+        }
+        if (props) {
+            return <InfoFragment query={ props } />
+        }
+        return <span>loading information</span>
+    } }      
+    />
+)
+
+export default InfoQuery

@@ -33,6 +33,16 @@ class AuthorNode(DjangoObjectType):
         fields = ('name', 'book_set')
         filterset_class = AuthorFilterSet
 
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        print('FOO queryset', cls, queryset, info)
+        return queryset
+
+    @classmethod
+    def resolve(cls, resolved, parent, info):
+        print('HOGE resolve', cls, resolved, parent, info)
+        return resolved
+
 
 class AuthorCreate(DjangoCreateModelMutation):
     class Meta:
@@ -67,11 +77,6 @@ class BookNode(DjangoObjectType):
     class Meta:
         model = models.Book
         fields = ('title', 'abstract', 'author')
-
-    @classmethod
-    def resolve(cls, resolved, parent, info, *args, **kwargs):
-        print(cls, resolved, parent, info, *args, **kwargs)
-        return resolved
 
 
 class BookCreate(DjangoCreateModelMutation):

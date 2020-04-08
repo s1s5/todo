@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Environment } from 'relay-runtime'
 import {graphql, commitMutation} from 'react-relay'
-import {withEnvironment} from '../environment'
+import {withEnvironment} from '../gql-utils'
 
 type Props = {
     parent_id: string,

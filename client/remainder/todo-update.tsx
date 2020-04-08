@@ -12,7 +12,7 @@ import {
 
 import {
     Form, FormGroup, withFormContext, FormProps, CommitTrigger,
-} from '../form'
+} from '../gql-utils'
 
 const MyCheckBox_ = React.memo((props: FormProps<boolean>) => {
     console.log('my checkbox rendered, ->', props.value, props.errors)

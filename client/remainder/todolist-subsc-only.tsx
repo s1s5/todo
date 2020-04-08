@@ -3,16 +3,19 @@ import {Environment} from 'relay-runtime'
 
 /* import TodoSubsc from './todo-subsc'*/
 import TodoSubsc from './todo-subsc-2'
-import {todoSubsc_data as TodoSubscData} from './__generated__/todoSubsc_data.graphql'
+// import {todoSubsc_data as TodoSubscData} from './__generated__/todoSubsc_data.graphql'
 
-import {withEnvironment} from '../environment'
+import {withEnvironment} from '../gql-utils'
+import {useIdFromParam} from './utils'
+
 
 type Props = {
-    id: string,
+    id?: string,
     environment: Environment,
 }
 
 const TodoListSubscOnly = (props: Props) => {
+    const id = useIdFromParam(props.id)
     const [show_subsc, set_show_subsc] = React.useState(false)
     const observer1 = {
         next: (data: any) => {
@@ -26,7 +29,7 @@ const TodoListSubscOnly = (props: Props) => {
           <p>subsc...</p>
           { show_subsc && 
             // <TodoSubsc variables={ {id: props.id} } observer={ observer1 } />
-            <TodoSubsc id={ props.id } observer={ observer1 } />
+            <TodoSubsc id={ id } observer={ observer1 } />
           }
           <button onClick={ () => set_show_subsc(!show_subsc) }>{ show_subsc ? "hide" : "show" }</button>
         </div>

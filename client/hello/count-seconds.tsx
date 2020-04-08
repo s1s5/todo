@@ -1,8 +1,7 @@
 import * as React from 'react'
 
 import { graphql } from 'relay-runtime'
-import { withEnvironment } from '../environment'
-import SubscriptionRenderer from '../environment/subscription-renderer'
+import { withEnvironment, SubscriptionRenderer } from '../gql-utils'
 
 
 const CountSeconds = () => {

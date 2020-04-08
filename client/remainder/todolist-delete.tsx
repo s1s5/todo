@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { Environment } from 'relay-runtime'
-import {withEnvironment} from '../environment'
+import {withEnvironment} from '../gql-utils'
 
 import {graphql, commitMutation} from 'react-relay'
 

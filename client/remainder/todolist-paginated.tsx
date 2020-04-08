@@ -1,21 +1,24 @@
 import * as React from 'react'
 import {graphql, commitMutation, QueryRenderer, ReactRelayContext, createPaginationContainer, RelayPaginationProp} from 'react-relay'
 
-import {withEnvironment} from '../environment'
+import {withEnvironment} from '../gql-utils'
 
 import Todo from './todo'
 import AddTodoButton from './todolist-add-todo-button'
 import {todolistPaginated_data} from './__generated__/todolistPaginated_data.graphql'
+import {useIdFromParam} from './utils'
 
 
 type Props = {
     data: todolistPaginated_data,
-    id: string,
+    id?: string,
 } & {  // 継承もどき
     relay: RelayPaginationProp,
 }
 
 const TodoList = (props: Props) => {
+    const id = useIdFromParam(props.id)
+
     console.log(props.data.todoSet)
     if (props.data.todoSet === null) {
         return <div>some error occurred</div>
@@ -24,7 +27,7 @@ const TodoList = (props: Props) => {
     return (<div>
       <h3>todo list : id={ props.data.id }, { props.data.title }</h3>
       { props.data.todoSet.edges.map((edge) => (
-          <div key={ edge!.node!.id }><Todo parent_id={ props.id } data={ edge!.node! }/></div>
+          <div key={ edge!.node!.id }><Todo parent_id={ id } data={ edge!.node! }/></div>
       ))}
       <AddTodoButton todolist__id={ props.data.id } />
       <button onClick={ () => {
@@ -111,7 +114,8 @@ import {Environment} from 'relay-runtime'
 import {todolistPaginated_first_Query,
         todolistPaginated_first_QueryResponse} from './__generated__/todolistPaginated_first_Query.graphql'
 
-const TodoListQuery = (props: {id: string, environment: Environment}) => {
+const TodoListQuery = (props: {id?: string, environment: Environment}) => {
+    const id = useIdFromParam(props.id)
     const props_ = props
     // let Q: new() => React.Component<QueryRenderer<todolistPaginated_first_Query>["props"]> = QueryRenderer;
     return <QueryRenderer<todolistPaginated_first_Query>
@@ -123,7 +127,7 @@ const TodoListQuery = (props: {id: string, environment: Environment}) => {
                        }
                    }
                    `}
-               variables={ {todolist_id: props_.id} }  // TODO: make type safe
+               variables={ {todolist_id: id} }  // TODO: make type safe
                render={ ({error, props, retry}) => {
                        //: {error: Error | null, props:todolistPaginated_first_QueryResponse, retry: ((() => void) | null)} 
                        if (error) {
@@ -132,7 +136,7 @@ const TodoListQuery = (props: {id: string, environment: Environment}) => {
                        }
                        console.log(props);
                        if (props) {
-                           return <TodoListPaginated id={ props_.id } data={ props.todolist! } />
+                           return <TodoListPaginated id={ id } data={ props.todolist! } />
                        }
                        return <span>loading</span>
                } }

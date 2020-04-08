@@ -1,7 +1,7 @@
  import * as React from 'react'
 
 import {graphql, createFragmentContainer} from 'react-relay'
-import {createQueryRenderer} from '../environment'
+import {DefaultQueryRenderer} from '../gql-utils'
 
 import {Link, useRouteMatch} from "react-router-dom";
 
@@ -68,11 +68,25 @@ const AuthorsFragment = createFragmentContainer(
     }
 )
 
-export default createQueryRenderer(AuthorsFragment, Authors, {
-    query: graphql`
+const AuthorsQuery = () => (
+        <DefaultQueryRenderer
+    query={graphql`
         query authors_entry_Query {
             ...authors_query
         }
-    `,
-    variables: {},
-})
+    `}
+    variables={ {} }
+    render={ ({error, props, retry}: any) => {
+        if (error) {
+            console.log("error: ", error)
+            return <span>{error.map((e:any) => e.message)}</span>;
+        }
+        if (props && props.author) {
+            return <AuthorsFragment query={ props.info_query } />
+        }
+        return <span>loading author information</span>
+    } }      
+    />
+)
+
+export default AuthorsQuery

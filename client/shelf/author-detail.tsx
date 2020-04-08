@@ -1,11 +1,6 @@
 import * as React from 'react'
 
-import {graphql, Environment, getDataIDsFromFragment, } from 'relay-runtime'
-import {QueryRenderer, createFragmentContainer} from 'react-relay'
-import { Link, useRouteMatch, useParams } from "react-router-dom";
-
-import {withEnvironment} from '../environment'
-
+import { Link } from "react-router-dom";
 
 import {createAuthorDetailQuery_data as DataType} from './__generated__/createAuthorDetailQuery_data.graphql'
 import createAuthorDetailQuery from './create-author-detail-query'
@@ -16,7 +11,6 @@ type Props = {
 }
 
 const AuthorDetail = (props: Props) => {
-    const match = useRouteMatch()
     return (
         <>
           <h1>author detail (<Link to={ `/shelf/author/${ props.data.id }/update/` }>edit</Link>)</h1>

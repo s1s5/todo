@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core'
 
 
-import { withEnvironment } from '../environment'
+import { withEnvironment } from '../gql-utils'
 
 
 type Props = {
@@ -43,7 +43,7 @@ const single_file_upload_mutation = graphql`
 
 import {
     Form, FormGroup, withFormContext, FormProps, CommitTrigger,
-} from '../form'
+} from '../gql-utils'
 
 
 

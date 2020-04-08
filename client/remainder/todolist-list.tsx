@@ -12,7 +12,7 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
-import {createQueryRenderer} from '../environment'
+import {DefaultQueryRenderer} from '../gql-utils'
 import {todolistList_query} from './__generated__/todolistList_query.graphql'
 
 import TodoListAdd from './todolist-add'
@@ -105,11 +105,25 @@ const TodoListFragment = createFragmentContainer(TodoList, {
         }`
 })
 
-export default createQueryRenderer(TodoListFragment, TodoList, {
-    query: graphql`
-        query todolistList_TodoLists_Query {
-            ...todolistList_query
-        }        
-    `,
-    variables: {},
-})
+const TodoListQuery = () => (
+    <DefaultQueryRenderer
+        query={graphql`
+            query todolistList_TodoLists_Query {
+                ...todolistList_query
+            }        
+            `}
+        variables={ {} }
+        render={ ({error, props, retry}: any) => {
+                if (error) {
+                    console.log("error: ", error)
+                    return <span>{error.map((e:any) => e.message)}</span>;
+                }
+                if (props) {
+                    return <TodoListFragment query={ props } />
+                }
+                return <span>loading todolist-list information</span>
+        } }
+    />
+)
+
+export default TodoListQuery

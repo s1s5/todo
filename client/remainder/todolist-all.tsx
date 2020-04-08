@@ -1,13 +1,14 @@
 import * as React from 'react'
 import {graphql, createFragmentContainer} from 'react-relay'
 
-import {createQueryRenderer} from '../environment'
+import {DefaultQueryRenderer} from '../gql-utils'
+import {useIdFromParam} from './utils'
 
 import Todo from './todo'
 import AddTodoButton from './todolist-add-todo-button'
 import {todolistAll_query} from './__generated__/todolistAll_query.graphql'
 // import {todolistAll_TodoList_Query} from './__generated__/todolistAll_TodoList_Query.graphql'
-import TodoListSubsc from './todolist-subsc'
+// import TodoListSubsc from './todolist-subsc'
 
 type Props = {
     query: todolistAll_query,  // queryっていうプロパティ名じゃないとcreateQueryRendererは使えない
@@ -25,7 +26,7 @@ const TodoList = (props: Props) => {
     }
 
     return (<div>
-      <TodoListSubsc variables={ {id: props.id} } observer={ observer2 } />
+      {/* <TodoListSubsc variables={ {id: props.id} } observer={ observer2 } /> */}
       <h3>todo list : id={ todolist.id }, { todolist.title }</h3>
       { todolist.todoSet!.edges.map((edge) => {
 //            console.log('edge -> ', edge)
@@ -71,12 +72,28 @@ const TodoListFragment = createFragmentContainer(
 
 import {todolistAll_TodoList_Query} from './__generated__/todolistAll_TodoList_Query.graphql'
 
-export default createQueryRenderer<todolistAll_TodoList_Query, Props>(TodoListFragment, TodoList, {
-    query: graphql`
-        query todolistAll_TodoList_Query($id: ID!) {
-            ...todolistAll_query @arguments(id: $id)
+const TodoListAllQuery = () => {
+    const id = useIdFromParam()
+
+    return <DefaultQueryRenderer<todolistAll_TodoList_Query>
+      query={graphql`
+          query todolistAll_TodoList_Query($id: ID!) {
+              ...todolistAll_query @arguments(id: $id)
+          }
+      `}
+    variables={ {id} }
+    render={ ({error, props, retry}: any) => {
+        if (error) {
+            console.log("error: ", error)
+            return <span>{error.map((e:any) => e.message)}</span>;
         }
-    `,
-    get_variables: (props) => ({id: props.id}),  // TODO: どうやってタイプセーフにする？
-    variables: {id: ''},
-})
+        if (props) {
+            return <TodoListFragment id={ id } query={ props } />
+        }
+        return <span>loading information</span>
+    } } 
+      />
+}
+
+
+export default TodoListAllQuery

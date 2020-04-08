@@ -1,8 +1,7 @@
 import * as React from 'react'
 
 import { graphql, } from 'relay-runtime'
-import { withEnvironment } from '../environment'
-import useSubscription from '../environment/use-subscription'
+import { withEnvironment, useSubscription } from '../gql-utils'
 
 import {someHeavyOperation_Subscription as SubscriptionType} from './__generated__/someHeavyOperation_Subscription.graphql'
 

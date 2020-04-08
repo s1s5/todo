@@ -1,7 +1,7 @@
 import { hot } from 'react-hot-loader/root'
 import * as React from 'react'
 
-import {ReactRelayContext} from 'react-relay'
+// import {ReactRelayContext} from 'react-relay'
 
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -10,13 +10,13 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles, ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 
 
-import {EnvironmentProvider} from './environment/index'
+import {EnvironmentProvider} from './gql-utils'
 // const environment = createEnvironment('http://127.0.0.1:42100/graphql/', 'ws://localhost:42100/graphql/')
 
 import Urls from './urls'
 
-import TodoList from './remainder/todolist'
-import TodoListList from './remainder/todolist-list'
+// import TodoList from './remainder/todolist'
+// import TodoListList from './remainder/todolist-list'
 
 import {BrowserRouter, Route, useHistory} from "react-router-dom";
 

@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { graphql, Observer } from 'relay-runtime'
-import SubscriptionRenderer from '../environment/subscription-renderer'
+import { SubscriptionRenderer } from '../gql-utils'
 
 type Props = {
     id: string,

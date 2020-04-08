@@ -13,7 +13,7 @@ import {
 
 import {
     Form, FormGroup, withFormContext, FormProps, CommitTrigger,
-} from '../form'
+} from '../gql-utils'
 
 import {createAuthorDetailQuery_data as DataType} from './__generated__/createAuthorDetailQuery_data.graphql'
 import createAuthorDetailQuery from './create-author-detail-query'
@@ -60,12 +60,9 @@ const AuthorUpdate = (props: Props) => {
           <FormGroup name="authorUpdate">
             <MyTextInput name="name" />
           </FormGroup>
-          <CommitTrigger
-              onSuccess={ history.goBack }
-              onFailure={ () => console.log('failed...') }
-          >
+          <CommitTrigger>
             { (commit) => (
-                <Button onClick={ () => commit() } >commit</Button>
+                <Button onClick={ () => commit(history.goBack) } >commit</Button>
             )}
           </CommitTrigger>
         </Form>

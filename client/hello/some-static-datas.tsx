@@ -3,7 +3,7 @@ import * as React from 'react'
 import {graphql, createFragmentContainer, Environment} from 'react-relay'
 import { QueryRenderer } from 'react-relay'
 
-import {withEnvironment} from '../environment'
+import { withEnvironment } from '../gql-utils'
 
 import {someStaticDatas_data as DataType} from './__generated__/someStaticDatas_data.graphql'
 import {someStaticDatas_Query as QueryType} from './__generated__/someStaticDatas_Query.graphql'

@@ -12,14 +12,17 @@ import {
 import List from '@material-ui/core/List'
 
 
-import {withEnvironment} from '../environment'
+import {withEnvironment} from '../gql-utils'
 import Todo from './todo'
 import AddTodoButton from './todolist-add-todo-button'
-import TodoSubsc from './todo-subsc'
-import TodoListSubsc from './todolist-subsc'
+import TodoSubsc from './todo-subsc-2'
+// import TodoListSubsc from './todolist-subsc'
+
+import {useIdFromParam} from './utils'
+
 
 import {todolistRefetch_data} from './__generated__/todolistRefetch_data.graphql'
-import {todoSubsc_data as TodoSubscData} from './__generated__/todoSubsc_data.graphql'
+// import {todoSubsc_data as TodoSubscData} from './__generated__/todoSubsc2_data.graphql'
 
 import TodoUpdateForm from './todo-update'
 import SingleFileUpload from './single-file-upload'
@@ -55,7 +58,7 @@ class TodoList_ extends React.Component<Props, State> {
         console.log(this.props.data)
 
         const observer1 = {
-            next: (data:TodoSubscData) => {
+            next: (data:any) => {
                 console.log('next1', data)
 //                console.log(data.operation)
 //                console.log(data.todolist)
@@ -74,7 +77,7 @@ class TodoList_ extends React.Component<Props, State> {
          * console.log(this.props.data.todoSet.edges) */
         return (<div>
           <TodoUpdateForm id={ this.props.data.todoSet!.edges[0]!.node!.id } />
-          <TodoSubsc variables={ {id: this.props.id} } observer={ observer1 } />
+          <TodoSubsc id= {this.props.id } observer={ observer1 } />
           {/* <TodoListSubsc variables={ {id: this.props.id} } observer={ observer2 } /> */}
           <h3>{ this.props.data.title }</h3>
           <Container maxWidth="sm" >
@@ -201,7 +204,8 @@ const TodoListRefetch = createRefetchContainer(
 
 import {todolistRefetch_first_Query} from './__generated__/todolistRefetch_first_Query.graphql'
 
-const TodoListQuery = (props: {id: string, environment: Environment}) => {
+const TodoListQuery = (props: {id?: string, environment: Environment}) => {
+    const id = useIdFromParam(props.id)
     const props_ = props
     return <QueryRenderer<todolistRefetch_first_Query>
                environment={ props_.environment }
@@ -212,7 +216,7 @@ const TodoListQuery = (props: {id: string, environment: Environment}) => {
                        }
                    }
                `}
-               variables={ {todolist_id: props_.id} }  // TODO: make type safe
+               variables={ {todolist_id: id} }  // TODO: make type safe
                render={ ({error, props, retry}: any) => {
                        if (error) {
                            console.log(error)
@@ -220,7 +224,7 @@ const TodoListQuery = (props: {id: string, environment: Environment}) => {
                        }
                    // console.log(props);
                        if (props && props.todolist) {
-                           return <TodoListRefetch id={ props_.id } data={ props.todolist } />
+                           return <TodoListRefetch id={ id } data={ props.todolist } />
                        }
                        return <span>loading</span>
                } }

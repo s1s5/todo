@@ -243,7 +243,7 @@
                 }
               ],
               "deprecationReason": null,
-              "description": "The ID of the object",
+              "description": null,
               "isDeprecated": false,
               "name": "author",
               "type": {
@@ -270,7 +270,7 @@
                 }
               ],
               "deprecationReason": null,
-              "description": "The ID of the object",
+              "description": null,
               "isDeprecated": false,
               "name": "book",
               "type": {
