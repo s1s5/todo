@@ -74,7 +74,6 @@ import {todolistAll_TodoList_Query} from './__generated__/todolistAll_TodoList_Q
 
 const TodoListAllQuery = () => {
     const id = useIdFromParam()
-
     return <DefaultQueryRenderer<todolistAll_TodoList_Query>
       query={graphql`
           query todolistAll_TodoList_Query($id: ID!) {

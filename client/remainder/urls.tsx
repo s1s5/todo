@@ -22,25 +22,25 @@ const Urls = () => {
     const match = useRouteMatch()
     return (
         <Switch>
-          <Route path={`${match.path}/:id/paginated/`}>
+          <Route exact path={`${match.path}/:id/all/`}>
+            <TodoListAll/>
+          </Route>
+          <Route exact path={`${match.path}/:id/paginated/`}>
             <TodoListPaginated/>
           </Route>
-          <Route path={`${match.path}/:id/refetch/`}>
+          <Route exact path={`${match.path}/:id/refetch/`}>
             <TodoListRefetch/>
           </Route>
-          <Route path={`${match.path}/:id/fetchquery/`}>
+          <Route exact path={`${match.path}/:id/fetchquery/`}>
             <TodoListFetchQuery/>
-          </Route>
-          <Route path={`${match.path}/:id/all/`}>
-            <TodoListAll/>
           </Route>
           {/* <Route path={`${match.path}/:id/all2/`}>
               <TodoListAll2/>
               </Route> */}
-          <Route path={`${match.path}/:id/subsc/`}>
+          <Route exact path={`${match.path}/:id/subsc/`}>
             <TodoListSubscOnly/>
           </Route>
-          <Route path={`${match.path}/hoge/`}>
+          <Route exact path={`${match.path}/hoge/`}>
             <h2>hello hoge</h2>
           </Route>
           <Route exact path={ `${match.path}/` } component={ () => <TodoListList/> }/>

@@ -57,27 +57,27 @@ const TodoList = (props: Props) => {
                 </ListItem>
                 <Collapse in={open} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <Link to={ `/${edge.node.id}/all/` }>
+                    <Link to={ `${edge.node.id}/all/` }>
                       <ListItem button className={classes.nested}>
                         <ListItemText primary="全て表示"/>
                       </ListItem>
                     </Link>
-                    <Link to={ `/${edge.node.id}/paginated/` }>
+                    <Link to={ `${edge.node.id}/paginated/` }>
                       <ListItem button className={classes.nested}>
                         <ListItemText primary="ページネーションサンプル"/>
                       </ListItem>
                     </Link>
-                    <Link to={ `/${edge.node.id}/refetch/` }>
+                    <Link to={ `${edge.node.id}/refetch/` }>
                       <ListItem button className={classes.nested}>
                         <ListItemText primary="リフェッチサンプル"/>
                       </ListItem>
                     </Link>
-                    <Link to={ `/${edge.node.id}/fetchquery/` }>
+                    <Link to={ `${edge.node.id}/fetchquery/` }>
                       <ListItem button className={classes.nested}>
                         <ListItemText primary="fetchQueryサンプル"/>
                       </ListItem>
                     </Link>
-                    <Link to={ `/${edge.node.id}/subsc/` }>
+                    <Link to={ `${edge.node.id}/subsc/` }>
                       <ListItem button className={classes.nested}>
                         <ListItemText primary="subsc"/>
                       </ListItem>
