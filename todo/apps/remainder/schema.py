@@ -153,6 +153,7 @@ article_loader = DataLoader(article_batch_load_fn)
 class TodoExtraNode(DjangoObjectType):
     class Meta:
         model = models.TodoExtra
+        exclude = ()
         # fields = ['description']
         filter_fields = {
         }
