@@ -81,8 +81,8 @@ const AuthorsQuery = () => (
             console.log("error: ", error)
             return <span>{error.map((e:any) => e.message)}</span>;
         }
-        if (props && props.author) {
-            return <AuthorsFragment query={ props.info_query } />
+        if (props) {
+            return <AuthorsFragment query={ props } />
         }
         return <span>loading author information</span>
     } }      
