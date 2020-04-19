@@ -62,7 +62,7 @@ const AuthorUpdate = (props: Props) => {
           </FormGroup>
           <CommitTrigger>
             { (commit) => (
-                <Button onClick={ () => commit(history.goBack) } >commit</Button>
+                <Button onClick={ () => commit().then(history.goBack) } >commit</Button>
             )}
           </CommitTrigger>
         </Form>

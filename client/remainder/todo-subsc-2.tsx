@@ -11,22 +11,22 @@ type Props = {
 const Subsc = (props: Props) => {
     return <SubscriptionRenderer
                subscription={graphql`
-            subscription todoSubsc2_Subscription($id: ID!) {
-                # todoCreated(parentId: $id) {
-                #     id
-                #     completed
-                #     text
-                # }
-                todoUpdated(parentId: $id) {
-                    id
-                    completed
-                    text
-                }
-
-            }
-               `}
-    variables={ {id: props.id} }
-    observer={ props.observer }
+                   subscription todoSubsc2_Subscription($id: ID!) {
+                       # todoCreated(parentId: $id) {
+                           #     id
+                           #     completed
+                           #     text
+                           # }
+                       todoUpdated(parentId: $id) {
+                           id
+                           completed
+                           text
+                       }
+                       
+                   }
+                   `}
+               variables={ {id: props.id} }
+               observer={ props.observer }
     />
 }
 

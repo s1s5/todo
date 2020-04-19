@@ -42,7 +42,7 @@ const single_file_upload_mutation = graphql`
 `
 
 import {
-    Form, FormGroup, withFormContext, FormProps, CommitTrigger,
+    Form, FormGroup, withFormContext, FormProps, FormSubmit
 } from '../gql-utils'
 
 
@@ -64,14 +64,12 @@ const SingleFileUpload = (props: Props) => {
           <FormGroup name="singleFileUpload">
             <InputFile name="file" />
           </FormGroup>
-          <CommitTrigger
-              onSuccess={ () => console.log('success!!') }
-              onFailure={ () => console.log('failed...') }
-          >
-            { (commit) => (
-                <Button onClick={ () => commit() } >commit</Button>
-            )}
-          </CommitTrigger>
+          <FormSubmit>{ (submit) => (
+              <Button onClick={ () => submit().then(
+                      (data:any) => console.log("success", data)
+              ).catch( (error) => console.log("error", error) )}
+                  >commit</Button>
+          )}</FormSubmit>
         </Form>
     )
     //    const [file, set_file] = React.useState<File | Blob | null>(null)

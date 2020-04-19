@@ -1,10 +1,11 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 52b246409db5072daeff402338d84ba3 */
+/* @relayHash 7443885cc3dca71c058ce6eee1a27632 */
 
 import { ConcreteRequest } from "relay-runtime";
 export type TodoListCreateMutationInput = {
     title: string;
+    formPrefix?: string | null;
     clientMutationId?: string | null;
 };
 export type todolistAdd_MutationVariables = {

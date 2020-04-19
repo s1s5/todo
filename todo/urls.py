@@ -33,11 +33,13 @@ if settings.DEBUG:
 
     class LoggingGraphQLView(GraphQLView):
         def get_response(self, request, data, show_graphiql=False):
-            import time
-            time.sleep(1)
+            # import time
+            # time.sleep(1)
             logger.debug('query=%s, variables=%s, operation_name=%s, id=%s',
                          *self.get_graphql_params(request, data))
-            return super().get_response(request, data, show_graphiql)
+            response = super().get_response(request, data, show_graphiql)
+            logger.debug('response = %s', response)
+            return response
 
         # @staticmethod
         # def format_error(error):

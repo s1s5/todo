@@ -1,10 +1,11 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 8450ece1a419e58835cd47b0ca9d8487 */
+/* @relayHash f45cd33b12ec3a6f2fd1a4a50b3ab3ba */
 
 import { ConcreteRequest } from "relay-runtime";
 export type AuthorCreateInput = {
     name: string;
+    formPrefix?: string | null;
     clientMutationId?: string | null;
 };
 export type authorCreate_MutationVariables = {

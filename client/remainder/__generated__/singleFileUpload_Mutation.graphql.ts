@@ -1,10 +1,11 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 8c566b213cb69d22f6f44a51d8e61e30 */
+/* @relayHash 4fb2e77885997f7401a9320697fbd566 */
 
 import { ConcreteRequest } from "relay-runtime";
 export type SingleFileUploadFormMutationInput = {
     file?: unknown | null;
+    formPrefix?: string | null;
     clientMutationId?: string | null;
 };
 export type singleFileUpload_MutationVariables = {

@@ -17,7 +17,7 @@ type Props = {
 const TodoListSubscOnly = (props: Props) => {
     const id = useIdFromParam(props.id)
     const [show_subsc, set_show_subsc] = React.useState(false)
-    const observer1 = {
+    const observer = {
         next: (data: any) => {
             console.log('next1', data)
         },
@@ -29,7 +29,7 @@ const TodoListSubscOnly = (props: Props) => {
           <p>subsc...</p>
           { show_subsc && 
             // <TodoSubsc variables={ {id: props.id} } observer={ observer1 } />
-            <TodoSubsc id={ id } observer={ observer1 } />
+            <TodoSubsc id={ id } observer={ observer } />
           }
           <button onClick={ () => set_show_subsc(!show_subsc) }>{ show_subsc ? "hide" : "show" }</button>
         </div>

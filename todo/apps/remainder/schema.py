@@ -240,17 +240,17 @@ class TodoUpdateForm(forms.ModelForm):
         # completed = forms.BooleanField(required=False)
         # text = forms.CharField(help_text='ここにtodoの詳細')
 
-    # def clean_completed(self):
-    #     completed = self.cleaned_data.get('completed')
-    #     if completed:
-    #         raise forms.ValidationError('そんな簡単に達成できません！')
-    #     return completed
+    def clean_completed(self):
+        completed = self.cleaned_data.get('completed')
+        if completed:
+            raise forms.ValidationError('そんな簡単に達成できません！')
+        return completed
 
-    # def clean_text(self):
-    #     text = self.cleaned_data.get('text')
-    #     if text:
-    #         raise forms.ValidationError('修正したくありません！')
-    #     return text
+    def clean_text(self):
+        text = self.cleaned_data.get('text')
+        if text:
+            raise forms.ValidationError('修正したくありません！')
+        return text
 
     def save(self):
         print('TodoUpdateForm >> files => ', self.files)
@@ -297,9 +297,16 @@ todo {
 class SingleFileUploadForm(forms.Form):
     file = forms.FileField(required=False)
 
+    def clean_file(self):
+        print(self.cleaned_data)
+        print(self.files)
+        print(self.files.getlist('file'))
+        return self.cleaned_data['file']
+
     def save(self):
         # print("HOGEHOGE")
         # print(dir(self))
+        print('prefix', self.prefix)
         print('files', self.files)
         print('cleaned_data', self.cleaned_data)
 
@@ -622,6 +629,17 @@ class Subscription(object):
 
     def resolve_todo_updated(root, info, parent_id):
         logger.info("resolve_todo_updated called")
+        logger.info("root=%s, info=%s, parent_id=%s", root, info, parent_id)
+        # print(dir(info))
+        # print(info.path)
+        # print(info.context)
+        # for key in dir(info.context):
+        #     print(key, '=>', getattr(info.context, key))
+        # print(info.context.data['session'])
+        # print(info.context.data['user'])
+        # user = info.context.data['user']
+        # print(user.is_authenticated)
+
         parent_id = int(from_global_id(parent_id)[1])
         return ChannelGroupObservable('todo').map(
             lambda event: SubscriptionEvent.from_dict(event)
