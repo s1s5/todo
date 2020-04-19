@@ -630,15 +630,15 @@ class Subscription(object):
     def resolve_todo_updated(root, info, parent_id):
         logger.info("resolve_todo_updated called")
         logger.info("root=%s, info=%s, parent_id=%s", root, info, parent_id)
-        # print(dir(info))
-        # print(info.path)
-        # print(info.context)
+        print(dir(info))
+        print(info.path)
+        print(dir(info.context))
         # for key in dir(info.context):
         #     print(key, '=>', getattr(info.context, key))
-        # print(info.context.data['session'])
-        # print(info.context.data['user'])
+        print(info.context.session)
+        print(info.context.user)
         # user = info.context.data['user']
-        # print(user.is_authenticated)
+        print(info.context.user.is_authenticated)
 
         parent_id = int(from_global_id(parent_id)[1])
         return ChannelGroupObservable('todo').map(
