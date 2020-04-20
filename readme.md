@@ -80,12 +80,9 @@ npm install --save material-ui-dropzone @material-ui/lab
 #     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 #     <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width"/>
 # あたりを追記して、HtmlWebpackPluginのtemplateに指定しておく
-```
 
-``` shell
-# Djangoとwebpackの連携
-npm install --save-dev webpack-bundle-tracker
-pip install django-webpack-loader
+# dropzoneをつかってみる
+npm install --save react-dropzone
 ```
 
 ``` shell
@@ -97,6 +94,3 @@ npm install --save-dev webpack-bundle-analyzer
 npm run build:profile -- --stats
 npm run analyze
 ```
-
-
-asyncio.run(channel_layer.flush())

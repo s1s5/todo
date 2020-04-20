@@ -19,7 +19,7 @@ import {
 const MyTextInput_ = React.memo((props: FormProps<string>) => (
     <FormControl error={ props.errors !== undefined }>
       <InputLabel htmlFor={props.formId}>名前を入れてください</InputLabel>
-      <Input id={props.formId} value={props.value} onChange={ (e) => props.onChange(e.target.value) } />
+      <Input id={props.formId} value={props.value} onChange={ (e) => props.onChange(e.target.value) }/>
       { props.errors && <FormHelperText id={ props.formId + "-help-text" }>{ `${props.errors}, ` }</FormHelperText> }
     </FormControl>
 ))
@@ -48,7 +48,7 @@ const AuthorCreate = () => {
         }
     }
     return (
-        <Form id="hoge" initialVariables={ variables } mutation={ author_create_mutation }>
+        <Form id="hoge" initialVariables={ variables } mutation={ author_create_mutation } saveToStorage>
           <h3>create author</h3>
           <FormGroup name="authorCreate">
             <MyTextInput name="name" />

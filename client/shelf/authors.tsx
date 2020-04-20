@@ -1,4 +1,4 @@
- import * as React from 'react'
+import * as React from 'react'
 
 import {graphql, createFragmentContainer} from 'react-relay'
 import {DefaultQueryRenderer} from '../gql-utils'
@@ -23,19 +23,19 @@ const Authors = (props: Props) => {
         </Link>
         <ul>
           {
-              props.query.authors && props.query.authors &&
-                      props.query.authors.edges.map(edge => edge && edge.node && (
-                          <li key={ edge.node.id }>
-                            { edge.node.name } ({
-                                edge.node.bookSet.edges.map(edge => edge && edge.node && (
-                                    <span key={ edge.node.id } >{edge.node.title}, </span>
-                                ))
-                            })
-                            <Link to={ `${match.path}${ edge.node.id }/` }>
-                              detail
-                            </Link>
-                          </li>
-                      ))
+              props.query.authors &&
+              props.query.authors.edges.map(edge => edge && edge.node && (
+                  <li key={ edge.node.id }>
+                    { edge.node.name } ({
+                        edge.node.bookSet.edges.map(edge => edge && edge.node && (
+                            <span key={ edge.node.id } >{edge.node.title}, </span>
+                        ))
+                    })
+                    <Link to={ `${match.path}${ edge.node.id }/` }>
+                      detail
+                    </Link>
+                  </li>
+              ))
           }
         </ul>
         </>

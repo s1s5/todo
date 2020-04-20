@@ -6,6 +6,9 @@ import HelloUrls from './hello/urls'
 import ShelfUrls from './shelf/urls'
 import RemainderUrls from './remainder/urls'
 
+import TestDropzone from './misc/test-dropzone'
+
+
 const EntryPoint = () => (
     <div>
       <ul>
@@ -33,6 +36,7 @@ const Urls = () => (
       <Route path='/remainder' component={ () => <RemainderUrls/> }/>
       <Route path='/shelf' component={ () => <ShelfUrls/> }/>
       <Route path='/hello' component={ () => <HelloUrls/> }/>
+      <Route exact path='/testdropzone' component={ () => <TestDropzone/> }/>
       <Route exact path='/' component={ EntryPoint }/>
       <Route>
         <h1>404 not found</h1>
