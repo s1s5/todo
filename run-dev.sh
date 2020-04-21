@@ -11,7 +11,8 @@ if [ `uname` = "Darwin" ]; then
     trap 'kill $(jobs -p)' INT
 
     npm run start &
-    npm run relay -- --watch &
+    watchmedo auto-restart -d ./data -p '*schema*.json' -- bash -c 'npm run relay; npm run relay -- --watch' &
+    # npm run relay -- --watch &
     docker-compose build
     docker-compose up &
 
