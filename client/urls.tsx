@@ -7,6 +7,7 @@ import ShelfUrls from './shelf/urls'
 import RemainderUrls from './remainder/urls'
 
 import TestDropzone from './misc/test-dropzone'
+import TestVirtualized from './misc/test-virtualized'
 
 
 const EntryPoint = () => (
@@ -37,6 +38,7 @@ const Urls = () => (
       <Route path='/shelf' component={ () => <ShelfUrls/> }/>
       <Route path='/hello' component={ () => <HelloUrls/> }/>
       <Route exact path='/testdropzone' component={ () => <TestDropzone/> }/>
+      <Route exact path='/testvirtualized' component={ () => <TestVirtualized/> }/>
       <Route exact path='/' component={ EntryPoint }/>
       <Route>
         <h1>404 not found</h1>

@@ -83,6 +83,10 @@ npm install --save material-ui-dropzone @material-ui/lab
 
 # dropzoneをつかってみる
 npm install --save react-dropzone
+
+# virtualized使ってみる
+npm install react-virtualized --save
+npm install @types/react-virtualized --save-dev
 ```
 
 ``` shell
