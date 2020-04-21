@@ -201,7 +201,7 @@ export default function ReactVirtualizedTable() {
     return (
         <Container maxWidth="md">
         <Paper style={{ height: 400, width: '100%' }}>
-          <VirtualizedTable
+        <VirtualizedTable
               rowCount={rows.length}
               rowGetter={({ index }) => rows[index]}
               columns={[
