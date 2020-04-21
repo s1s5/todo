@@ -2,6 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
+import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import { AutoSizer, Column, Table, TableCellRenderer, TableHeaderProps } from 'react-virtualized';
 
@@ -198,6 +199,7 @@ for (let i = 0; i < 200; i += 1) {
 
 export default function ReactVirtualizedTable() {
     return (
+        <Container maxWidth="md">
         <Paper style={{ height: 400, width: '100%' }}>
           <VirtualizedTable
               rowCount={rows.length}
@@ -235,5 +237,6 @@ export default function ReactVirtualizedTable() {
               ]}
           />
         </Paper>
+        </Container>
     );
 }
