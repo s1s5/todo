@@ -319,4 +319,5 @@ INSTALLED_APPS = [
     'todo.apps.remainder',
     'todo.apps.hello',
     'todo.apps.shelf',
+    'todo.apps.runarchitect',
 ] + INSTALLED_APPS
