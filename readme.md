@@ -87,6 +87,12 @@ npm install --save react-dropzone
 # virtualized使ってみる
 npm install react-virtualized --save
 npm install @types/react-virtualized --save-dev
+
+npm install --save react-visibility-sensor
+npm install --save-dev @types/react-visibility-sensor
+
+npm install --save react-infinite-scroller
+npm install --save-dev @types/react-infinite-scroller
 ```
 
 ``` shell
@@ -97,4 +103,11 @@ npm install --save-dev webpack-bundle-analyzer
 # add webpack.profile.js
 npm run build:profile -- --stats
 npm run analyze
+```
+
+
+``` shell
+# postgres
+$ docker exec -t -i todo_db_1 psql -U psqluser -d todo
+todo=# \d+
 ```

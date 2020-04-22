@@ -11,6 +11,8 @@ import TestVirtualized from './misc/test-virtualized'
 import TestVirtualized2 from './misc/test-virtualized-2'
 import TestVirtualized3 from './misc/test-virtualized-3'
 import TestVirtualized4 from './misc/test-virtualized-4'
+import TestVirtualized5 from './misc/test-virtualized-5'
+import TestInfiniteScroller from './misc/test-infinite-scroller'
 import Timeline from './misc/timeline'
 
 
@@ -41,12 +43,14 @@ const Urls = () => (
       <Route path='/remainder' component={ () => <RemainderUrls/> }/>
       <Route path='/shelf' component={ () => <ShelfUrls/> }/>
       <Route path='/hello' component={ () => <HelloUrls/> }/>
-      <Route exact path='/testdropzone' component={ () => <TestDropzone/> }/>
-      <Route exact path='/testvirtualized' component={ () => <TestVirtualized/> }/>
-      <Route exact path='/testvirtualized2' component={ () => <TestVirtualized2/> }/>
-      <Route exact path='/testvirtualized3' component={ () => <TestVirtualized3/> }/>
-      <Route exact path='/testvirtualized4' component={ () => <TestVirtualized4/> }/>
-      <Route exact path='/timeline' component={ () => <Timeline/> }/>
+      <Route path='/testdropzone' component={ () => <TestDropzone/> }/>
+      <Route path='/testvirtualized' component={ () => <TestVirtualized/> }/>
+      <Route path='/testvirtualized2' component={ () => <TestVirtualized2/> }/>
+      <Route path='/testvirtualized3' component={ () => <TestVirtualized3/> }/>
+      <Route path='/testvirtualized4' component={ () => <TestVirtualized4/> }/>
+      <Route path='/testvirtualized5' component={ () => <TestVirtualized5/> }/>
+      <Route path='/testinfinitescroller' component={ () => <TestInfiniteScroller/> }/>
+      <Route path='/timeline' component={ () => <Timeline/> }/>
       <Route exact path='/' component={ EntryPoint }/>
       <Route>
         <h1>404 not found</h1>
