@@ -1,6 +1,7 @@
 from architect.commands import partition
 
 from django.apps import AppConfig
+
 from django.db import ProgrammingError
 from django.db.models.signals import post_migrate
 
@@ -23,8 +24,8 @@ def create_partitions(sender, **kwargs):
     print("create_partitions complete!", paths)
 
 
-class RunarchitectConfig(AppConfig):
-    name = 'todo.apps.runarchitect'
+class ArchitectexampleConfig(AppConfig):
+    name = 'todo.apps.architectexample'
 
     def ready(self):
         super().ready()

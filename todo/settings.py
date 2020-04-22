@@ -320,4 +320,5 @@ INSTALLED_APPS = [
     'todo.apps.hello',
     'todo.apps.shelf',
     'todo.apps.runarchitect',
+    'todo.apps.architectexample',
 ] + INSTALLED_APPS
