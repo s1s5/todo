@@ -20,6 +20,7 @@ import DateFnsUtils from '@date-io/date-fns';
 //    },
 //}
 const theme = _.clone(Theme)
+theme.widgets = _.clone(Theme.widgets)
 theme.widgets!.test = () => <div>test</div>
 
 const ThemedForm = withTheme(theme)
