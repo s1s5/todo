@@ -13,6 +13,8 @@ import TestVirtualized3 from './misc/test-virtualized-3'
 import TestVirtualized4 from './misc/test-virtualized-4'
 import TestVirtualized5 from './misc/test-virtualized-5'
 import TestInfiniteScroller from './misc/test-infinite-scroller'
+import DynamicForm from './misc/dynform'
+import DynamicForm2 from './misc/dynform-2'
 import Timeline from './misc/timeline'
 
 
@@ -50,6 +52,8 @@ const Urls = () => (
       <Route path='/testvirtualized4' component={ () => <TestVirtualized4/> }/>
       <Route path='/testvirtualized5' component={ () => <TestVirtualized5/> }/>
       <Route path='/testinfinitescroller' component={ () => <TestInfiniteScroller/> }/>
+      <Route exact path='/dynamicform' component={ () => <DynamicForm /> }/>
+      <Route exact path='/dynamicform2' component={ () => <DynamicForm2 /> }/>
       <Route path='/timeline' component={ () => <Timeline/> }/>
       <Route exact path='/' component={ EntryPoint }/>
       <Route>

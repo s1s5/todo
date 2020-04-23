@@ -93,6 +93,9 @@ npm install --save-dev @types/react-visibility-sensor
 
 npm install --save react-infinite-scroller
 npm install --save-dev @types/react-infinite-scroller
+
+# 動的なフォームの作成
+npm install @rjsf/core @rjsf/material-ui --save
 ```
 
 ``` shell
@@ -113,3 +116,4 @@ todo=# \d+
 todo=# \pset pager off
 todo=# SELECT tablename, indexname FROM pg_indexes;
 ```
+

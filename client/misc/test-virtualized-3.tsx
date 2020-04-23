@@ -54,7 +54,7 @@ export default class RVComponents extends React.Component {
                               const nextTweets = [...prevTweets, ...listItems]
 
                               setTimeout(() => {
-                                  const next = this.state.tweets.concat()
+                                  const next: string[] = this.state.tweets.concat()
                                   next.push(`item ${next.length}`)
                                   this.setState({
                                       tweets: next,
