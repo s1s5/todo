@@ -56,11 +56,11 @@ class DiaryWithIndex(models.Model):
 
     class Meta:
         ordering = ['-date', '-staff_id']
-        indexes = (
-            models.Index(fields=('staff', )),
-            models.Index(fields=('date', )),
-            models.Index(fields=('staff', 'date')),
-        )
+        # indexes = (
+        #     models.Index(fields=('staff', )),
+        #     models.Index(fields=('date', )),
+        #     models.Index(fields=('staff', 'date')),
+        # )
 
 
 @architect.install('partition', type='range', subtype='integer',
@@ -72,11 +72,11 @@ class DiaryPartition(models.Model):
 
     class Meta:
         ordering = ['-date', '-staff_id']
-        indexes = (
-            models.Index(fields=('staff', )),
-            models.Index(fields=('date', )),
-            models.Index(fields=('staff', 'date')),
-        )
+        # indexes = (
+        #     models.Index(fields=('staff', )),
+        #     models.Index(fields=('date', )),
+        #     models.Index(fields=('staff', 'date')),
+        # )
 
 
 @architect.install('partition', type='range', subtype='date',
@@ -88,8 +88,8 @@ class DiaryPartitionDate(models.Model):
 
     class Meta:
         ordering = ['-date', '-staff_id']
-        indexes = (
-            models.Index(fields=('staff', )),
-            models.Index(fields=('date', )),
-            models.Index(fields=('staff', 'date')),
-        )
+        # indexes = (
+        #     models.Index(fields=('staff', )),
+        #     models.Index(fields=('date', )),
+        #     models.Index(fields=('staff', 'date')),
+        # )

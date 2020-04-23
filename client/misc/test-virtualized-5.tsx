@@ -35,8 +35,16 @@ export default function VirtualizedList() {
     const [scroll_to_index, set_scroll_to_index] = React.useState(max_row - 1)
     const [loading, set_loading] = React.useState(false)
 
+    // もっといいほうほうはないのか・・・
+    const [active, set_active] = React.useState(false)
+    React.useEffect(() => {
+        setTimeout(() => {
+            set_active(true)
+        }, 100)
+    })
+
     const on_prev_loading = (isVisible:boolean) => {
-        console.log("on_prev_loading ", isVisible, loading, min_row)
+        console.log("on_prev_loading ", isVisible, loading, min_row, active)
         if ((!isVisible) || loading) {
             return
         }
@@ -50,13 +58,13 @@ export default function VirtualizedList() {
             }
             
             setTimeout(() => {
-
                 // console.log("set loading false")
                 set_loading(false)
             }, 100)
         }, 1000)
     }
     const on_next_loading = (isVisible: boolean) => {
+        console.log("on_next_loading ", isVisible, loading, min_row, max_row, active)
         if ((!isVisible) || loading) {
             return
         }
@@ -80,7 +88,7 @@ export default function VirtualizedList() {
         const { key, index, style } = props;
         if (index == 0) {
             return (
-                <VisibilitySensor key={key} onChange={on_prev_loading} offset={{top: 56}} >
+                <VisibilitySensor active={ active } key={key} onChange={on_prev_loading} offset={{top: 56}} >
                   <ListItem button style={style}>
                     <ListItemText primary="prev loading ..." />
                   </ListItem>
@@ -88,7 +96,7 @@ export default function VirtualizedList() {
             )
         } else if (index == row_count - 1) {
             return (
-                <VisibilitySensor key={key} onChange={on_next_loading}>
+                <VisibilitySensor active={ active } key={key} onChange={on_next_loading}>
                 <ListItem button style={style}>
                   <ListItemText primary="next loading" />
                 </ListItem>

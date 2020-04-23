@@ -110,4 +110,6 @@ npm run analyze
 # postgres
 $ docker exec -t -i todo_db_1 psql -U psqluser -d todo
 todo=# \d+
+todo=# \pset pager off
+todo=# SELECT tablename, indexname FROM pg_indexes;
 ```

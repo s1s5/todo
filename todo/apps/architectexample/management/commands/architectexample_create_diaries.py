@@ -7,9 +7,9 @@ from ... import models
 class Command(BaseCommand):
     def handle(self, *args, **options):
         klass_list = [
-            models.DiaryNaive,
-            models.DiaryWithIndex,
-            models.DiaryPartition,
+            # models.DiaryNaive,
+            # models.DiaryWithIndex,
+            # models.DiaryPartition,
             models.DiaryPartitionDate,
         ]
 
